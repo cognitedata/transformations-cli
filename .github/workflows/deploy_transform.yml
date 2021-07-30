@@ -1,0 +1,19 @@
+name: Deploy Transformations
+
+on: [push]
+
+jobs:
+  deploy-tranformations:
+    runs-on: ubuntu-latest
+    name: Transformations
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Transformations Deploy step
+        uses: cognitedata/transformations-cli@parse-transformation-config
+        id: deploy-tranformations
+        env:
+          TRANSFORMATIONS_CLUSTER: greenfield
+          TRANSFORMATIONS_API_KEY: ${{secrets.EXAMPLE_API_KEY}}
+        with:
+          path: example

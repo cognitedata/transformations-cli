@@ -1,0 +1,7 @@
+external_id: "dfdfd"
+name: "dfdfd"
+destination: 
+  type: "asset"
+shared: True
+action: "abort"
+ignore_null_fields: False
