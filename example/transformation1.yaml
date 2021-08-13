@@ -1,7 +1,7 @@
-external_id: "dfdfd"
-name: "dfdfd"
+external_id: "test-asset"
+name: "test-asset"
 destination: 
-  type: "asset"
+  type: "assets"
 shared: True
 action: "abort"
 ignore_null_fields: False
