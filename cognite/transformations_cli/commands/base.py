@@ -3,7 +3,7 @@ from typing import Optional
 import click
 from click import Context
 
-from cognite.transformations_cli.__init__ import __version__
+from cognite.transformations_cli import __version__
 from cognite.transformations_cli.commands.delete import delete
 from cognite.transformations_cli.commands.deploy.deploy import deploy
 from cognite.transformations_cli.commands.jobs import jobs
@@ -13,7 +13,7 @@ from cognite.transformations_cli.commands.run import run
 from cognite.transformations_cli.commands.show import show
 
 
-@click.group(context_settings=dict(help_option_names=["-h", "--help"]))
+@click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.version_option(prog_name="transformations_cli", version=__version__)
 @click.option(
     "--cluster",

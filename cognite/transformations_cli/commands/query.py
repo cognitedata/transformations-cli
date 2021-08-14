@@ -2,7 +2,7 @@ from typing import Dict
 
 import click
 
-from cognite.transformations_cli._clients import get_clients
+from cognite.transformations_cli.clients import get_clients
 
 
 @click.command(help="Make a SQL query and retrieve results")
@@ -13,4 +13,4 @@ from cognite.transformations_cli._clients import get_clients
 @click.pass_obj
 def query(obj: Dict, query: str) -> None:
     _, exp_client = get_clients(obj)
-    click.echo(f"Querying...... cluster:{obj['cluster']}")
+    click.echo("Query not implemented in python SDK.")

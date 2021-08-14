@@ -1,7 +1,37 @@
 external_id: "test-asset"
 name: "test-asset"
 destination: 
-  type: "assets"
+  type: "string_datapoints"
 shared: True
 action: "abort"
+query: "select 'asd' as name, 'asd' as externalId"
 ignore_null_fields: False
+schedule: "* * * * *"
+authentication:
+  api_key: NzNlMzVlYTYtMGRmNS00Nzc2LWIzMDUtZWE5MGI5MGY4NmU2
+# read_authentication:
+#   api_key: ""
+#   token_client_id: ""
+#   token_client_secret: ""
+#   token_url: ""
+#   token_scopes: 
+#     - ""
+#     - ""
+#   token_project: ""
+# write_authentication:
+#   api_key: ""
+#   token_client_id: ""
+#   token_client_secret: ""
+#   token_url: ""
+#   token_scopes: 
+#     - ""
+#     - ""
+#   token_project: ""
+
+  # token_client_id: ""
+  # token_client_secret: ""
+  # token_url: ""
+  # token_scopes: 
+  #   - ""
+  #   - ""
+  # token_project: ""

@@ -2,9 +2,18 @@ from typing import Dict
 
 import click
 
+from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.deploy.transformation_config import (
-    ConfigParserError,
+    TransformationConfigError,
     parse_transformation_configs,
+)
+from cognite.transformations_cli.commands.deploy.utils import (
+    create_notifications,
+    to_notifications,
+    to_schedule,
+    to_transformation,
+    upsert_schedules,
+    upsert_transform,
 )
 
 
@@ -21,9 +30,20 @@ def deploy(obj: Dict, path: str) -> None:
     Args:
         path (str): Root directory for transformations
     """
-    click.echo(f"Deploying transformation.... cluster:{obj['cluster']}")
+    click.echo("Deploying transformation...")
     try:
-        parse_transformation_configs(path)
-    except ConfigParserError as e:
-        click.echo(e.message)
-        exit(1)
+        transformation_configs = parse_transformation_configs(path)
+        transformations = [to_transformation(tr, obj["cluster"]) for tr in transformation_configs]
+        _, exp_client = get_clients(obj)
+        upsert_transform(exp_client, transformations)
+        schedules = []
+        notifications = []
+        for transform in transformation_configs:
+            if transform.schedule:
+                schedules.append(to_schedule(transform))
+            if transform.notifications:
+                notifications = to_notifications(transform)
+        create_notifications(exp_client, notifications)
+        upsert_schedules(exp_client, schedules)
+    except TransformationConfigError as e:
+        exit(e.message)

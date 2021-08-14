@@ -133,3 +133,5 @@ dmypy.json
 
 # vscode folder
 .vscode/
+
+Pipfile

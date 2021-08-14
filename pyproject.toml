@@ -25,9 +25,10 @@ known_third_party = ["click"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-cognite-sdk-experimental = "^0.59.0"
+cognite-sdk-experimental = "0.60.6"
 cognite-extractor-utils = "^1.4.2"
 click = "^8.0.1"
+types-retry = "^0.1.5"
 
 [tool.poetry.dev-dependencies]
 black = "^21.6b0"

@@ -1,14 +1,36 @@
 import glob
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from enum import Enum
 from typing import List, Optional
 
-from cognite.extractorutils.configtools import CogniteConfig, InvalidConfigError, load_yaml
-
-from cognite.transformations_cli.commands.deploy.enum_definitions import ActionType, DestinationType
+from cognite.extractorutils.configtools import InvalidConfigError, load_yaml
 
 
-class ConfigParserError(Exception):
+class DestinationType(Enum):
+    assets = "assets"
+    timeseries = "timeseries"
+    asset_hierarchy = "asset_hierarchy"
+    events = "events"
+    datapoints = "datapoints"
+    string_datapoints = "string_datapoints"
+    sequences = "sequences"
+    files = "files"
+    labels = "labels"
+    relationships = "relationships"
+    raw = "raw"
+    raw_table = "raw_table"
+
+
+class ActionType(Enum):
+    create = "abort"
+    abort = "abort"
+    update = "update"
+    upsert = "upsert"
+    delete = "delete"
+
+
+class TransformationConfigError(Exception):
     """Exception raised for config parser
 
     Attributes:
@@ -21,20 +43,19 @@ class ConfigParserError(Exception):
 
 
 @dataclass
-class AuthenticationConfig:
-    """
-    Authentication configuration of a transformation
-    """
-
-    configuration: Optional[CogniteConfig]
-    read_configuration: Optional[CogniteConfig]
-    write_configuration: Optional[CogniteConfig]
+class AuthConfig:
+    api_key: Optional[str]
+    token_client_id: Optional[str]
+    token_client_secret: Optional[str]
+    token_url: Optional[str]
+    token_scopes: Optional[List[str]]
+    token_project: Optional[str]
 
 
 @dataclass
 class DestinationConfig:
     """
-    Valid type values are: assets, assethierarchy, events, timeseries, datapoints, stringdatapoints, raw (needs database and table)
+    Valid type values are: assets, asset_hierarchy, events, timeseries, datapoints, string_datapoints, raw (needs database and table)
     """
 
     type: str
@@ -51,36 +72,75 @@ class TransformationConfig:
 
     external_id: str
     name: str
-    authentication: Optional[AuthenticationConfig]
+    query: str
+    authentication: Optional[AuthConfig]
+    read_authentication: Optional[AuthConfig]
+    write_authentication: Optional[AuthConfig]
     schedule: Optional[str]
     destination: DestinationConfig
-    notifications: Optional[List[str]]
+    notifications: List[str] = field(default_factory=list)
     shared: bool = False
     ignore_null_fields: bool = True
-    action: str = ActionType.upsert
+    action: str = ActionType.upsert.value
 
 
 def _validate_destination_type(config: TransformationConfig) -> None:
     if config.destination.type in [DestinationType.raw, DestinationType.raw_table] and (
         config.destination.database is None or config.destination.table is None
     ):
-        raise ConfigParserError("Raw destination type requires database and table properties to be set.")
+        raise TransformationConfigError("Raw destination type requires database and table properties to be set.")
     if not hasattr(DestinationType, config.destination.type):
-        raise ConfigParserError(
+        raise TransformationConfigError(
             f"{config.destination.type} is not a valid destination type. Destination type should be one of the following: {', '.join([e.value for e in DestinationType])}"
         )
     config.destination.type = (
-        DestinationType.raw_table if config.destination.type == DestinationType.raw else config.destination.type
+        DestinationType.raw_table.value
+        if config.destination.type == DestinationType.raw.value
+        else config.destination.type
     )
     config.destination.raw_type = "plain_raw" if config.destination.type == DestinationType.raw_table else None
 
 
 def _validate_action(config: TransformationConfig) -> None:
     if not hasattr(ActionType, config.action):
-        raise ConfigParserError(
+        raise TransformationConfigError(
             f"{config.action} is not a valid action type. Action should be one of the following: {', '.join([e.value for e in ActionType])}"
         )
-    config.action = ActionType.abort if config.action == ActionType.create else config.action
+    config.action = ActionType.abort.value if config.action == ActionType.create.value else config.action
+
+
+def _validate_exclusive_auth(external_id: str, auth: Optional[AuthConfig]) -> None:
+    if (
+        auth
+        and auth.api_key
+        and (
+            auth.token_client_id
+            or auth.token_client_secret
+            or auth.token_project
+            or auth.token_scopes
+            or auth.token_url
+        )
+    ):
+        raise TransformationConfigError(f"Please provide only one of api-key or oidc credentials: {external_id}")
+
+
+def _validate_auth(config: TransformationConfig) -> None:
+    read_credentials: Optional[AuthConfig] = config.read_authentication
+    write_credentials: Optional[AuthConfig] = config.write_authentication
+    credentials: Optional[AuthConfig] = config.authentication
+    if credentials and (read_credentials or write_credentials):
+        raise TransformationConfigError(
+            f"Please provide only one of credentials or read/write credentials set: {config.external_id}"
+        )
+    _validate_exclusive_auth(config.external_id, credentials)
+    _validate_exclusive_auth(config.external_id, write_credentials)
+    _validate_exclusive_auth(config.external_id, read_credentials)
+
+
+def _validate_config(config: TransformationConfig) -> None:
+    _validate_destination_type(config)
+    _validate_action(config)
+    _validate_auth(config)
 
 
 def _parse_transformation_config(path: str) -> TransformationConfig:
@@ -88,9 +148,7 @@ def _parse_transformation_config(path: str) -> TransformationConfig:
         try:
             config: TransformationConfig = load_yaml(f, TransformationConfig)
         except InvalidConfigError as e:
-            raise ConfigParserError(e.message)
-    _validate_destination_type(config)
-    _validate_action(config)
+            raise TransformationConfigError(e.message)
     return config
 
 
@@ -99,18 +157,22 @@ def parse_transformation_configs(base_dir: Optional[str]) -> List[Transformation
         base_dir = "."
 
     if os.path.isdir(base_dir) is False:
-        raise ConfigParserError(f"Transformation root folder not found: {base_dir}")
+        raise TransformationConfigError(f"Transformation root folder not found: {base_dir}")
 
-    transformation_configs: List[TransformationConfig] = []
+    transformations: List[TransformationConfig] = []
     yaml_paths: List[str] = glob.glob(f"{base_dir}/**/*.yaml", recursive=True) + glob.glob(
         f"{base_dir}/**/*.yml", recursive=True
     )
 
     for file_path in yaml_paths:
         try:
-            transformation_configs.append(_parse_transformation_config(file_path))
+            parsed_conf = _parse_transformation_config(file_path)
+            _validate_config(
+                parsed_conf
+            )  # will modify action and destination if necessary in place and  throw exception if sth is off
+            transformations.append(parsed_conf)
         except Exception as e:
-            raise ConfigParserError(
+            raise TransformationConfigError(
                 f"Failed to parse transformation config, please check that you conform required fields and format: {e}"
             )
-    return transformation_configs
+    return transformations

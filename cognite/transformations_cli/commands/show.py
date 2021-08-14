@@ -1,8 +1,9 @@
 from typing import Dict, Optional
 
 import click
+from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
-from cognite.transformations_cli._clients import get_clients
+from cognite.transformations_cli.clients import get_clients
 
 
 @click.command(help="Show detalis of a transformation")
@@ -16,4 +17,14 @@ from cognite.transformations_cli._clients import get_clients
 @click.pass_obj
 def show(obj: Dict, id: Optional[int], external_id: Optional[str], job: Optional[int]) -> None:
     _, exp_client = get_clients(obj)
-    click.echo(f"Showing the details of transformations...... cluster:{obj['cluster']}")
+    try:
+        if external_id:
+            tr = exp_client.transformations.retrieve(external_id=external_id)
+        elif id:
+            tr = exp_client.transformations.retrieve(id=id)
+        click.echo("Transformation details:")
+        click.echo(tr)
+    except CogniteNotFoundError as e:
+        exit(f"Id not found: {e}")
+    except CogniteAPIError as e:
+        exit(f"Cognite API error has occurred: {e}")
