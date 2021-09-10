@@ -19,7 +19,6 @@ class DestinationType(Enum):
     labels = "labels"
     relationships = "relationships"
     raw = "raw"
-    raw_table = "raw_table"
 
 
 class ActionType(Enum):
@@ -58,8 +57,7 @@ class DestinationConfig:
     Valid type values are: assets, asset_hierarchy, events, timeseries, datapoints, string_datapoints, raw (needs database and table)
     """
 
-    type: str
-    raw_type: Optional[str] = None
+    type: DestinationType
     database: Optional[str] = None
     table: Optional[str] = None
 
@@ -85,20 +83,14 @@ class TransformationConfig:
 
 
 def _validate_destination_type(config: TransformationConfig) -> None:
-    if config.destination.type in [DestinationType.raw, DestinationType.raw_table] and (
+    if config.destination.type == DestinationType.raw and (
         config.destination.database is None or config.destination.table is None
     ):
         raise TransformationConfigError("Raw destination type requires database and table properties to be set.")
-    if not hasattr(DestinationType, config.destination.type):
+    if not hasattr(DestinationType, config.destination.type.name):
         raise TransformationConfigError(
             f"{config.destination.type} is not a valid destination type. Destination type should be one of the following: {', '.join([e.value for e in DestinationType])}"
         )
-    config.destination.type = (
-        DestinationType.raw_table.value
-        if config.destination.type == DestinationType.raw.value
-        else config.destination.type
-    )
-    config.destination.raw_type = "plain_raw" if config.destination.type == DestinationType.raw_table else None
 
 
 def _validate_action(config: TransformationConfig) -> None:

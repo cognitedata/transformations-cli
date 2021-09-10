@@ -1,19 +1,18 @@
-from typing import Dict, Optional, Tuple
+from typing import Dict, Tuple
 
 from cognite.client import CogniteClient
 from cognite.client.exceptions import CogniteAPIKeyError
 from cognite.experimental import CogniteClient as ExpCogniteClient
 
 
-def _client_provider(
-    cluster: Optional[str],
-    api_key: Optional[str],
-    token_client_id: Optional[str],
-    token_client_secret: Optional[str],
-    token_url: Optional[str],
-    token_scopes: Optional[str],
-    token_project: Optional[str],
-) -> Tuple[CogniteClient, ExpCogniteClient]:
+def get_clients(obj: Dict) -> Tuple[CogniteClient, ExpCogniteClient]:
+    api_key = obj["api_key"]
+    token_client_id = obj["token_client_id"]
+    token_client_secret = obj["token_client_secret"]
+    token_url = obj["token_url"]
+    token_scopes = obj["token_scopes"]
+    token_project = obj["token_project"]
+    cluster = obj["cluster"]
     base_url = f"https://{cluster}.cognitedata.com"
     scopes = token_scopes.strip().split(",") if token_scopes else [f"https://{cluster}.cognitedata.com/.default"]
     try:
@@ -51,22 +50,3 @@ def _client_provider(
             )
     except CogniteAPIKeyError as e:
         exit(f"Cognite client cannot be initialised: {e}.")
-
-
-def get_clients(obj: Dict) -> Tuple[CogniteClient, ExpCogniteClient]:
-    api_key = obj["api_key"]
-    token_client_id = obj["token_client_id"]
-    token_client_secret = obj["token_client_secret"]
-    token_url = obj["token_url"]
-    token_scopes = obj["token_scopes"]
-    token_project = obj["token_project"]
-    cluster = obj["cluster"]
-    return _client_provider(
-        cluster=cluster,
-        api_key=api_key,
-        token_client_id=token_client_id,
-        token_client_secret=token_client_secret,
-        token_url=token_url,
-        token_scopes=token_scopes,
-        token_project=token_project,
-    )

@@ -15,5 +15,6 @@ jobs:
         env:
           TRANSFORMATIONS_CLUSTER: greenfield
           TRANSFORMATIONS_API_KEY: ${{secrets.EXAMPLE_API_KEY}}
+          API_KEY: ${{secrets.EXAMPLE_API_KEY}}
         with:
           path: example

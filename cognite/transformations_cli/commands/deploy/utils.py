@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 import click
@@ -5,7 +6,12 @@ from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError
 from cognite.experimental import CogniteClient as ExpCogniteClient
 from cognite.experimental.data_classes import TransformationNotification
 from cognite.experimental.data_classes.transformation_schedules import TransformationSchedule
-from cognite.experimental.data_classes.transformations import OidcCredentials, Transformation, TransformationDestination
+from cognite.experimental.data_classes.transformations import (
+    OidcCredentials,
+    RawTable,
+    Transformation,
+    TransformationDestination,
+)
 
 from cognite.transformations_cli.commands.deploy.transformation_config import (
     AuthConfig,
@@ -16,9 +22,9 @@ from cognite.transformations_cli.commands.deploy.transformation_config import (
 
 def to_transformation(config: TransformationConfig, cluster: str = "europe-west1-1") -> Transformation:
     if config.destination.type == DestinationType.raw:
-        destination = TransformationDestination(config.destination.database, config.destination.table)
+        destination = RawTable("raw", config.destination.database, config.destination.table)
     else:
-        destination = TransformationDestination(config.destination.type)
+        destination = TransformationDestination(config.destination.type.name)
     read_api_key = None
     write_api_key = None
     read_oidc = None
@@ -27,16 +33,16 @@ def to_transformation(config: TransformationConfig, cluster: str = "europe-west1
         auth = config.authentication
         read_api_key = get_api_key(auth)
         write_api_key = get_api_key(auth)
-        read_oidc = get_oidc(auth, cluster) if read_api_key is None else None
-        write_oidc = get_oidc(auth, cluster) if write_api_key is None else None
+        read_oidc = get_oidc(auth, cluster) if not read_api_key else None
+        write_oidc = get_oidc(auth, cluster) if not write_api_key else None
     elif config.read_authentication:
         auth = config.read_authentication
         read_api_key = get_api_key(auth)
-        read_oidc = get_oidc(auth, cluster) if read_api_key is None else None
+        read_oidc = get_oidc(auth, cluster) if not read_api_key else None
     elif config.write_authentication:
         auth = config.write_authentication
         write_api_key = get_api_key(auth)
-        write_oidc = get_oidc(auth, cluster) if write_api_key is None else None
+        write_oidc = get_oidc(auth, cluster) if not write_api_key else None
 
     return Transformation(
         name=config.name,
@@ -54,12 +60,13 @@ def to_transformation(config: TransformationConfig, cluster: str = "europe-west1
 
 
 def get_api_key(auth: AuthConfig) -> str:
-    return auth.api_key
+    return os.environ.get(auth.api_key, auth.api_key)
 
 
 def get_oidc(auth: AuthConfig, cluster: str) -> OidcCredentials:
     scopes = ",".join(auth.scopes) if auth.token_scopes else f"https://{cluster}.cognitedata.com/.default"
-    return OidcCredentials(auth.token_client_id, auth.token_client_secret, scopes, auth.token_url, auth.token_project)
+    secretVal = os.environ.get(auth.token_client_secret, auth.token_client_secret)
+    return OidcCredentials(auth.token_client_id, secretVal, scopes, auth.token_url, auth.token_project)
 
 
 def to_schedule(config: TransformationConfig) -> TransformationSchedule:
@@ -112,8 +119,8 @@ def upsert_schedules(exp_client: ExpCogniteClient, schedules: List[Transformatio
         existing_ext_ids = [item.external_id for item in existing_schedules]
         new_ext_ids = set([s.external_id for s in schedules]) - set(existing_ext_ids)
 
-        existing_items = [ext_id for ext_id in all_ext_ids if ext_id in existing_ext_ids]
-        new_items = [ext_id for ext_id in all_ext_ids if ext_id in new_ext_ids]
+        existing_items = [s for s in schedules if s.external_id in existing_ext_ids]
+        new_items = [s for s in schedules if s.external_id in new_ext_ids]
 
         updated_schedules = exp_client.transformations.schedules.update(existing_items)
         created_schedules = exp_client.transformations.schedules.create(new_items)
