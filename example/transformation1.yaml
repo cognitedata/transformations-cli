@@ -1,0 +1,37 @@
+external_id: "test-asset"
+name: "test-asset"
+destination: 
+  type: "assets"
+shared: True
+action: "upsert"
+query: "select 'asd' as name, 'asd' as externalId"
+ignore_null_fields: False
+schedule: "5 4 * * *"
+authentication:
+  api_key: "API_KEY"
+# read_authentication:
+#   api_key: ""
+#   token_client_id: ""
+#   token_client_secret: ""
+#   token_url: ""
+#   token_scopes: 
+#     - ""
+#     - ""
+#   token_project: ""
+# write_authentication:
+#   api_key: ""
+#   token_client_id: ""
+#   token_client_secret: ""
+#   token_url: ""
+#   token_scopes: 
+#     - ""
+#     - ""
+#   token_project: ""
+
+  # token_client_id: ""
+  # token_client_secret: ""
+  # token_url: ""
+  # token_scopes: 
+  #   - ""
+  #   - ""
+  # token_project: ""
