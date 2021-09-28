@@ -19,6 +19,7 @@ from cognite.transformations_cli.clients import get_clients
 # @click.option(
 #     "--time-out", default=(12 * 60 * 60), help="Maximum amount of time to wait for job to complete in seconds"
 # )
+# TODO format before printing
 @click.pass_obj
 def run(
     obj: Dict,

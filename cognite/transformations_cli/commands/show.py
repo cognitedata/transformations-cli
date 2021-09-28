@@ -15,6 +15,7 @@ from cognite.transformations_cli.clients import get_clients
     "--job", help="The id of the job to show. Include this to show job details instead of transformation details."
 )
 @click.pass_obj
+# TODO format before printing
 def show(obj: Dict, id: Optional[int], external_id: Optional[str], job: Optional[int]) -> None:
     _, exp_client = get_clients(obj)
     try:

@@ -10,6 +10,7 @@ from cognite.transformations_cli.clients import get_clients
 @click.option("--limit", default=10, help="Number of transformations to list, defaults to 10. Use -1 to list all.")
 @click.pass_obj
 # TODO idea: make this interactive, user can go back and forth through pages
+# format before printing
 def list(obj: Dict, limit: int = 10) -> None:
     _, exp_client = get_clients(obj)
     try:

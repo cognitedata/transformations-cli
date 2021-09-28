@@ -48,7 +48,7 @@ def to_transformation(config: TransformationConfig, cluster: str = "europe-west1
         name=config.name,
         external_id=config.external_id,
         destination=destination,
-        conflict_mode=config.action,
+        conflict_mode=config.action.value,
         is_public=config.shared,
         ignore_null_fields=config.ignore_null_fields,
         query=config.query,
@@ -109,6 +109,7 @@ def upsert_transform(exp_client: ExpCogniteClient, transformations: List[Transfo
         )
 
 
+# TODO delete schedules when ommitted
 def upsert_schedules(exp_client: ExpCogniteClient, schedules: List[TransformationSchedule]) -> None:
     try:
         all_ext_ids = [s.external_id for s in schedules]
@@ -134,6 +135,7 @@ def upsert_schedules(exp_client: ExpCogniteClient, schedules: List[Transformatio
         exit(f"Cognite API error has occurred: {e}")
 
 
+# TODO delete notifications when ommitted
 def create_notifications(exp_client: ExpCogniteClient, notifications: List[TransformationNotification]) -> None:
     try:
         exp_client.transformations.notifications.create(notifications)

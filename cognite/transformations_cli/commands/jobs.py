@@ -13,6 +13,7 @@ from cognite.transformations_cli.clients import get_clients
 )
 @click.option("--limit", default=10, help="Limit for the job history, defaults to 10. Use -1 to retrieve all results.")
 @click.pass_obj
+# TODO format before printing
 def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 10) -> None:
     _, exp_client = get_clients(obj)
     intro_str = (

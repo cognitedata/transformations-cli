@@ -79,7 +79,7 @@ class TransformationConfig:
     notifications: List[str] = field(default_factory=list)
     shared: bool = False
     ignore_null_fields: bool = True
-    action: str = ActionType.upsert.value
+    action: ActionType = ActionType.upsert
 
 
 def _validate_destination_type(config: TransformationConfig) -> None:
@@ -87,18 +87,18 @@ def _validate_destination_type(config: TransformationConfig) -> None:
         config.destination.database is None or config.destination.table is None
     ):
         raise TransformationConfigError("Raw destination type requires database and table properties to be set.")
-    if not hasattr(DestinationType, config.destination.type.name):
+    if not hasattr(DestinationType, config.destination.type.value):
         raise TransformationConfigError(
             f"{config.destination.type} is not a valid destination type. Destination type should be one of the following: {', '.join([e.value for e in DestinationType])}"
         )
 
 
 def _validate_action(config: TransformationConfig) -> None:
-    if not hasattr(ActionType, config.action):
+    if not hasattr(ActionType, config.action.value):
         raise TransformationConfigError(
             f"{config.action} is not a valid action type. Action should be one of the following: {', '.join([e.value for e in ActionType])}"
         )
-    config.action = ActionType.abort.value if config.action == ActionType.create.value else config.action
+    config.action = ActionType.abort if config.action == ActionType.create else config.action
 
 
 def _validate_exclusive_auth(external_id: str, auth: Optional[AuthConfig]) -> None:
