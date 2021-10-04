@@ -4,6 +4,11 @@ import click
 from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
 from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.commands.utils import (
+    check_exclusive_id,
+    exit_with_cognite_api_error,
+    exit_with_id_not_found,
+)
 
 
 @click.command(help="Show detalis of a transformation")
@@ -18,14 +23,12 @@ from cognite.transformations_cli.clients import get_clients
 # TODO format before printing
 def show(obj: Dict, id: Optional[int], external_id: Optional[str], job: Optional[int]) -> None:
     _, exp_client = get_clients(obj)
+    check_exclusive_id(id, external_id)
     try:
-        if external_id:
-            tr = exp_client.transformations.retrieve(external_id=external_id)
-        elif id:
-            tr = exp_client.transformations.retrieve(id=id)
+        tr = exp_client.transformations.retrieve(id=id, external_id=external_id)
         click.echo("Transformation details:")
         click.echo(tr)
     except CogniteNotFoundError as e:
-        exit(f"Id not found: {e}")
+        exit_with_id_not_found(e)
     except CogniteAPIError as e:
-        exit(f"Cognite API error has occurred: {e}")
+        exit_with_cognite_api_error(e)

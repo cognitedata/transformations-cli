@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Transformations Deploy step
-        uses: cognitedata/transformations-cli@parse-transformation-config
+        uses: ./
         id: deploy-tranformations
         env:
           TRANSFORMATIONS_CLUSTER: greenfield
