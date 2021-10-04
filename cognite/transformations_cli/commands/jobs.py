@@ -5,9 +5,9 @@ from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import (
-    check_exclusive_id,
     exit_with_cognite_api_error,
     exit_with_id_not_found,
+    is_id_exclusive,
 )
 
 
@@ -21,7 +21,7 @@ from cognite.transformations_cli.commands.utils import (
 # TODO format before printing
 def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 10) -> None:
     _, exp_client = get_clients(obj)
-    check_exclusive_id(id, external_id)
+    is_id_exclusive(id, external_id)
     try:
         if id:
             click.echo(f"Listing the latest jobs for transformation with id {id}")

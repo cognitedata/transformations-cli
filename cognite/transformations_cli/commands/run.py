@@ -5,9 +5,9 @@ from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import (
-    check_exclusive_id,
     exit_with_cognite_api_error,
     exit_with_id_not_found,
+    is_id_exclusive,
 )
 
 
@@ -36,7 +36,7 @@ def run(
     timeout: Optional[int] = None,
 ) -> None:
     _, exp_client = get_clients(obj)
-    check_exclusive_id(id, external_id)
+    is_id_exclusive(id, external_id)
     try:
         if not watch_only:
             job = exp_client.transformations.run(transformation_id=id, id=id, watch=watch, timeout=timeout)
