@@ -22,7 +22,7 @@ from cognite.transformations_cli.commands.deploy.transformation_config import (
 
 def to_transformation(config: TransformationConfig, cluster: str = "europe-west1-1") -> Transformation:
     if config.destination.type == DestinationType.raw:
-        destination = RawTable("raw", config.destination.database, config.destination.table)
+        destination = RawTable("raw", config.destination.raw_database, config.destination.raw_table)
     else:
         destination = TransformationDestination(config.destination.type.name)
     read_api_key = None
@@ -65,8 +65,7 @@ def get_api_key(auth: AuthConfig) -> str:
 
 def get_oidc(auth: AuthConfig, cluster: str) -> OidcCredentials:
     scopes = ",".join(auth.scopes) if auth.token_scopes else f"https://{cluster}.cognitedata.com/.default"
-    secretVal = os.environ.get(auth.token_client_secret, auth.token_client_secret)
-    return OidcCredentials(auth.token_client_id, secretVal, scopes, auth.token_url, auth.token_project)
+    return OidcCredentials(auth.token_client_id, auth.token_client_secret, scopes, auth.token_url, auth.token_project)
 
 
 def to_schedule(config: TransformationConfig) -> TransformationSchedule:

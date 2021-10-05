@@ -58,8 +58,8 @@ class DestinationConfig:
     """
 
     type: DestinationType
-    database: Optional[str] = None
-    table: Optional[str] = None
+    raw_database: Optional[str] = None
+    raw_table: Optional[str] = None
 
 
 @dataclass
@@ -84,7 +84,7 @@ class TransformationConfig:
 
 def _validate_destination_type(config: TransformationConfig) -> None:
     if config.destination.type == DestinationType.raw and (
-        config.destination.database is None or config.destination.table is None
+        config.destination.raw_database is None or config.destination.raw_table is None
     ):
         raise TransformationConfigError("Raw destination type requires database and table properties to be set.")
     if not hasattr(DestinationType, config.destination.type.value):
@@ -138,7 +138,7 @@ def _validate_config(config: TransformationConfig) -> None:
 def _parse_transformation_config(path: str) -> TransformationConfig:
     with open(path) as f:
         try:
-            config: TransformationConfig = load_yaml(f, TransformationConfig)
+            config: TransformationConfig = load_yaml(f, TransformationConfig, case_style="camel")
         except InvalidConfigError as e:
             raise TransformationConfigError(e.message)
     return config
