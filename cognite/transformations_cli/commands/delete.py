@@ -4,6 +4,7 @@ import click
 from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
 from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.commands.utils import exit_with_cognite_api_error, exit_with_id_not_found
 
 
 @click.command(help="Delete a transformation")
@@ -25,6 +26,6 @@ def delete(obj: Dict, id: Optional[int], external_id: Optional[str]) -> None:
             exp_client.transformations.delete(external_id=external_id)
         click.echo("Successfully deleted.")
     except CogniteNotFoundError as e:
-        exit(f"Id not found: {e}")
+        exit_with_id_not_found(e)
     except CogniteAPIError as e:
-        exit(f"Cognite API error has occurred: {e}")
+        exit_with_cognite_api_error(e)

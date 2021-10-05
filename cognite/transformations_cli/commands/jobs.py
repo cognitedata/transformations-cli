@@ -4,6 +4,11 @@ import click
 from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
 from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.commands.utils import (
+    exit_with_cognite_api_error,
+    exit_with_id_not_found,
+    is_id_exclusive,
+)
 
 
 @click.command(help="Show latest jobs for a given transformation")
@@ -16,29 +21,17 @@ from cognite.transformations_cli.clients import get_clients
 # TODO format before printing
 def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 10) -> None:
     _, exp_client = get_clients(obj)
-    intro_str = (
-        f" for transformation with id {id}..."
-        if id
-        else f" for transformation with external_id {external_id}..."
-        if external_id
-        else "..."
-    )
-    click.echo(f"Listing latest jobs{intro_str}")
-    if id and external_id:
-        exit("Please only provide one of id and external id.")
+    is_id_exclusive(id, external_id)
     try:
+        if id:
+            click.echo(f"Listing the latest jobs for transformation with id {id}")
         if external_id:
             id = exp_client.transformations.retrieve(external_id=external_id).id
-        if id:
-            jobs = exp_client.transformations.jobs.list(limit=-1)
-            limit = limit if limit != -1 else len(jobs)
-            jobs = [job for job in jobs if job.transformation_id == id][:limit]
-        else:
-            jobs = exp_client.transformations.jobs.list(limit=limit)
-
+            click.echo(f"Listing the latest jobs for transformation with external_id {external_id}")
+        jobs = exp_client.transformations.jobs.list(limit=limit, transformation_id=id)
         click.echo("Resulting jobs:")
         click.echo(jobs)
     except CogniteNotFoundError as e:
-        exit(f"Id not found: {e}")
+        exit_with_id_not_found(e)
     except CogniteAPIError as e:
-        exit(f"Cognite API error has occurred: {e}")
+        exit_with_cognite_api_error(e)

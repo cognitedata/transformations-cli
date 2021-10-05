@@ -1,3 +1,4 @@
+import sys
 from typing import Dict, Tuple
 
 from cognite.client import CogniteClient
@@ -23,7 +24,7 @@ def get_clients(obj: Dict) -> Tuple[CogniteClient, ExpCogniteClient]:
             or token_url is not None
             or token_scopes is not None
         ):
-            exit("Please provide only API key configuration or only OIDC configuration.")
+            sys.exit("Please provide only API key configuration or only OIDC configuration.")
         elif api_key is not None:
             return (
                 CogniteClient(client_name="transformations_cli", api_key=api_key, base_url=base_url),
@@ -49,4 +50,4 @@ def get_clients(obj: Dict) -> Tuple[CogniteClient, ExpCogniteClient]:
                 ),
             )
     except CogniteAPIKeyError as e:
-        exit(f"Cognite client cannot be initialised: {e}.")
+        sys.exit(f"Cognite client cannot be initialised: {e}.")
