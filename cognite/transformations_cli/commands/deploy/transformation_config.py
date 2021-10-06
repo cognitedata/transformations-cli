@@ -2,9 +2,9 @@ import glob
 import os
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from cognite.extractorutils.configtools import InvalidConfigError, load_yaml
+from cognite.extractorutils.configtools import load_yaml
 
 
 class DestinationType(Enum):
@@ -22,7 +22,7 @@ class DestinationType(Enum):
 
 
 class ActionType(Enum):
-    create = "abort"
+    create = "create"
     abort = "abort"
     update = "update"
     upsert = "upsert"
@@ -49,6 +49,13 @@ class AuthConfig:
     token_url: Optional[str]
     token_scopes: Optional[List[str]]
     token_project: Optional[str]
+    audience: Optional[str]
+
+
+@dataclass
+class ReadWriteAuthentication:
+    read: AuthConfig
+    write: AuthConfig
 
 
 @dataclass
@@ -63,6 +70,11 @@ class DestinationConfig:
 
 
 @dataclass
+class QueryConfig:
+    file: str
+
+
+@dataclass
 class TransformationConfig:
     """
     Master configuration class of a transformation
@@ -70,8 +82,8 @@ class TransformationConfig:
 
     external_id: str
     name: str
-    query: str
-    authentication: Optional[AuthConfig]
+    query: Union[str, QueryConfig]
+    authentication: Union[AuthConfig, ReadWriteAuthentication]
     read_authentication: Optional[AuthConfig]
     write_authentication: Optional[AuthConfig]
     schedule: Optional[str]
@@ -82,23 +94,12 @@ class TransformationConfig:
     action: ActionType = ActionType.upsert
 
 
-def _validate_destination_type(config: TransformationConfig) -> None:
-    if config.destination.type == DestinationType.raw and (
-        config.destination.raw_database is None or config.destination.raw_table is None
+def _validate_destination_type(external_id: str, destination_type: DestinationConfig) -> None:
+    if destination_type.type == DestinationType.raw and (
+        destination_type.raw_database is None or destination_type.raw_table is None
     ):
-        raise TransformationConfigError("Raw destination type requires database and table properties to be set.")
-    if not hasattr(DestinationType, config.destination.type.value):
-        raise TransformationConfigError(
-            f"{config.destination.type} is not a valid destination type. Destination type should be one of the following: {', '.join([e.value for e in DestinationType])}"
-        )
-
-
-def _validate_action(config: TransformationConfig) -> None:
-    if not hasattr(ActionType, config.action.value):
-        raise TransformationConfigError(
-            f"{config.action} is not a valid action type. Action should be one of the following: {', '.join([e.value for e in ActionType])}"
-        )
-    config.action = ActionType.abort if config.action == ActionType.create else config.action
+        raise Exception(f"Raw destination type requires database and table properties to be set: {external_id}")
+    return None
 
 
 def _validate_exclusive_auth(external_id: str, auth: Optional[AuthConfig]) -> None:
@@ -113,35 +114,26 @@ def _validate_exclusive_auth(external_id: str, auth: Optional[AuthConfig]) -> No
             or auth.token_url
         )
     ):
-        raise TransformationConfigError(f"Please provide only one of api-key or oidc credentials: {external_id}")
+        raise Exception(f"Please provide only one of api-key or oidc credentials: {external_id}")
+    return None
 
 
-def _validate_auth(config: TransformationConfig) -> None:
-    read_credentials: Optional[AuthConfig] = config.read_authentication
-    write_credentials: Optional[AuthConfig] = config.write_authentication
-    credentials: Optional[AuthConfig] = config.authentication
-    if credentials and (read_credentials or write_credentials):
-        raise TransformationConfigError(
-            f"Please provide only one of credentials or read/write credentials set: {config.external_id}"
-        )
-    _validate_exclusive_auth(config.external_id, credentials)
-    _validate_exclusive_auth(config.external_id, write_credentials)
-    _validate_exclusive_auth(config.external_id, read_credentials)
+def _validate_auth(external_id: str, auth_config: Union[AuthConfig, ReadWriteAuthentication]) -> None:
+    if isinstance(auth_config, AuthConfig):
+        _validate_exclusive_auth(external_id, auth_config)
+    if isinstance(auth_config, ReadWriteAuthentication):
+        _validate_exclusive_auth(external_id, auth_config.read)
+        _validate_exclusive_auth(external_id, auth_config.write)
 
 
 def _validate_config(config: TransformationConfig) -> None:
-    _validate_destination_type(config)
-    _validate_action(config)
-    _validate_auth(config)
+    _validate_destination_type(config.external_id, config.destination)
+    _validate_auth(config.external_id, config.authentication)
 
 
 def _parse_transformation_config(path: str) -> TransformationConfig:
     with open(path) as f:
-        try:
-            config: TransformationConfig = load_yaml(f, TransformationConfig, case_style="camel")
-        except InvalidConfigError as e:
-            raise TransformationConfigError(e.message)
-    return config
+        return load_yaml(f, TransformationConfig, case_style="camel")
 
 
 def parse_transformation_configs(base_dir: Optional[str]) -> List[TransformationConfig]:
@@ -159,9 +151,8 @@ def parse_transformation_configs(base_dir: Optional[str]) -> List[Transformation
     for file_path in yaml_paths:
         try:
             parsed_conf = _parse_transformation_config(file_path)
-            _validate_config(
-                parsed_conf
-            )  # will modify action and destination if necessary in place and  throw exception if sth is off
+            # This will raise exceptions if invalid
+            _validate_config(parsed_conf)
             transformations.append(parsed_conf)
         except Exception as e:
             raise TransformationConfigError(

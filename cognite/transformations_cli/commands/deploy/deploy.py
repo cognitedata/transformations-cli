@@ -7,7 +7,7 @@ from cognite.transformations_cli.commands.deploy.transformation_config import (
     TransformationConfigError,
     parse_transformation_configs,
 )
-from cognite.transformations_cli.commands.deploy.utils import (
+from cognite.transformations_cli.commands.deploy.transformations_api import (
     create_notifications,
     to_notifications,
     to_schedule,

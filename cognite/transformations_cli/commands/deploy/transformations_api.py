@@ -1,5 +1,5 @@
-import os
-from typing import List
+import sys
+from typing import List, Optional, Union
 
 import click
 from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError
@@ -14,58 +14,114 @@ from cognite.experimental.data_classes.transformations import (
 )
 
 from cognite.transformations_cli.commands.deploy.transformation_config import (
+    ActionType,
     AuthConfig,
+    DestinationConfig,
     DestinationType,
+    QueryConfig,
+    ReadWriteAuthentication,
     TransformationConfig,
 )
 
 
 def to_transformation(config: TransformationConfig, cluster: str = "europe-west1-1") -> Transformation:
-    if config.destination.type == DestinationType.raw:
-        destination = RawTable("raw", config.destination.raw_database, config.destination.raw_table)
-    else:
-        destination = TransformationDestination(config.destination.type.name)
-    read_api_key = None
-    write_api_key = None
-    read_oidc = None
-    write_oidc = None
-    if config.authentication:
-        auth = config.authentication
-        read_api_key = get_api_key(auth)
-        write_api_key = get_api_key(auth)
-        read_oidc = get_oidc(auth, cluster) if not read_api_key else None
-        write_oidc = get_oidc(auth, cluster) if not write_api_key else None
-    elif config.read_authentication:
-        auth = config.read_authentication
-        read_api_key = get_api_key(auth)
-        read_oidc = get_oidc(auth, cluster) if not read_api_key else None
-    elif config.write_authentication:
-        auth = config.write_authentication
-        write_api_key = get_api_key(auth)
-        write_oidc = get_oidc(auth, cluster) if not write_api_key else None
-
     return Transformation(
         name=config.name,
         external_id=config.external_id,
-        destination=destination,
-        conflict_mode=config.action.value,
+        destination=to_destination(config.destination),
+        conflict_mode=to_action(config.action),
         is_public=config.shared,
         ignore_null_fields=config.ignore_null_fields,
-        query=config.query,
-        source_api_key=read_api_key,
-        destination_api_key=write_api_key,
-        source_oidc_credentials=read_oidc,
-        destination_oidc_credentials=write_oidc,
+        query=to_query(config.query),
+        source_api_key=to_read_api_key(config.authentication),
+        destination_api_key=to_write_api_key(config.authentication),
+        source_oidc_credentials=to_read_oidc(config.authentication, cluster),
+        destination_oidc_credentials=to_write_oidc(config.authentication, cluster),
     )
 
 
-def get_api_key(auth: AuthConfig) -> str:
-    return os.environ.get(auth.api_key, auth.api_key)
+def to_action(action: ActionType) -> str:
+    return "abort" if action == ActionType.create else action.value
 
 
-def get_oidc(auth: AuthConfig, cluster: str) -> OidcCredentials:
-    scopes = ",".join(auth.scopes) if auth.token_scopes else f"https://{cluster}.cognitedata.com/.default"
-    return OidcCredentials(auth.token_client_id, auth.token_client_secret, scopes, auth.token_url, auth.token_project)
+def to_destination(destination: DestinationConfig) -> TransformationDestination:
+    if destination.type == DestinationType.raw:
+        destination = RawTable("raw", destination.raw_database, destination.raw_table)
+    else:
+        destination = TransformationDestination(destination.type.value)
+
+
+def to_query(query: Union[str, QueryConfig]) -> str:
+    try:
+        if isinstance(query, QueryConfig):
+            with open(query.file, "r") as f:
+                return f.read().replace("\n", "")
+        return query
+    except:
+        sys.exit("Please provide a valid path for sql file.")
+
+
+def to_read_api_key(authentication: Union[AuthConfig, ReadWriteAuthentication]) -> Optional[str]:
+    if isinstance(authentication, AuthConfig):
+        return authentication.api_key
+    if isinstance(authentication, ReadWriteAuthentication):
+        return authentication.read.api_key
+    return None
+
+
+def to_write_api_key(authentication: Union[AuthConfig, ReadWriteAuthentication]) -> Optional[str]:
+    if isinstance(authentication, AuthConfig):
+        return authentication.api_key
+    if isinstance(authentication, ReadWriteAuthentication):
+        return authentication.write.api_key
+    return None
+
+
+def get_default_scopes(scopes: Optional[List[str]], cluster: str) -> str:
+    return ",".join(scopes) if scopes else f"https://{cluster}.cognitedata.com/.default"
+
+
+def is_oidc_defined(auth_config: AuthConfig) -> bool:
+    return (
+        auth_config.token_client_id
+        and auth_config.token_client_secret
+        and auth_config.token_url
+        and auth_config.token_project
+    )
+
+
+def get_oidc(auth_config: AuthConfig, cluster: str) -> Optional[OidcCredentials]:
+    scopes = auth_config.token_scopes if auth_config.audience else get_default_scopes(auth_config.token_scopes, cluster)
+    return (
+        OidcCredentials(
+            auth_config.token_client_id,
+            auth_config.token_client_secret,
+            scopes,
+            auth_config.token_url,
+            auth_config.token_project,
+            auth_config.audience,
+        )
+        if is_oidc_defined(auth_config)
+        else None
+    )
+
+
+def to_read_oidc(authentication: Union[AuthConfig, ReadWriteAuthentication], cluster: str) -> Optional[OidcCredentials]:
+    return (
+        get_oidc(authentication, cluster)
+        if isinstance(authentication, AuthConfig)
+        else get_oidc(authentication.read, cluster)
+    )
+
+
+def to_write_oidc(
+    authentication: Union[AuthConfig, ReadWriteAuthentication], cluster: str
+) -> Optional[OidcCredentials]:
+    return (
+        get_oidc(authentication, cluster)
+        if isinstance(authentication, AuthConfig)
+        else get_oidc(authentication.write, cluster)
+    )
 
 
 def to_schedule(config: TransformationConfig) -> TransformationSchedule:

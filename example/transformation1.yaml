@@ -1,37 +1,52 @@
-externalId: "test-asset"
-name: "test-asset"
+# version: v3
+externalId: "test-asset2"
+name: "test-asset2"
 destination: 
   type: "assets"
+# destination: 
+#   type: "raw"
+#   rawDatabase: "asd"
+#   rawTable: "asd"
 shared: True
 action: "upsert"
 query: "select 'asd' as name, 'asd' as externalId"
+# query:
+#   file: my_transform.sql
 ignoreNullFields: False
 schedule: "5 4 * * *"
+
 authentication:
   apiKey: ${API_KEY}
-# read_authentication:
-#   api_key: ""
-#   token_client_id: ""
-#   token_client_secret: ""
-#   token_url: ""
-#   token_scopes: 
-#     - ""
-#     - ""
-#   token_project: ""
-# write_authentication:
-#   api_key: ""
-#   token_client_id: ""
-#   token_client_secret: ""
-#   token_url: ""
-#   token_scopes: 
-#     - ""
-#     - ""
-#   token_project: ""
 
-  # token_client_id: ""
-  # token_client_secret: ""
-  # token_url: ""
-  # token_scopes: 
-  #   - ""
-  #   - ""
-  # token_project: ""
+# authentication:
+#   read:
+#     apiKey: ${API_KEY}
+#   write:
+#     apiKey: ${API_KEY}
+
+# authentication:
+#   tokenClientId: ""
+#   tokenClientSecret: ""
+#   tokenUrl: ""
+#   tokenScopes: 
+#     - ""
+#     - ""
+#   audience: ""
+
+# authentication:
+#   read:
+#     tokenClientId: ""
+#     tokenClientSecret: ""
+#     tokenUrl: ""
+#     tokenScopes: 
+#       - ""
+#       - ""
+#     audience: ""
+#   write:
+#     tokenClientId: ""
+#     tokenClientSecret: ""
+#     tokenUrl: ""
+#     tokenScopes: 
+#       - ""
+#       - ""
+#     audience: ""
