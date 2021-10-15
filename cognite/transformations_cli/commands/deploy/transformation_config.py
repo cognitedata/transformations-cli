@@ -22,7 +22,8 @@ class DestinationType(Enum):
 
 
 class ActionType(Enum):
-    abort = "abort", "create"
+    create = "create"
+    abort = "abort"
     update = "update"
     upsert = "upsert"
     delete = "delete"

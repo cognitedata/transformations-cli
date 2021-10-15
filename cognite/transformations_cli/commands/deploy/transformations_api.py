@@ -14,6 +14,7 @@ from cognite.experimental.data_classes.transformations import (
 )
 
 from cognite.transformations_cli.commands.deploy.transformation_config import (
+    ActionType,
     AuthConfig,
     DestinationConfig,
     DestinationType,
@@ -28,7 +29,7 @@ def to_transformation(config: TransformationConfig, cluster: str = "europe-west1
         name=config.name,
         external_id=config.external_id,
         destination=to_destination(config.destination),
-        conflict_mode=config.action.type,
+        conflict_mode=to_action(config.action),
         is_public=config.shared,
         ignore_null_fields=config.ignore_null_fields,
         query=to_query(config.query),
@@ -37,6 +38,10 @@ def to_transformation(config: TransformationConfig, cluster: str = "europe-west1
         source_oidc_credentials=to_read_oidc(config.authentication, cluster),
         destination_oidc_credentials=to_write_oidc(config.authentication, cluster),
     )
+
+
+def to_action(action: ActionType) -> str:
+    return "abort" if action == ActionType.create else action.value
 
 
 def to_destination(destination: DestinationConfig) -> TransformationDestination:
