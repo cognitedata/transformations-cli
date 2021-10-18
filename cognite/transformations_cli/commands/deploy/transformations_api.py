@@ -2,7 +2,7 @@ import sys
 from typing import List, Optional, Union
 
 import click
-from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError
+from cognite.client.exceptions import CogniteAPIError
 from cognite.experimental import CogniteClient as ExpCogniteClient
 from cognite.experimental.data_classes import TransformationNotification
 from cognite.experimental.data_classes.transformation_schedules import TransformationSchedule
@@ -22,6 +22,7 @@ from cognite.transformations_cli.commands.deploy.transformation_config import (
     ReadWriteAuthentication,
     TransformationConfig,
 )
+from cognite.transformations_cli.commands.utils import exit_with_cognite_api_error
 
 
 def to_transformation(config: TransformationConfig, cluster: str = "europe-west1-1") -> Transformation:
@@ -128,45 +129,46 @@ def to_schedule(config: TransformationConfig) -> TransformationSchedule:
     return TransformationSchedule(external_id=config.external_id, interval=config.schedule)
 
 
-def to_notifications(config: TransformationConfig) -> List[TransformationNotification]:
-    return [
-        TransformationNotification(config_external_id=config.external_id, destination=n.destination)
-        for n in config.notifications
-    ]
+def to_notification(transformation_external_id: str, destination: str) -> TransformationNotification:
+    return TransformationNotification(transformation_external_id=transformation_external_id, destination=destination)
 
 
-# TODO use retrieve_multiple as in schedules when implemented in sdk
 def upsert_transform(exp_client: ExpCogniteClient, transformations: List[Transformation]) -> None:
-    all_ext_ids = [tr.external_id for tr in transformations]
-    multiple_ids = [x for x in all_ext_ids if all_ext_ids.count(x) > 1]
-    if multiple_ids:
-        exit(f"Following external_id's are used multiple times, please fix them: {multiple_ids}")
     try:
-        created_transforms = exp_client.transformations.create(transformations)
-    except CogniteDuplicatedError as e:
-        update_ext_ids = set([dup["externalId"] for dup in e.duplicated])
-        create_ext_ids = set(all_ext_ids) - update_ext_ids
-        update_items = [tr for tr in transformations if tr.external_id in update_ext_ids]
-        create_items = [tr for tr in transformations if tr.external_id in create_ext_ids]
-        updated_transforms = exp_client.transformations.update(update_items)
-        created_transforms = exp_client.transformations.create(create_items)
-        if updated_transforms:
-            click.echo(f"Number of updated transformations: {len(updated_transforms)}")
-            click.echo(
-                f"external_id's of updated transformations: {', '.join([tr.external_id for tr in updated_transforms])}"
-            )
-    except CogniteAPIError as e:
-        exit(f"Cognite API error has occurred: {e}")
-    if created_transforms:
-        click.echo(f"Number of created transformations: {len(created_transforms)}")
-        click.echo(
-            f"external_id's of created transformations: {', '.join([tr.external_id for tr in created_transforms])}"
+        all_ext_ids = [s.external_id for s in transformations]
+        existing_transformations = exp_client.transformations.retrieve_multiple(
+            external_ids=all_ext_ids, ignore_unknown_ids=True
         )
 
+        existing_ext_ids = [item.external_id for item in existing_transformations]
+        new_ext_ids = set([s.external_id for s in transformations]) - set(existing_ext_ids)
 
-# TODO delete schedules when ommitted
-def upsert_schedules(exp_client: ExpCogniteClient, schedules: List[TransformationSchedule]) -> None:
+        existing_items = [s for s in transformations if s.external_id in existing_ext_ids]
+        new_items = [s for s in transformations if s.external_id in new_ext_ids]
+
+        updated_transformations = exp_client.transformations.update(existing_items)
+        created_transformations = exp_client.transformations.create(new_items)
+        if updated_transformations:
+            click.echo(f"Number of updated transformations: {len(updated_transformations)}")
+            click.echo(
+                f"external_id's of updated transformations: {', '.join([tr.external_id for tr in updated_transformations])}"
+            )
+        if created_transformations:
+            click.echo(f"Number of created transformations: {len(created_transformations)}")
+            click.echo(
+                f"external_id's of created transformations: {', '.join([tr.external_id for tr in created_transformations])}"
+            )
+        return None
+    except CogniteAPIError as e:
+        exit_with_cognite_api_error(e)
+
+
+def upsert_schedules(
+    exp_client: ExpCogniteClient, schedules: List[TransformationSchedule], no_schedules: List[str]
+) -> None:
     try:
+        exp_client.transformations.schedules.delete(external_id=no_schedules, ignore_unknown_ids=True)
+
         all_ext_ids = [s.external_id for s in schedules]
         existing_schedules = exp_client.transformations.schedules.retrieve_multiple(
             external_ids=all_ext_ids, ignore_unknown_ids=True
@@ -180,28 +182,34 @@ def upsert_schedules(exp_client: ExpCogniteClient, schedules: List[Transformatio
 
         updated_schedules = exp_client.transformations.schedules.update(existing_items)
         created_schedules = exp_client.transformations.schedules.create(new_items)
+
         if updated_schedules:
             click.echo(f"Number of updated schedules: {len(updated_schedules)}")
             click.echo(f"external_id's of updated schedules: {', '.join([tr.external_id for tr in updated_schedules])}")
         if created_schedules:
             click.echo(f"Number of created schedules: {len(created_schedules)}")
             click.echo(f"external_id's of created schedules: {', '.join([tr.external_id for tr in created_schedules])}")
+        return None
     except CogniteAPIError as e:
-        exit(f"Cognite API error has occurred: {e}")
+        exit_with_cognite_api_error(e)
 
 
-# TODO delete notifications when ommitted
-def create_notifications(exp_client: ExpCogniteClient, notifications: List[TransformationNotification]) -> None:
+def upsert_notifications(
+    exp_client: ExpCogniteClient, external_id: str, destinations: List[str]
+) -> List[TransformationNotification]:
     try:
-        exp_client.transformations.notifications.create(notifications)
-    except CogniteDuplicatedError as e:
-        dup_ids = [n["id"] for n in e.duplicated]
-        dup_ext_ids = [n["externalId"] for n in e.duplicated]
-        notifications = [
-            n
-            for n in notifications
-            if n.transformation_id not in dup_ids and n.transformation_external_id not in dup_ext_ids
-        ]
-        exp_client.transformations.notifications.create(notifications)
+        existing_notifications = exp_client.transformations.notifications.list(transformation_external_id=external_id)
+        existing_destinations = set([n.destination for n in existing_notifications])
+        destinations_to_deploy = set(destinations)
+
+        new_destinations = list(destinations_to_deploy - existing_destinations)
+        destinations_to_delete = list(existing_destinations - destinations_to_deploy)
+        new_notifications = [to_notification(external_id, dest) for dest in new_destinations]
+        created_notifications = exp_client.transformations.notifications.create(new_notifications)
+        exp_client.transformations.notifications.delete(
+            id=[n.id for n in existing_notifications if n.destination in destinations_to_delete]
+        )
+        return created_notifications
     except CogniteAPIError as e:
-        exit(f"Cognite API error has occurred: {e}")
+        exit_with_cognite_api_error(e)
+        return []
