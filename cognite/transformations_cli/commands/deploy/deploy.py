@@ -45,10 +45,7 @@ def deploy(obj: Dict, path: str) -> None:
                 # These will be deleted using ignore_unknown_ids
                 # in case these transformations existed with a schedule before
                 delete_schedules.append(transform.external_id)
-            if transform.notifications:
-                created_notifications += upsert_notifications(
-                    exp_client, transform.external_id, transform.notifications
-                )
+            created_notifications += upsert_notifications(exp_client, transform.external_id, transform.notifications)
         upsert_schedules(exp_client, schedules, delete_schedules)
         if created_notifications:
             click.echo(f"Number of created notifications: {len(created_notifications)}")

@@ -201,7 +201,6 @@ def upsert_notifications(
         existing_notifications = exp_client.transformations.notifications.list(transformation_external_id=external_id)
         existing_destinations = set([n.destination for n in existing_notifications])
         destinations_to_deploy = set(destinations)
-
         new_destinations = list(destinations_to_deploy - existing_destinations)
         destinations_to_delete = list(existing_destinations - destinations_to_deploy)
         new_notifications = [to_notification(external_id, dest) for dest in new_destinations]
