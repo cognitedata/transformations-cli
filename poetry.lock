@@ -122,7 +122,7 @@ retry = ">=0.9.2,<0.10.0"
 
 [[package]]
 name = "cognite-sdk"
-version = "2.31.1"
+version = "2.32.0"
 description = "Client library for Cognite Data Fusion (CDF)"
 category = "main"
 optional = false
@@ -135,14 +135,14 @@ requests-oauthlib = "1.3.0"
 
 [[package]]
 name = "cognite-sdk-experimental"
-version = "0.60.15"
+version = "0.60.18"
 description = "Experimental additions to the Python SDK"
 category = "main"
 optional = false
 python-versions = ">=3.6.1,<4.0.0"
 
 [package.dependencies]
-cognite-sdk = ">=2.22,<3.0"
+cognite-sdk = ">=2.32.0,<3.0.0"
 pandas = ">=1.1,<2.0"
 regex = ">=2020.11.13,<2021.0.0"
 responses = ">=0.13.3,<0.14.0"
@@ -637,7 +637,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "3b482153bf3a1900529e903751fb21651461e7b6b9eb571c68b040ad932e472a"
+content-hash = "e708924e3d4664b0f07a9044235f586a03949769a7f1d4c1be3cf2a152cd9dec"
 
 [metadata.files]
 arrow = [
@@ -676,12 +676,12 @@ cognite-extractor-utils = [
     {file = "cognite_extractor_utils-1.5.2-py3-none-any.whl", hash = "sha256:e5d1c7b180452881d75a286f5b02ca02ad3244b0c95d408a9461d0fa65939654"},
 ]
 cognite-sdk = [
-    {file = "cognite-sdk-2.31.1.tar.gz", hash = "sha256:993ca0f093995ad8fc66ca30c976cf3d3a9b7f1c1d62b7aed06a33b13424f7a2"},
-    {file = "cognite_sdk-2.31.1-py3-none-any.whl", hash = "sha256:92c4a1d19f9e83eed0e55daed0479afbb2141a046f88cdd9beaae8ce6302f981"},
+    {file = "cognite-sdk-2.32.0.tar.gz", hash = "sha256:ef1195713d76bb2f68c607187e672bd202beb5da27fd0e37ab1b3674d8258768"},
+    {file = "cognite_sdk-2.32.0-py3-none-any.whl", hash = "sha256:7d068d317afa26e0cea23a5e1c29be130e2e3d909f683e5c94fe0a33a07efd28"},
 ]
 cognite-sdk-experimental = [
-    {file = "cognite-sdk-experimental-0.60.15.tar.gz", hash = "sha256:9fc6db9226f93c789ab77f1825cfd5c20894e9d2c89971bb8b8d7be0ed9b6758"},
-    {file = "cognite_sdk_experimental-0.60.15-py3-none-any.whl", hash = "sha256:c9f0e85fe814bd017ca031082250fba3292bce85effbd6f6eb8523ef48c81b4c"},
+    {file = "cognite-sdk-experimental-0.60.18.tar.gz", hash = "sha256:8814a0aa6ac1ac5de4745438d6ba183c5d3ea24fafa5a63112e321280d5c5fb6"},
+    {file = "cognite_sdk_experimental-0.60.18-py3-none-any.whl", hash = "sha256:a07db9b9a5fa5a147baa9b2d2883b2fe5e95b50a6bddb3bbce8934439ce6cd5a"},
 ]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
