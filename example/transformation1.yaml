@@ -13,7 +13,7 @@ query: "select 'asd' as name, 'asd' as externalId"
 # query:
 #   file: my_transform.sql
 ignoreNullFields: False
-schedule: "5 4 * * *"
+# schedule: "5 4 * * *"
 notifications:
   - emel.varol@cognite.com
 authentication:

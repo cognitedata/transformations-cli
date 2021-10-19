@@ -1,7 +1,6 @@
 import sys
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
-import click
 from cognite.client.exceptions import CogniteAPIError
 from cognite.experimental import CogniteClient as ExpCogniteClient
 from cognite.experimental.data_classes import TransformationNotification
@@ -125,90 +124,118 @@ def to_write_oidc(
     )
 
 
-def to_schedule(config: TransformationConfig) -> TransformationSchedule:
-    return TransformationSchedule(external_id=config.external_id, interval=config.schedule)
+def to_schedule(transformation_external_id: str, interval: str) -> TransformationSchedule:
+    return TransformationSchedule(external_id=transformation_external_id, interval=interval)
 
 
 def to_notification(transformation_external_id: str, destination: str) -> TransformationNotification:
     return TransformationNotification(transformation_external_id=transformation_external_id, destination=destination)
 
 
-def upsert_transform(exp_client: ExpCogniteClient, transformations: List[Transformation]) -> None:
-    try:
-        all_ext_ids = [s.external_id for s in transformations]
-        existing_transformations = exp_client.transformations.retrieve_multiple(
+def get_existing_trasformation_ext_ids(exp_client: ExpCogniteClient, all_ext_ids: List[str]) -> List[str]:
+    return [
+        t.external_id
+        for t in exp_client.transformations.retrieve_multiple(external_ids=all_ext_ids, ignore_unknown_ids=True)
+    ]
+
+
+def get_new_transformation_ids(all_ext_ids: List[str], existig_ext_ids: List[str]) -> List[str]:
+    return list(set(all_ext_ids) - set(existig_ext_ids))
+
+
+def get_existing_schedules_dict(
+    exp_client: ExpCogniteClient, all_ext_ids: List[str]
+) -> Dict[str, TransformationSchedule]:
+    return {
+        s.external_id: s
+        for s in exp_client.transformations.schedules.retrieve_multiple(
             external_ids=all_ext_ids, ignore_unknown_ids=True
         )
+    }
 
-        existing_ext_ids = [item.external_id for item in existing_transformations]
-        new_ext_ids = set([s.external_id for s in transformations]) - set(existing_ext_ids)
 
-        existing_items = [s for s in transformations if s.external_id in existing_ext_ids]
-        new_items = [s for s in transformations if s.external_id in new_ext_ids]
+def get_existing_notifications_dict(
+    exp_client: ExpCogniteClient, all_ext_ids: List[str]
+) -> Dict[str, List[TransformationNotification]]:
+    existing_notifications = dict()
+    for ext_id in all_ext_ids:
+        notifications = exp_client.transformations.notifications.list(transformation_external_id=ext_id, limit=-1)
+        if notifications:
+            existing_notifications[ext_id] = notifications
+    return existing_notifications
 
-        updated_transformations = exp_client.transformations.update(existing_items)
-        created_transformations = exp_client.transformations.create(new_items)
-        if updated_transformations:
-            click.echo(f"Number of updated transformations: {len(updated_transformations)}")
-            click.echo(
-                f"external_id's of updated transformations: {', '.join([tr.external_id for tr in updated_transformations])}"
-            )
-        if created_transformations:
-            click.echo(f"Number of created transformations: {len(created_transformations)}")
-            click.echo(
-                f"external_id's of created transformations: {', '.join([tr.external_id for tr in created_transformations])}"
-            )
-        return None
+
+def upsert_transformations(
+    exp_client: ExpCogniteClient,
+    transformations: List[Transformation],
+    existing_ext_ids: List[str],
+    new_ext_ids: List[str],
+) -> Tuple[List[str], List[str], List[str]]:
+    try:
+        updated = exp_client.transformations.update(
+            [tr for tr in transformations if tr.external_id in existing_ext_ids]
+        )
+        created = exp_client.transformations.create([tr for tr in transformations if tr.external_id in new_ext_ids])
+        return [], [t.external_id for t in updated], [t.external_id for t in created]
     except CogniteAPIError as e:
         exit_with_cognite_api_error(e)
+    return [], [], []
 
 
 def upsert_schedules(
-    exp_client: ExpCogniteClient, schedules: List[TransformationSchedule], no_schedules: List[str]
-) -> None:
+    exp_client: ExpCogniteClient,
+    existing_schedules_dict: Dict[str, TransformationSchedule],
+    requested_schedules_dict: Dict[str, TransformationSchedule],
+    existing_transformations_ext_ids: List[str],
+    new_transformations_ext_ids: List[str],
+) -> Tuple[List[str], List[str], List[str]]:
+    to_delete = []
+    to_update = []
+    to_create = []
     try:
-        exp_client.transformations.schedules.delete(external_id=no_schedules, ignore_unknown_ids=True)
-
-        all_ext_ids = [s.external_id for s in schedules]
-        existing_schedules = exp_client.transformations.schedules.retrieve_multiple(
-            external_ids=all_ext_ids, ignore_unknown_ids=True
-        )
-
-        existing_ext_ids = [item.external_id for item in existing_schedules]
-        new_ext_ids = set([s.external_id for s in schedules]) - set(existing_ext_ids)
-
-        existing_items = [s for s in schedules if s.external_id in existing_ext_ids]
-        new_items = [s for s in schedules if s.external_id in new_ext_ids]
-
-        updated_schedules = exp_client.transformations.schedules.update(existing_items)
-        created_schedules = exp_client.transformations.schedules.create(new_items)
-
-        if updated_schedules:
-            click.echo(f"Number of updated schedules: {len(updated_schedules)}")
-            click.echo(f"external_id's of updated schedules: {', '.join([tr.external_id for tr in updated_schedules])}")
-        if created_schedules:
-            click.echo(f"Number of created schedules: {len(created_schedules)}")
-            click.echo(f"external_id's of created schedules: {', '.join([tr.external_id for tr in created_schedules])}")
-        return None
+        for ext_id in existing_transformations_ext_ids:
+            if ext_id in existing_schedules_dict and ext_id not in requested_schedules_dict:
+                to_delete.append(ext_id)
+            elif ext_id in existing_schedules_dict:
+                to_update.append(ext_id)
+            elif ext_id in requested_schedules_dict:
+                to_create.append(ext_id)
+        to_create += [ext_id for ext_id in new_transformations_ext_ids if ext_id in requested_schedules_dict]
+        exp_client.transformations.schedules.delete(external_id=to_delete)
+        exp_client.transformations.schedules.update([requested_schedules_dict[ext_id] for ext_id in to_update])
+        exp_client.transformations.schedules.create([requested_schedules_dict[ext_id] for ext_id in to_create])
     except CogniteAPIError as e:
         exit_with_cognite_api_error(e)
+    return to_delete, to_update, to_create
 
 
 def upsert_notifications(
-    exp_client: ExpCogniteClient, external_id: str, destinations: List[str]
-) -> List[TransformationNotification]:
+    exp_client: ExpCogniteClient,
+    existing_notifications_dict: Dict[str, List[TransformationNotification]],
+    requested_notifications_dict: Dict[str, List[TransformationNotification]],
+    existing_transformations_ext_ids: List[str],
+    new_transformations_ext_ids: List[str],
+) -> Tuple[List[Tuple[str, str]], List[Tuple[str, str]], List[Tuple[str, str]]]:
     try:
-        existing_notifications = exp_client.transformations.notifications.list(transformation_external_id=external_id)
-        existing_destinations = set([n.destination for n in existing_notifications])
-        destinations_to_deploy = set(destinations)
-        new_destinations = list(destinations_to_deploy - existing_destinations)
-        destinations_to_delete = list(existing_destinations - destinations_to_deploy)
-        new_notifications = [to_notification(external_id, dest) for dest in new_destinations]
-        created_notifications = exp_client.transformations.notifications.create(new_notifications)
-        exp_client.transformations.notifications.delete(
-            id=[n.id for n in existing_notifications if n.destination in destinations_to_delete]
-        )
-        return created_notifications
+        to_delete = dict()
+        to_create: List[TransformationNotification] = [
+            requested_notifications_dict[ext_id]
+            for ext_id in new_transformations_ext_ids
+            if ext_id in requested_notifications_dict
+        ]
+        for ext_id in existing_transformations_ext_ids:
+            existing_notif = existing_notifications_dict.get(ext_id, [])
+            requested_notif = requested_notifications_dict.get(ext_id, [])
+            existing_destinations = [e.destination for e in existing_notif]
+            requested_destinations = [e.destination for e in requested_notif]
+
+            to_delete.update(
+                {e.id: (ext_id, e.destination) for e in existing_notif if e.destination not in requested_destinations}
+            )
+            to_create += [e for e in requested_notif if e.destination not in existing_destinations]
+        exp_client.transformations.notifications.delete(list(to_delete.keys()))
+        exp_client.transformations.notifications.create(to_create)
+        return list(to_delete.values()), [], [(n.transformation_external_id, n.destination) for n in to_create]
     except CogniteAPIError as e:
         exit_with_cognite_api_error(e)
-        return []
+    return [], [], []
