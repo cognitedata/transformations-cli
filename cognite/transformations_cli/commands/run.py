@@ -54,17 +54,18 @@ def run(
             jobs = exp_client.transformations.jobs.list(transformation_id=id)
             job = jobs[0].wait(timeout=time_out) if jobs else None
         if job:
-            metrics = filter(
-                lambda m: m.name != "requestsWithoutRetries" and m.name != "requests",
-                exp_client.transformations.jobs.list_metrics(id=job.id),
-            )
+            metrics = [
+                m
+                for m in exp_client.transformations.jobs.list_metrics(id=job.id)
+                if m.name != "requestsWithoutRetries" and m.name != "requests"
+            ]
             click.echo("Job details:")
             click.echo(print_jobs([job]))
             click.echo("SQL Query:")
             click.echo(print_sql(job.raw_query))
             if job.status == "Failed":
                 click.echo(f"Error Details: {job.error}")
-            if list(metrics):
+            if metrics:
                 click.echo("Progress:")
                 click.echo(print_metrics(metrics))
     except CogniteAPIError as e:

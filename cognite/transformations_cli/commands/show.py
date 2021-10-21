@@ -47,17 +47,18 @@ def show(obj: Dict, id: Optional[int], external_id: Optional[str], job_id: Optio
             click.echo()
             job_id = int(job_id)
             job = exp_client.transformations.jobs.retrieve(id=int(job_id))
-            metrics = filter(
-                lambda m: m.name != "requestsWithoutRetries" and m.name != "requests",
-                exp_client.transformations.jobs.list_metrics(id=job_id),
-            )
+            metrics = [
+                m
+                for m in exp_client.transformations.jobs.list_metrics(id=job_id)
+                if m.name != "requestsWithoutRetries" and m.name != "requests"
+            ]
             click.echo("Job details:")
             click.echo(print_jobs([job]))
             click.echo("SQL Query:")
             click.echo(print_sql(job.raw_query))
             if job.status == "Failed":
                 click.echo(f"Error Details: {job.error}")
-            if list(metrics):
+            if metrics:
                 click.echo("Progress:")
                 click.echo(print_metrics(metrics))
     except CogniteAPIError as e:
