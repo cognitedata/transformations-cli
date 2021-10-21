@@ -21,10 +21,10 @@ from cognite.transformations_cli.commands.utils import (
     "--external-id", help="The externalId of the transformation to show. Either this or --id must be specified."
 )
 @click.option(
-    "--job", help="The id of the job to show. Include this to show job details instead of transformation details."
+    "--job-id", help="The id of the job to show. Include this to show job details instead of transformation details."
 )
 @click.pass_obj
-def show(obj: Dict, id: Optional[int], external_id: Optional[str], job: Optional[int]) -> None:
+def show(obj: Dict, id: Optional[int], external_id: Optional[str], job_id: Optional[int]) -> None:
     _, exp_client = get_clients(obj)
     is_id_exclusive(id, external_id)
     try:
@@ -32,32 +32,33 @@ def show(obj: Dict, id: Optional[int], external_id: Optional[str], job: Optional
             # TODO Investigate why id requires type casting as it doesn't in "jobs command"
             id = int(id) if id else None
             tr = exp_client.transformations.retrieve(id=int(id) if id else None, external_id=external_id)
-            click.echo("\nTransformation details:\n")
+            click.echo("Transformation details:")
             click.echo(print_transformations([tr]))
             notifications = exp_client.transformations.notifications.list(
                 transformation_id=id, transformation_external_id=external_id
             )
             if tr.query:
-                click.echo("\nSQL Query:\n")
+                click.echo("SQL Query:")
                 click.echo(print_sql(tr.query))
             if notifications:
-                click.echo("\nNotifications:\n")
+                click.echo("Notifications:")
                 click.echo(print_notifications(notifications))
-        if job:
-            job = int(job)
-            j = exp_client.transformations.jobs.retrieve(id=int(job))
-            click.echo("\nJob details:\n")
-            click.echo(print_jobs([j]))
-            click.echo("\nSQL Query:\n")
-            click.echo(print_sql(j.raw_query))
-            if j.status == "Failed":
-                click.echo(f"\nError Details: {j.error}\n")
+        if job_id:
+            click.echo()
+            job_id = int(job_id)
+            job = exp_client.transformations.jobs.retrieve(id=int(job_id))
             metrics = filter(
                 lambda m: m.name != "requestsWithoutRetries" and m.name != "requests",
-                exp_client.transformations.jobs.list_metrics(id=job),
+                exp_client.transformations.jobs.list_metrics(id=job_id),
             )
+            click.echo("Job details:")
+            click.echo(print_jobs([job]))
+            click.echo("SQL Query:")
+            click.echo(print_sql(job.raw_query))
+            if job.status == "Failed":
+                click.echo(f"Error Details: {job.error}")
             if list(metrics):
-                click.echo("Progress:\n")
+                click.echo("Progress:")
                 click.echo(print_metrics(metrics))
     except CogniteAPIError as e:
         exit_with_cognite_api_error(e)

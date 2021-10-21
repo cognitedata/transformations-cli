@@ -19,12 +19,12 @@ def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 
     is_id_exclusive(id, external_id)
     try:
         if id:
-            click.echo(f"\nListing the latest jobs for transformation with id {id}:\n")
+            click.echo(f"Listing the latest jobs for transformation with id {id}:")
         if external_id:
             id = exp_client.transformations.retrieve(external_id=external_id).id
-            click.echo(f"\nListing the latest jobs for transformation with external_id {external_id}:\n")
+            click.echo(f"Listing the latest jobs for transformation with external_id {external_id}:")
         jobs = exp_client.transformations.jobs.list(limit=limit, transformation_id=id)
-        click.echo("\nResulting jobs:\n")
+        click.echo("Resulting jobs:")
         click.echo(print_jobs(jobs))
     except CogniteAPIError as e:
         exit_with_cognite_api_error(e)

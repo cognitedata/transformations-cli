@@ -15,7 +15,6 @@ def list(obj: Dict, limit: int = 10) -> None:
     _, exp_client = get_clients(obj)
     try:
         transformations = exp_client.transformations.list(limit=limit)
-        click.echo("\n")
         click.echo(print_transformations(transformations))
     except CogniteAPIError as e:
         exit(f"Cognite API error has occurred: {e}")
