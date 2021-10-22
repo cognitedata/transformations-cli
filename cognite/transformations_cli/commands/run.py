@@ -2,6 +2,7 @@ from typing import Dict, Optional
 
 import click
 from cognite.client.exceptions import CogniteAPIError
+from cognite.experimental.data_classes.transformation_jobs import TransformationJob
 
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import (
@@ -36,7 +37,7 @@ def run(
     watch: bool = False,
     watch_only: bool = False,
     time_out: Optional[int] = None,
-) -> None:
+) -> Optional[TransformationJob]:
     _, exp_client = get_clients(obj)
     is_id_provided(id, external_id)
     is_id_exclusive(id, external_id)
@@ -68,5 +69,7 @@ def run(
             if metrics:
                 click.echo("Progress:")
                 click.echo(print_metrics(metrics))
+        return job
     except CogniteAPIError as e:
         exit_with_cognite_api_error(e)
+        return None

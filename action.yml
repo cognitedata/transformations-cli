@@ -5,18 +5,21 @@ inputs:
     description: 'API key for authenticating with Transformations'
     required: false
   token-url:
-    description: 'Token url to use for fetching OIDC tokens'
+    description: 'Token url to use for fetching OAuth2 tokens'
     required: false
-  token-project:
-    description: 'CDF project name (only required when using OIDC credentials)'
+  cdf-project-name:
+    description: 'CDF project name (only required when using OAuth2 credentials)'
     required: false
-  token-scopes:
-    description: 'List of OIDC scopes (comma separated)'
+  scopes:
+    description: 'List of OAuth2 scopes (space separated)'
     required: false
-  token-client-id:
+  audience:
+    description: 'OAuth2 audience'
+    required: false
+  client-id:
     description: 'OAuth2 client ID'
     required: false
-  token-client-secret:
+  client-secret:
     description: 'OAuth2 client secret'
     required: false
   cluster:
@@ -35,9 +38,10 @@ runs:
   env:
     TRANSFORMATIONS_API_KEY: ${{ inputs.api-key }}
     TRANSFORMATIONS_TOKEN_URL: ${{ inputs.token-url }}
-    TRANSFORMATIONS_PROJECT: ${{ inputs.token-project }}
-    TRANSFORMATIONS_CLIENT_ID: ${{ inputs.token-client-id }}
-    TRANSFORMATIONS_CLIENT_SECRET: ${{ inputs.token-client-secret }}
-    TRANSFORMATIONS_SCOPES: ${{ inputs.token-scopes }}
+    TRANSFORMATIONS_PROJECT: ${{ inputs.cdf-project-name }}
+    TRANSFORMATIONS_CLIENT_ID: ${{ inputs.client-id }}
+    TRANSFORMATIONS_CLIENT_SECRET: ${{ inputs.client-secret }}
+    TRANSFORMATIONS_SCOPES: ${{ inputs.scopes }}
+    TRANSFORMATIONS_AUDIENCE: ${{ inputs.audience }}
     TRANSFORMATIONS_CLUSTER: "${{ inputs.cluster }}"
   args: ["deploy", "--path=${{ inputs.path }}" ]

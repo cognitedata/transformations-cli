@@ -1,7 +1,9 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 
 import click
 from cognite.client.exceptions import CogniteAPIError
+from cognite.experimental.data_classes.transformation_jobs import TransformationJob
+from cognite.experimental.data_classes.transformations import Transformation
 
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import (
@@ -24,10 +26,14 @@ from cognite.transformations_cli.commands.utils import (
     "--job-id", help="The id of the job to show. Include this to show job details instead of transformation details."
 )
 @click.pass_obj
-def show(obj: Dict, id: Optional[int], external_id: Optional[str], job_id: Optional[int]) -> None:
+def show(
+    obj: Dict, id: Optional[int], external_id: Optional[str], job_id: Optional[int]
+) -> Tuple[Optional[Transformation], Optional[TransformationJob]]:
     _, exp_client = get_clients(obj)
     is_id_exclusive(id, external_id)
     try:
+        tr = None
+        job = None
         if id or external_id:
             # TODO Investigate why id requires type casting as it doesn't in "jobs command"
             id = int(id) if id else None
@@ -61,5 +67,7 @@ def show(obj: Dict, id: Optional[int], external_id: Optional[str], job_id: Optio
             if metrics:
                 click.echo("Progress:")
                 click.echo(print_metrics(metrics))
+        return tr, job
     except CogniteAPIError as e:
         exit_with_cognite_api_error(e)
+        return None, None

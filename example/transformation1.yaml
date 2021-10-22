@@ -1,6 +1,6 @@
 # version: v3
-externalId: "test-asset2"
-name: "test-asset2"
+externalId: "test-cli-transform"
+name: "test-cli-transform"
 destination: 
   type: "assets"
 # destination: 
@@ -24,30 +24,3 @@ authentication:
 #     apiKey: ${API_KEY}
 #   write:
 #     apiKey: ${API_KEY}
-
-# authentication:
-#   tokenClientId: ""
-#   tokenClientSecret: ""
-#   tokenUrl: ""
-#   tokenScopes: 
-#     - ""
-#     - ""
-#   audience: ""
-
-# authentication:
-#   read:
-#     tokenClientId: ""
-#     tokenClientSecret: ""
-#     tokenUrl: ""
-#     tokenScopes: 
-#       - ""
-#       - ""
-#     audience: ""
-#   write:
-#     tokenClientId: ""
-#     tokenClientSecret: ""
-#     tokenUrl: ""
-#     tokenScopes: 
-#       - ""
-#       - ""
-#     audience: ""
