@@ -45,3 +45,4 @@ runs:
     TRANSFORMATIONS_AUDIENCE: ${{ inputs.audience }}
     TRANSFORMATIONS_CLUSTER: "${{ inputs.cluster }}"
   args: ["deploy", "--path=${{ inputs.path }}" ]
+  

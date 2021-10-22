@@ -18,7 +18,6 @@ def get_clients(obj: Dict) -> Tuple[CogniteClient, ExpCogniteClient]:
     base_url = f"https://{cluster}.cognitedata.com"
     if not api_key and not audience:
         scopes = scopes.strip().split(" ") if scopes else [f"https://{cluster}.cognitedata.com/.default"]
-    print(scopes)
     try:
         if api_key is not None and (
             client_id is not None
