@@ -3,17 +3,10 @@ externalId: "test-cli-transform-oidc"
 name: "test-cli-transform-oidc"
 destination: 
   type: "assets"
-# destination: 
-#   type: "raw"
-#   rawDatabase: "asd"
-#   rawTable: "asd"
 shared: True
 action: "upsert"
 query: "select 'asd' as name, 'asd' as externalId"
-# query:
-#   file: my_transform.sql
 ignoreNullFields: False
-# schedule: "5 4 * * *"
 notifications:
   - emel.varol@cognite.com
 authentication:
@@ -25,24 +18,4 @@ authentication:
   cdfProjectName: ${CDF_PROJECT_NAME}
   # audience: ""
 
-# authentication:
-#   read:
-#     clientId: ""
-#     clientSecret: ""
-#     tokenUrl: ""
-#     scopes: 
-#       - ""
-#       - ""
-#     audience: ""
-#     cdfProjectName: ""
-
-#   write:
-#     clientId: ""
-#     clientSecret: ""
-#     tokenUrl: ""
-#     scopes: 
-#       - ""
-#       - ""
-#     audience: ""
-#     cdfProjectName: ""
 
