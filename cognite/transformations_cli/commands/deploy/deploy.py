@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Union
 
 import click
 
@@ -8,6 +8,8 @@ from cognite.transformations_cli.commands.deploy.transformation_config import (
     parse_transformation_configs,
 )
 from cognite.transformations_cli.commands.deploy.transformations_api import (
+    StandardResult,
+    TupleResult,
     get_existing_notifications_dict,
     get_existing_schedules_dict,
     get_existing_trasformation_ext_ids,
@@ -19,6 +21,17 @@ from cognite.transformations_cli.commands.deploy.transformations_api import (
     upsert_schedules,
     upsert_transformations,
 )
+
+
+def print_results(
+    resource_type: str, action: str, results: Union[StandardResult, TupleResult], debug: bool = False
+) -> None:
+    if results:
+        click.echo(f"Number of {resource_type}s {action}d: {len(results)}")
+        if debug:
+            click.echo(f"List of {resource_type}s {action}d:")
+            click.echo(results)
+    return None
 
 
 @click.command(help="Deploy a set of transformations from a directory")
@@ -51,21 +64,19 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
             transformations_ext_ids, existing_transformations_ext_ids
         )
 
+        _, updated_transformations, created_transformations = upsert_transformations(
+            exp_client, transformations, existing_transformations_ext_ids, new_transformation_ext_ids
+        )
+
+        print_results("transformation", "update", updated_transformations, debug)
+        print_results("transformation", "create", created_transformations, debug)
+
         existing_schedules_dict = get_existing_schedules_dict(exp_client, transformations_ext_ids)
         existing_notifications_dict = get_existing_notifications_dict(exp_client, transformations_ext_ids)
 
         requested_schedules_dict = {
             t.external_id: to_schedule(t.external_id, t.schedule) for t in transformation_configs if t.schedule
         }
-        requested_notifications_dict = dict()
-        for t in transformation_configs:
-            if t.notifications:
-                notifs = [to_notification(t.external_id, dest) for dest in t.notifications]
-                requested_notifications_dict[t.external_id] = notifs
-
-        _, updated_transformations, created_transformations = upsert_transformations(
-            exp_client, transformations, existing_transformations_ext_ids, new_transformation_ext_ids
-        )
 
         deleted_schedules, updated_schedules, created_schedules = upsert_schedules(
             exp_client,
@@ -75,6 +86,16 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
             new_transformation_ext_ids,
         )
 
+        print_results("schedule", "delete", deleted_schedules, debug)
+        print_results("schedule", "update", updated_schedules, debug)
+        print_results("schedule", "create", created_schedules, debug)
+
+        requested_notifications_dict = dict()
+        for t in transformation_configs:
+            if t.notifications:
+                notifs = [to_notification(t.external_id, dest) for dest in t.notifications]
+                requested_notifications_dict[t.external_id] = notifs
+
         deleted_notifications, _, created_notifications = upsert_notifications(
             exp_client,
             existing_notifications_dict,
@@ -83,40 +104,7 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
             new_transformation_ext_ids,
         )
 
-        if updated_transformations:
-            click.echo(f"Number of transformations updated: {len(updated_transformations)}")
-            if debug:
-                click.echo("List of transformations updated:")
-                click.echo(updated_transformations)
-        if created_transformations:
-            click.echo(f"Number of transformations created: {len(created_transformations)}")
-            if debug:
-                click.echo("List of transformations created:")
-                click.echo(created_transformations)
-        if deleted_schedules:
-            click.echo(f"Number of schedules deleted: {len(deleted_schedules)}")
-            if debug:
-                click.echo("List of schedules deleted:")
-                click.echo(deleted_schedules)
-        if updated_schedules:
-            click.echo(f"Number of schedules updated: {len(updated_schedules)}")
-            if debug:
-                click.echo("List of schedules updated:")
-                click.echo(updated_schedules)
-        if created_schedules:
-            click.echo(f"Number of schedules created: {len(created_schedules)}")
-            if debug:
-                click.echo("List of schedules created:")
-                click.echo(created_schedules)
-        if deleted_notifications:
-            click.echo(f"Number of notificatons deleted: {len(deleted_notifications)}")
-            if debug:
-                click.echo("List of notifications deleted:")
-                click.echo(deleted_notifications)
-        if created_notifications:
-            click.echo(f"Number of notifications created: {len(created_notifications)}")
-            if debug:
-                click.echo("List of notifications created:")
-                click.echo(created_notifications)
+        print_results("notification", "delete", deleted_notifications, debug)
+        print_results("notification", "create", created_notifications, debug)
     except TransformationConfigError as e:
         exit(e.message)

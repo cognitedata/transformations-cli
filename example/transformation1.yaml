@@ -1,53 +1,14 @@
 # version: v3
-externalId: "test-asset2"
-name: "test-asset2"
+externalId: "test-cli-transform"
+name: "test-cli-transform"
 destination: 
   type: "assets"
-# destination: 
-#   type: "raw"
-#   rawDatabase: "asd"
-#   rawTable: "asd"
 shared: True
 action: "upsert"
 query: "select 'asd' as name, 'asd' as externalId"
-# query:
-#   file: my_transform.sql
 ignoreNullFields: False
-# schedule: "5 4 * * *"
+schedule: "5 4 * * *"
 notifications:
   - emel.varol@cognite.com
 authentication:
   apiKey: ${API_KEY}
-
-# authentication:
-#   read:
-#     apiKey: ${API_KEY}
-#   write:
-#     apiKey: ${API_KEY}
-
-# authentication:
-#   tokenClientId: ""
-#   tokenClientSecret: ""
-#   tokenUrl: ""
-#   tokenScopes: 
-#     - ""
-#     - ""
-#   audience: ""
-
-# authentication:
-#   read:
-#     tokenClientId: ""
-#     tokenClientSecret: ""
-#     tokenUrl: ""
-#     tokenScopes: 
-#       - ""
-#       - ""
-#     audience: ""
-#   write:
-#     tokenClientId: ""
-#     tokenClientSecret: ""
-#     tokenUrl: ""
-#     tokenScopes: 
-#       - ""
-#       - ""
-#     audience: ""

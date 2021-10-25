@@ -23,6 +23,9 @@ from cognite.transformations_cli.commands.deploy.transformation_config import (
 )
 from cognite.transformations_cli.commands.utils import exit_with_cognite_api_error
 
+TupleResult = List[Tuple[str, str]]
+StandardResult = List[str]
+
 
 def to_transformation(config: TransformationConfig, cluster: str = "europe-west1-1") -> Transformation:
     return Transformation(
@@ -46,9 +49,8 @@ def to_action(action: ActionType) -> str:
 
 def to_destination(destination: DestinationConfig) -> TransformationDestination:
     if destination.type == DestinationType.raw:
-        destination = RawTable("raw", destination.raw_database, destination.raw_table)
-    else:
-        destination = TransformationDestination(destination.type.value)
+        return RawTable("raw", destination.raw_database, destination.raw_table)
+    return TransformationDestination(destination.type.value)
 
 
 def to_query(query: Union[str, QueryConfig]) -> str:
@@ -77,29 +79,33 @@ def to_write_api_key(authentication: Union[AuthConfig, ReadWriteAuthentication])
     return None
 
 
-def get_default_scopes(scopes: Optional[List[str]], cluster: str) -> str:
-    return ",".join(scopes) if scopes else f"https://{cluster}.cognitedata.com/.default"
+def stringify_scopes(scopes: Optional[List[str]]) -> Optional[str]:
+    if scopes:
+        " ".join(scopes)
+    return None
+
+
+def get_default_scopes(scopes: Optional[str], cluster: str) -> str:
+    return scopes if scopes else f"https://{cluster}.cognitedata.com/.default"
 
 
 def is_oidc_defined(auth_config: AuthConfig) -> bool:
     return (
-        auth_config.token_client_id
-        and auth_config.token_client_secret
-        and auth_config.token_url
-        and auth_config.token_project
+        auth_config.client_id and auth_config.client_secret and auth_config.token_url and auth_config.cdf_project_name
     )
 
 
 def get_oidc(auth_config: AuthConfig, cluster: str) -> Optional[OidcCredentials]:
-    scopes = auth_config.token_scopes if auth_config.audience else get_default_scopes(auth_config.token_scopes, cluster)
+    stringified_scopes = stringify_scopes(auth_config.scopes)
+    scopes = stringified_scopes if auth_config.audience else get_default_scopes(stringified_scopes, cluster)
     return (
         OidcCredentials(
-            auth_config.token_client_id,
-            auth_config.token_client_secret,
-            scopes,
-            auth_config.token_url,
-            auth_config.token_project,
-            auth_config.audience,
+            client_id=auth_config.client_id,
+            client_secret=auth_config.client_secret,
+            scopes=scopes,
+            token_uri=auth_config.token_url,
+            cdf_project_name=auth_config.cdf_project_name,
+            audience=auth_config.audience,
         )
         if is_oidc_defined(auth_config)
         else None
@@ -170,7 +176,7 @@ def upsert_transformations(
     transformations: List[Transformation],
     existing_ext_ids: List[str],
     new_ext_ids: List[str],
-) -> Tuple[List[str], List[str], List[str]]:
+) -> Tuple[StandardResult, StandardResult, StandardResult]:
     try:
         updated = exp_client.transformations.update(
             [tr for tr in transformations if tr.external_id in existing_ext_ids]
@@ -188,7 +194,7 @@ def upsert_schedules(
     requested_schedules_dict: Dict[str, TransformationSchedule],
     existing_transformations_ext_ids: List[str],
     new_transformations_ext_ids: List[str],
-) -> Tuple[List[str], List[str], List[str]]:
+) -> Tuple[StandardResult, StandardResult, StandardResult]:
     to_delete = []
     to_update = []
     to_create = []
@@ -215,7 +221,7 @@ def upsert_notifications(
     requested_notifications_dict: Dict[str, List[TransformationNotification]],
     existing_transformations_ext_ids: List[str],
     new_transformations_ext_ids: List[str],
-) -> Tuple[List[Tuple[str, str]], List[Tuple[str, str]], List[Tuple[str, str]]]:
+) -> Tuple[TupleResult, TupleResult, TupleResult]:
     try:
         to_delete = dict()
         to_create: List[TransformationNotification] = [
@@ -235,7 +241,11 @@ def upsert_notifications(
             to_create += [e for e in requested_notif if e.destination not in existing_destinations]
         exp_client.transformations.notifications.delete(list(to_delete.keys()))
         exp_client.transformations.notifications.create(to_create)
-        return list(to_delete.values()), [], [(n.transformation_external_id, n.destination) for n in to_create]
+        return (
+            [to_delete[key] for key in to_delete],
+            [],
+            [(n.transformation_external_id, n.destination) for n in to_create],
+        )
     except CogniteAPIError as e:
         exit_with_cognite_api_error(e)
     return [], [], []

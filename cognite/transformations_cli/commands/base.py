@@ -27,28 +27,33 @@ from cognite.transformations_cli.commands.show import show
     envvar="TRANSFORMATIONS_API_KEY",
 )
 @click.option(
-    "--token-client-id",
-    help="Client ID to interact with transformations API. Provide this or make sure to set 'TRANSFORMATIONS_CLIENT_ID' environment variable if you want to authenticate with OIDC.",
+    "--client-id",
+    help="Client ID to interact with transformations API. Provide this or make sure to set 'TRANSFORMATIONS_CLIENT_ID' environment variable if you want to authenticate with OAuth2.",
     envvar="TRANSFORMATIONS_CLIENT_ID",
 )
 @click.option(
-    "--token-client-secret",
-    help="Client secret to interact with transformations API. Provide this or make sure to set 'TRANSFORMATIONS_CLIENT_SECRET' environment variable if you want to authenticate with OIDC.",
+    "--client-secret",
+    help="Client secret to interact with transformations API. Provide this or make sure to set 'TRANSFORMATIONS_CLIENT_SECRET' environment variable if you want to authenticate with OAuth2.",
     envvar="TRANSFORMATIONS_CLIENT_SECRET",
 )
 @click.option(
     "--token-url",
-    help="Token URL to interact with transformations API. Provide this or make sure to set 'TRANSFORMATIONS_TOKEN_URL' environment variable if you want to authenticate with OIDC.",
+    help="Token URL to interact with transformations API. Provide this or make sure to set 'TRANSFORMATIONS_TOKEN_URL' environment variable if you want to authenticate with OAuth2.",
     envvar="TRANSFORMATIONS_TOKEN_URL",
 )
 @click.option(
-    "--token-scopes",
-    help="Scopes to interact with transformations API. Provide this or make sure to set 'TRANSFORMATIONS_SCOPES' environment variable if you want to authenticate with OIDC.",
+    "--scopes",
+    help="Scopes to interact with transformations API, relevant for OAuth2 authentication method. 'TRANSFORMATIONS_SCOPES' environment variable can be used instead.",
     envvar="TRANSFORMATIONS_SCOPES",
 )
 @click.option(
-    "--token-project",
-    help="Project to interact with transformations API. Provide this or make sure to set 'TRANSFORMATIONS_PROJECT' environment variable if you want to authenticate with OIDC.",
+    "--audience",
+    help="Audience to interact with transformations API, relevant for OAuth2 authentication method. 'TRANSFORMATIONS_AUDIENCE' environment variable can be used instead.",
+    envvar="TRANSFORMATIONS_AUDIENCE",
+)
+@click.option(
+    "--cdf-project-name",
+    help="Project to interact with transformations API, 'TRANSFORMATIONS_PROJECT' environment variable can be used instead. Required for OAuth2 and optional for api-keys.",
     envvar="TRANSFORMATIONS_PROJECT",
 )
 @click.pass_context
@@ -56,20 +61,22 @@ def transformations_cli(
     context: Context,
     cluster: str = "europe-west1-1",
     api_key: Optional[str] = None,
-    token_client_id: Optional[str] = None,
-    token_client_secret: Optional[str] = None,
+    client_id: Optional[str] = None,
+    client_secret: Optional[str] = None,
     token_url: Optional[str] = None,
-    token_scopes: Optional[str] = None,
-    token_project: Optional[str] = None,
+    scopes: Optional[str] = None,
+    audience: Optional[str] = None,
+    cdf_project_name: Optional[str] = None,
 ) -> None:
     context.obj = {
         "cluster": cluster,
         "api_key": api_key,
-        "token_client_id": token_client_id,
-        "token_client_secret": token_client_secret,
+        "client_id": client_id,
+        "client_secret": client_secret,
         "token_url": token_url,
-        "token_scopes": token_scopes,
-        "token_project": token_project,
+        "scopes": scopes,
+        "audience": audience,
+        "cdf_project_name": cdf_project_name,
     }
 
 

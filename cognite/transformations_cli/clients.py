@@ -8,45 +8,55 @@ from cognite.experimental import CogniteClient as ExpCogniteClient
 
 def get_clients(obj: Dict) -> Tuple[CogniteClient, ExpCogniteClient]:
     api_key = obj["api_key"]
-    token_client_id = obj["token_client_id"]
-    token_client_secret = obj["token_client_secret"]
+    client_id = obj["client_id"]
+    client_secret = obj["client_secret"]
     token_url = obj["token_url"]
-    token_scopes = obj["token_scopes"]
-    token_project = obj["token_project"]
+    scopes = obj["scopes"]
+    audience = obj["audience"]
+    cdf_project_name = obj["cdf_project_name"]
     cluster = obj["cluster"]
     base_url = f"https://{cluster}.cognitedata.com"
-    scopes = token_scopes.strip().split(",") if token_scopes else [f"https://{cluster}.cognitedata.com/.default"]
+    if not api_key and not audience:
+        scopes = scopes.strip().split(" ") if scopes else [f"https://{cluster}.cognitedata.com/.default"]
     try:
         if api_key is not None and (
-            token_client_id is not None
-            or token_client_secret is not None
-            or token_project is not None
+            client_id is not None
+            or client_secret is not None
             or token_url is not None
-            or token_scopes is not None
+            or scopes is not None
+            or audience is not None
         ):
-            sys.exit("Please provide only API key configuration or only OIDC configuration.")
+            sys.exit("Please provide only API key configuration or only OAuth2 configuration.")
         elif api_key is not None:
             return (
-                CogniteClient(client_name="transformations_cli", api_key=api_key, base_url=base_url),
-                ExpCogniteClient(client_name="transformations_cli", api_key=api_key, base_url=base_url),
+                CogniteClient(
+                    client_name="transformations_cli", api_key=api_key, base_url=base_url, project=cdf_project_name
+                ),
+                ExpCogniteClient(
+                    client_name="transformations_cli", api_key=api_key, base_url=base_url, project=cdf_project_name
+                ),
             )
         else:
             return (
                 CogniteClient(
+                    base_url=base_url,
                     client_name="transformations_cli",
-                    token_client_id=token_client_id,
-                    token_client_secret=token_client_secret,
+                    token_client_id=client_id,
+                    token_client_secret=client_secret,
                     token_url=token_url,
                     token_scopes=scopes,
-                    project=token_project,
+                    project=cdf_project_name,
+                    token_custom_args={"audience": audience} if audience else None,
                 ),
                 ExpCogniteClient(
+                    base_url=base_url,
                     client_name="transformations_cli",
-                    token_client_id=token_client_id,
-                    token_client_secret=token_client_secret,
+                    token_client_id=client_id,
+                    token_client_secret=client_secret,
                     token_url=token_url,
                     token_scopes=scopes,
-                    project=token_project,
+                    project=cdf_project_name,
+                    token_custom_args={"audience": audience} if audience else None,
                 ),
             )
     except CogniteAPIKeyError as e:

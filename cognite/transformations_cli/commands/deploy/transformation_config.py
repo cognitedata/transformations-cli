@@ -19,6 +19,7 @@ class DestinationType(Enum):
     labels = "labels"
     relationships = "relationships"
     raw = "raw"
+    data_sets = "data_sets"
 
 
 class ActionType(Enum):
@@ -44,11 +45,11 @@ class TransformationConfigError(Exception):
 @dataclass
 class AuthConfig:
     api_key: Optional[str]
-    token_client_id: Optional[str]
-    token_client_secret: Optional[str]
+    client_id: Optional[str]
+    client_secret: Optional[str]
     token_url: Optional[str]
-    token_scopes: Optional[List[str]]
-    token_project: Optional[str]
+    scopes: Optional[List[str]]
+    cdf_project_name: Optional[str]
     audience: Optional[str]
 
 
@@ -106,15 +107,9 @@ def _validate_exclusive_auth(external_id: str, auth: Optional[AuthConfig]) -> No
     if (
         auth
         and auth.api_key
-        and (
-            auth.token_client_id
-            or auth.token_client_secret
-            or auth.token_project
-            or auth.token_scopes
-            or auth.token_url
-        )
+        and (auth.client_id or auth.client_secret or auth.cdf_project_name or auth.scopes or auth.token_url)
     ):
-        raise Exception(f"Please provide only one of api-key or oidc credentials: {external_id}")
+        raise Exception(f"Please provide only one of api-key or OAuth2 credentials: {external_id}")
     return None
 
 
