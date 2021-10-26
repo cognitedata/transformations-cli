@@ -5,7 +5,12 @@ from typing import List, Optional
 import sqlparse
 from cognite.experimental.data_classes.transformation_jobs import TransformationJob, TransformationJobMetric
 from cognite.experimental.data_classes.transformation_notifications import TransformationNotification
-from cognite.experimental.data_classes.transformations import RawTable, Transformation, TransformationDestination
+from cognite.experimental.data_classes.transformations import (
+    RawTable,
+    Transformation,
+    TransformationDestination,
+    TransformationPreviewResult,
+)
 from tabulate import tabulate
 
 
@@ -58,6 +63,23 @@ def print_transformations(transformation: List[Transformation]) -> str:
         headers="firstrow",
         tablefmt="rst",
     )
+
+
+def print_query(query: str, result: TransformationPreviewResult) -> str:
+    print_res = f"Query:\n{print_sql(query)}\n"
+    schema = result.schema
+    results = result.results
+    if schema:
+        print_res += "\nSchema:\n"
+        schema_content = [["name", "type", "nullable"]] + [[s.name, s.type.type, s.nullable] for s in schema]
+        print_res += tabulate(schema_content, headers="firstrow", tablefmt="rst") + "\n"
+    if results:
+        print_res += "\nResults:\n"
+        res_content = [[key for key in results[0]]]
+        for result in results:
+            res_content.append([result[key] for key in res_content[0]])
+        print_res += tabulate(res_content, headers="firstrow", tablefmt="rst")
+    return print_res
 
 
 def print_sql(query: str) -> str:

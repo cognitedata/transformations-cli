@@ -224,11 +224,11 @@ def upsert_notifications(
 ) -> Tuple[TupleResult, TupleResult, TupleResult]:
     try:
         to_delete = dict()
-        to_create: List[TransformationNotification] = [
-            requested_notifications_dict[ext_id]
-            for ext_id in new_transformations_ext_ids
-            if ext_id in requested_notifications_dict
-        ]
+        to_create = []
+        for ext_id in new_transformations_ext_ids:
+            if ext_id in requested_notifications_dict:
+                to_create += requested_notifications_dict[ext_id]
+
         for ext_id in existing_transformations_ext_ids:
             existing_notif = existing_notifications_dict.get(ext_id, [])
             requested_notif = requested_notifications_dict.get(ext_id, [])

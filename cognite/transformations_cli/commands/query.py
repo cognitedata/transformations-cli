@@ -4,6 +4,7 @@ import click
 from cognite.experimental.data_classes.transformations import TransformationPreviewResult
 
 from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.commands.utils import print_query
 
 
 @click.command(help="Make a SQL query and retrieve results")
@@ -19,6 +20,5 @@ def query(
     res = exp_client.transformations.preview(
         query=query, source_limit=source_limit, infer_schema_limit=infer_schema_limit, limit=limit
     )
-    # TODO Investigate circular dependency problem and format the result.
-    click.echo(res)
+    click.echo(print_query(query, res))
     return res
