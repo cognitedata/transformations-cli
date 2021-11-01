@@ -3,6 +3,7 @@ import uuid
 from typing import List
 
 import pytest
+from click.testing import CliRunner
 from cognite.experimental import CogniteClient as ExpCogniteClient
 from cognite.experimental.data_classes.transformations import (
     OidcCredentials,
@@ -15,13 +16,45 @@ from cognite.transformations_cli.clients import get_clients
 
 
 @pytest.fixture
-def valid_credentials() -> OidcCredentials:
+def client_id() -> str:
+    return os.environ["CLIENT_ID"]
+
+
+@pytest.fixture
+def client_secret() -> str:
+    return os.environ["CLIENT_SECRET"]
+
+
+@pytest.fixture
+def token_uri() -> str:
+    return "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token"
+
+
+@pytest.fixture
+def scopes() -> str:
+    return "https://bluefield.cognitedata.com/.default"
+
+
+@pytest.fixture
+def cdf_project_name() -> str:
+    return "extractor-bluefield-testing"
+
+
+@pytest.fixture
+def cluster() -> str:
+    return "bluefield"
+
+
+@pytest.fixture
+def valid_credentials(
+    client_id: str, client_secret: str, token_uri: str, scopes: str, cdf_project_name: str
+) -> OidcCredentials:
     return OidcCredentials(
-        client_id=os.environ["CLIENT_ID"],
-        client_secret=os.environ["CLIENT_SECRET"],
-        token_uri="https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token",
-        scopes="https://bluefield.cognitedata.com/.default",
-        cdf_project_name="extractor-bluefield-testing",
+        client_id=client_id,
+        client_secret=client_secret,
+        token_uri=token_uri,
+        scopes=scopes,
+        cdf_project_name=cdf_project_name,
         audience=None,
     )
 
@@ -86,15 +119,33 @@ def configs_to_create(
 
 
 @pytest.fixture
-def exp_client() -> ExpCogniteClient:
+def exp_client(
+    client_id: str, client_secret: str, token_uri: str, scopes: str, cluster: str, cdf_project_name: str
+) -> ExpCogniteClient:
     obj = {
         "api_key": None,
-        "client_id": os.environ["CLIENT_ID"],
-        "client_secret": os.environ["CLIENT_SECRET"],
-        "token_url": "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token",
-        "scopes": "https://bluefield.cognitedata.com/.default",
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "token_url": token_uri,
+        "scopes": scopes,
         "audience": None,
-        "cdf_project_name": "extractor-bluefield-testing",
-        "cluster": "bluefield",
+        "cdf_project_name": cdf_project_name,
+        "cluster": cluster,
     }
     return get_clients(obj)[1]
+
+
+@pytest.fixture
+def cli_runner(
+    client_id: str, client_secret: str, token_uri: str, scopes: str, cluster: str, cdf_project_name: str
+) -> CliRunner:
+    return CliRunner(
+        env={
+            "TRANSFORMATIONS_CLIENT_ID": client_id,
+            "TRANSFORMATIONS_CLIENT_SECRET": client_secret,
+            "TRANSFORMATIONS_TOKEN_URL": token_uri,
+            "TRANSFORMATIONS_SCOPES": scopes,
+            "TRANSFORMATIONS_PROJECT": cdf_project_name,
+            "TRANSFORMATIONS_CLUSTER": cluster,
+        }
+    )
