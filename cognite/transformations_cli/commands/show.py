@@ -41,7 +41,7 @@ def show(
             click.echo("Transformation details:")
             click.echo(print_transformations([tr]))
             notifications = exp_client.transformations.notifications.list(
-                transformation_id=id, transformation_external_id=external_id
+                transformation_id=id, transformation_external_id=external_id, limit=-1
             )
             if tr.query:
                 click.echo("SQL Query:")

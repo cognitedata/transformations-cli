@@ -1,6 +1,6 @@
 import os
 import uuid
-from typing import List
+from typing import Dict, List, Optional
 
 import pytest
 from click.testing import CliRunner
@@ -119,10 +119,10 @@ def configs_to_create(
 
 
 @pytest.fixture
-def exp_client(
+def obj(
     client_id: str, client_secret: str, token_uri: str, scopes: str, cluster: str, cdf_project_name: str
-) -> ExpCogniteClient:
-    obj = {
+) -> Dict[str, Optional[str]]:
+    return {
         "api_key": None,
         "client_id": client_id,
         "client_secret": client_secret,
@@ -132,20 +132,13 @@ def exp_client(
         "cdf_project_name": cdf_project_name,
         "cluster": cluster,
     }
+
+
+@pytest.fixture
+def exp_client(obj: Dict[str, Optional[str]]) -> ExpCogniteClient:
     return get_clients(obj)[1]
 
 
 @pytest.fixture
-def cli_runner(
-    client_id: str, client_secret: str, token_uri: str, scopes: str, cluster: str, cdf_project_name: str
-) -> CliRunner:
-    return CliRunner(
-        env={
-            "TRANSFORMATIONS_CLIENT_ID": client_id,
-            "TRANSFORMATIONS_CLIENT_SECRET": client_secret,
-            "TRANSFORMATIONS_TOKEN_URL": token_uri,
-            "TRANSFORMATIONS_SCOPES": scopes,
-            "TRANSFORMATIONS_PROJECT": cdf_project_name,
-            "TRANSFORMATIONS_CLUSTER": cluster,
-        }
-    )
+def cli_runner() -> CliRunner:
+    return CliRunner()
