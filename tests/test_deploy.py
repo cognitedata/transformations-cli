@@ -19,10 +19,6 @@ def test_upsert_transformations(
     test_transformation_ext_ids: List[str],
     configs_to_create: List[Transformation],
 ) -> None:
-    # Clean up before the test
-    exp_client.transformations.schedules.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
-    exp_client.transformations.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
-
     # Scenario 1:
     # All the transformations are new, all should be created
     _, updated, created = upsert_transformations(exp_client, configs_to_create[:3], [], test_transformation_ext_ids[:3])
@@ -53,15 +49,15 @@ def test_upsert_transformations(
     )
     assert len(updated) == 2
     assert len(created) == 1
+    # Clean up after the test
+    exp_client.transformations.schedules.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
+    exp_client.transformations.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
 
 
 @pytest.mark.unit
 def test_upsert_notifications(
     exp_client: ExpCogniteClient, test_transformation_ext_ids: List[str], configs_to_create: List[Transformation]
 ) -> None:
-    # Clean up before the test
-    exp_client.transformations.schedules.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
-    exp_client.transformations.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
     # Create transformations
     tr1, tr2, tr3, _ = test_transformation_ext_ids
     exp_client.transformations.create(configs_to_create)
@@ -90,15 +86,15 @@ def test_upsert_notifications(
     )
     assert len(deleted) == 1
     assert len(created) == 2
+    # Clean up after the test
+    exp_client.transformations.schedules.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
+    exp_client.transformations.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
 
 
 @pytest.mark.unit
 def test_upsert_schedules(
     exp_client: ExpCogniteClient, test_transformation_ext_ids: List[str], configs_to_create: List[Transformation]
 ) -> None:
-    # Clean up before the test
-    exp_client.transformations.schedules.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
-    exp_client.transformations.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
     tr1_ext_id, tr2_ext_id, tr3_ext_id, tr4_ext_id = test_transformation_ext_ids
     # Create transformations
     exp_client.transformations.create(configs_to_create)
@@ -129,3 +125,6 @@ def test_upsert_schedules(
     assert len(deleted) == 1
     assert len(updated) == 1
     assert len(created) == 2
+    # Clean up after the test
+    exp_client.transformations.schedules.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
+    exp_client.transformations.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
