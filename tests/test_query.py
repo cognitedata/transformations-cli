@@ -22,3 +22,13 @@ def test_query(
     assert cli_result_list[9] == ["dataSetId", "integer", "False"]
     assert cli_result_list[10] == ["startTime", "timestamp", "False"]
     assert cli_result_list[13][:-2] == ["cli_test", "cli_test2", "1"]
+
+
+def test_invalid_query(
+    cli_runner: CliRunner,
+    obj: Dict[str, Optional[str]],
+) -> None:
+    example_query = "select 'cli_test' as name 'cli_test2' as externalId"
+    cli_result = cli_runner.invoke(query, [example_query], obj=obj)
+    assert cli_result.exit_code == 1
+    assert "Cognite API error has occurred" in cli_result.output
