@@ -25,7 +25,7 @@ known_third_party = ["click", "pytest", "sqlparse", "tabulate"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-cognite-sdk-experimental = "0.60.21"
+cognite-sdk-experimental = "0.60.22"
 cognite-extractor-utils = "^1.5.2"
 click = "^8.0.1"
 types-retry = "^0.1.5"

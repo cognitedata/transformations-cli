@@ -22,9 +22,13 @@ def test_jobs(
     exp_client.transformations.delete(id=tr.id, ignore_unknown_ids=True)  # Clean up
 
     cli_res_list = from_table(cli_result.output)
-    assert str(tr.id) in cli_res_list[2]  # Transformation id is in the result
     assert len(cli_res_list) == 3  # Only 1 job produced, 2 lines for headers
-    assert "Completed" in cli_res_list[2] or "Failed" in cli_res_list[2]  # Status is in the result
+    assert (
+        "Running" in cli_res_list[2]
+        or "Created" in cli_res_list[2]
+        or "Completed" in cli_res_list[2]
+        or "Failed" in cli_res_list[2]
+    )  # Status is in the result
     assert cli_result.exit_code == 0
 
 
