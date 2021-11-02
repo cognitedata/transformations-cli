@@ -1,6 +1,7 @@
 from typing import Dict
 
 import click
+from cognite.client.exceptions import CogniteAPIError
 from cognite.experimental.data_classes.transformations import TransformationPreviewResult
 
 from cognite.transformations_cli.clients import get_clients
@@ -16,9 +17,12 @@ from cognite.transformations_cli.commands.utils import print_query
 def query(
     obj: Dict, query: str, source_limit: int = 100, infer_schema_limit: int = 100, limit: int = 100
 ) -> TransformationPreviewResult:
-    _, exp_client = get_clients(obj)
-    res = exp_client.transformations.preview(
-        query=query, source_limit=source_limit, infer_schema_limit=infer_schema_limit, limit=limit
-    )
-    click.echo(print_query(query, res))
-    return res
+    try:
+        _, exp_client = get_clients(obj)
+        res = exp_client.transformations.preview(
+            query=query, source_limit=source_limit, infer_schema_limit=infer_schema_limit, limit=limit
+        )
+        click.echo(print_query(query, res))
+        return res
+    except CogniteAPIError as e:
+        exit(f"Cognite API error has occurred: {e}")
