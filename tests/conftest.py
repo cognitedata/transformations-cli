@@ -87,7 +87,7 @@ def configs_to_create(
         ),
         Transformation(
             external_id=test_transformation_ext_ids[1],
-            name=test_transformation_ext_ids[2],
+            name=test_transformation_ext_ids[1],
             source_oidc_credentials=valid_credentials,
             destination_oidc_credentials=valid_credentials,
             destination=RawTable(type="raw", database="cli-test-db", table="cli-test"),
@@ -112,7 +112,7 @@ def configs_to_create(
             destination_oidc_credentials=valid_credentials,
             destination=TransformationDestination(type="timeseries"),
             conflict_mode="upsert",
-            query="select 'asd' as externalId, 'asd' as name",
+            query="select 'asd' as externalId 'asd' as name",
             is_public=True,
         ),
     ]
