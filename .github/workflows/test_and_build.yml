@@ -33,7 +33,7 @@ jobs:
 
     - name: Run tests
       run: |
-        PYTHONPATH=cognite/transformations_cli poetry run pytest -v -m unit
+        PYTHONPATH=cognite/transformations_cli poetry run pytest -v
       env:
           CLIENT_ID: ${{secrets.EXTRACTORS_CLIENT_ID}}
           CLIENT_SECRET: ${{secrets.EXTRACTORS_CLIENT_SECRET}}

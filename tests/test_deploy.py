@@ -1,6 +1,5 @@
 from typing import List
 
-import pytest
 from cognite.experimental import CogniteClient as ExpCogniteClient
 from cognite.experimental.data_classes.transformation_notifications import TransformationNotification
 from cognite.experimental.data_classes.transformation_schedules import TransformationSchedule
@@ -13,7 +12,6 @@ from cognite.transformations_cli.commands.deploy.transformations_api import (
 )
 
 
-@pytest.mark.unit
 def test_upsert_transformations(
     exp_client: ExpCogniteClient,
     test_transformation_ext_ids: List[str],
@@ -54,7 +52,6 @@ def test_upsert_transformations(
     exp_client.transformations.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
 
 
-@pytest.mark.unit
 def test_upsert_notifications(
     exp_client: ExpCogniteClient, test_transformation_ext_ids: List[str], configs_to_create: List[Transformation]
 ) -> None:
@@ -91,7 +88,6 @@ def test_upsert_notifications(
     exp_client.transformations.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
 
 
-@pytest.mark.unit
 def test_upsert_schedules(
     exp_client: ExpCogniteClient, test_transformation_ext_ids: List[str], configs_to_create: List[Transformation]
 ) -> None:
