@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "transformations-cli"
+name = "cognite-transformations-cli"
 version = "0.1.0"
 description = "A CLI for the Transformations service in CDF"
-authors = ["Mathias Lohne <mathias.lohne@cognite.com>"]
+authors = ["Mathias Lohne <mathias.lohne@cognite.com>", "Emel Varol <emel.varol@cognite.com>", "Einar Marstrander Omang <einar.omang@cognite.com>"]
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/cognitedata/transformations-cli"
