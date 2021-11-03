@@ -35,10 +35,9 @@ def print_results(
 
 
 @click.command(help="Deploy a set of transformations from a directory")
-@click.option(
-    "--path",
+@click.argument(
+    "path",
     default=".",
-    help="A directory to search for transformation manifests. If omitted, the current directory is used.",
 )
 @click.option(
     "--debug",

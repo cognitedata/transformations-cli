@@ -1,13 +1,12 @@
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional
 
 import click
-from cognite.client.exceptions import CogniteAPIError
-from cognite.experimental.data_classes.transformation_jobs import TransformationJob
-from cognite.experimental.data_classes.transformations import Transformation
+from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import (
     exit_with_cognite_api_error,
+    get_transformation,
     is_id_exclusive,
     print_jobs,
     print_metrics,
@@ -26,9 +25,7 @@ from cognite.transformations_cli.commands.utils import (
     "--job-id", help="The id of the job to show. Include this to show job details instead of transformation details."
 )
 @click.pass_obj
-def show(
-    obj: Dict, id: Optional[int], external_id: Optional[str], job_id: Optional[int]
-) -> Tuple[Optional[Transformation], Optional[TransformationJob]]:
+def show(obj: Dict, id: Optional[int], external_id: Optional[str], job_id: Optional[int]) -> None:
     _, exp_client = get_clients(obj)
     is_id_exclusive(id, external_id)
     try:
@@ -37,11 +34,11 @@ def show(
         if id or external_id:
             # TODO Investigate why id requires type casting as it doesn't in "jobs command"
             id = int(id) if id else None
-            tr = exp_client.transformations.retrieve(id=int(id) if id else None, external_id=external_id)
+            tr = get_transformation(exp_client=exp_client, id=id, external_id=external_id)
             click.echo("Transformation details:")
             click.echo(print_transformations([tr]))
             notifications = exp_client.transformations.notifications.list(
-                transformation_id=id, transformation_external_id=external_id
+                transformation_id=id, transformation_external_id=external_id, limit=-1
             )
             if tr.query:
                 click.echo("SQL Query:")
@@ -67,7 +64,5 @@ def show(
             if metrics:
                 click.echo("Progress:")
                 click.echo(print_metrics(metrics))
-        return tr, job
-    except CogniteAPIError as e:
+    except (CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
-        return None, None

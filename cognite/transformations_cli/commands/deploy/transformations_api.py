@@ -1,7 +1,7 @@
 import sys
 from typing import Dict, List, Optional, Tuple, Union
 
-from cognite.client.exceptions import CogniteAPIError
+from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
 from cognite.experimental import CogniteClient as ExpCogniteClient
 from cognite.experimental.data_classes import TransformationNotification
 from cognite.experimental.data_classes.transformation_schedules import TransformationSchedule
@@ -183,7 +183,7 @@ def upsert_transformations(
         )
         created = exp_client.transformations.create([tr for tr in transformations if tr.external_id in new_ext_ids])
         return [], [t.external_id for t in updated], [t.external_id for t in created]
-    except CogniteAPIError as e:
+    except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
     return [], [], []
 
@@ -210,7 +210,7 @@ def upsert_schedules(
         exp_client.transformations.schedules.delete(external_id=to_delete)
         exp_client.transformations.schedules.update([requested_schedules_dict[ext_id] for ext_id in to_update])
         exp_client.transformations.schedules.create([requested_schedules_dict[ext_id] for ext_id in to_create])
-    except CogniteAPIError as e:
+    except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
     return to_delete, to_update, to_create
 
@@ -224,11 +224,11 @@ def upsert_notifications(
 ) -> Tuple[TupleResult, TupleResult, TupleResult]:
     try:
         to_delete = dict()
-        to_create: List[TransformationNotification] = [
-            requested_notifications_dict[ext_id]
-            for ext_id in new_transformations_ext_ids
-            if ext_id in requested_notifications_dict
-        ]
+        to_create = []
+        for ext_id in new_transformations_ext_ids:
+            if ext_id in requested_notifications_dict:
+                to_create += requested_notifications_dict[ext_id]
+
         for ext_id in existing_transformations_ext_ids:
             existing_notif = existing_notifications_dict.get(ext_id, [])
             requested_notif = requested_notifications_dict.get(ext_id, [])
@@ -246,6 +246,6 @@ def upsert_notifications(
             [],
             [(n.transformation_external_id, n.destination) for n in to_create],
         )
-    except CogniteAPIError as e:
+    except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
     return [], [], []

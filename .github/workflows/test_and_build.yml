@@ -31,5 +31,18 @@ jobs:
       run: |
         pre-commit run --all
 
+    - name: Run tests
+      run: |
+        PYTHONPATH=cognite/transformations_cli poetry run pytest  -v  --cov-report xml:coverage.xml --cov=cognite/transformations_cli
+        coverage xml
+      env:
+          CLIENT_ID: ${{secrets.EXTRACTORS_CLIENT_ID}}
+          CLIENT_SECRET: ${{secrets.EXTRACTORS_CLIENT_SECRET}}
+          
+    - uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+
     - name: Build package
       run: poetry build
