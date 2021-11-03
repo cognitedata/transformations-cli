@@ -4,8 +4,10 @@ import os
 from typing import List, Optional, Union
 
 from cognite.extractorutils.configtools import load_yaml
+from cognite.transformations_cli.commands.deploy.transformation_types_legacy import TransformationConfigLegacy
 from transformation_types import *
 
+from regex import regex
 
 def _validate_destination_type(external_id: str, destination_type: DestinationConfig) -> None:
     if destination_type.type == DestinationType.raw and (
@@ -39,8 +41,14 @@ def _validate_config(config: TransformationConfig) -> None:
 
 
 def _parse_transformation_config(path: str) -> TransformationConfig:
+    r = regex.compile(r"^legacy:\w*true$", flags=regex.MULTILINE | regex.IGNORECASE)
     with open(path) as f:
-        return load_yaml(f, TransformationConfig, case_style="camel")
+        data = f.read()
+        if r.match(data) != None:
+            legacy = load_yaml(data, TransformationConfigLegacy, case_style="camel")
+            return legacy.to_new()
+        else:
+            return load_yaml(data, TransformationConfig, case_style="camel")
 
 
 def parse_transformation_configs(base_dir: Optional[str]) -> List[TransformationConfig]:

@@ -1,8 +1,6 @@
 from dataclasses import dataclass, field
-from enum import Enum
-from os import name
-import os
-from typing import List, Match, Optional, Union
+from os import environ
+from typing import List, Optional, Union
 
 from transformation_types import *
 
@@ -41,9 +39,9 @@ class AuthConfigLegacy:
 
     def to_new(self):
         return AuthConfig(
-            client_id=os.environ[self.client_id],
+            client_id=environ[self.client_id],
             audience=None,
-            client_secret=os.environ[self.client_secret],
+            client_secret=environ[self.client_secret],
             token_url=self.token_url,
             scopes=self.scopes,
             cdf_project_name=self.cdf_project_name,
@@ -96,11 +94,11 @@ class TransformationConfigLegacy:
 
         if isinstance(self.api_key, ReadWriteApiKeyLegacy):
             if self.api_key.read != None:
-                auth.read.api_key = os.environ[self.api_key.read]
+                auth.read.api_key = environ[self.api_key.read]
             if self.api_key.write != None:
-                auth.write.api_key = os.environ[self.api_key.write]
+                auth.write.api_key = environ[self.api_key.write]
         elif isinstance(self.api_key, str):
-            auth.read.api_key = auth.write.api_key = os.environ[self.api_key]
+            auth.read.api_key = auth.write.api_key = environ[self.api_key]
 
         destination = self.destination.to_new()
 
