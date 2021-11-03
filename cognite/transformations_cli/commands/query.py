@@ -4,7 +4,7 @@ import click
 from cognite.client.exceptions import CogniteAPIError
 
 from cognite.transformations_cli.clients import get_clients
-from cognite.transformations_cli.commands.utils import print_query
+from cognite.transformations_cli.commands.utils import exit_with_cognite_api_error, print_query
 
 
 @click.command(help="Make a SQL query and retrieve results")
@@ -21,4 +21,4 @@ def query(obj: Dict, query: str, source_limit: int = 100, infer_schema_limit: in
         )
         click.echo(print_query(query, res))
     except CogniteAPIError as e:
-        exit(f"Cognite API error has occurred: {e}")
+        exit_with_cognite_api_error(e)
