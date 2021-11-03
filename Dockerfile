@@ -18,7 +18,7 @@ RUN pip3 install --target=/app -r requirements.txt
 
 # Keep the same folder structure for imports
 COPY cognite/transformations_cli/ /app/cognite/transformations_cli/
-COPY example /app
+
 # A distroless container image with Python and some basics like SSL certificates
 # https://github.com/GoogleContainerTools/distroless
 FROM gcr.io/distroless/python3-debian10
