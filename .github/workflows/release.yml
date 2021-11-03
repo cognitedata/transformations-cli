@@ -47,3 +47,4 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: twine upload --verbose dist/* || echo 'Version exists'
+      
