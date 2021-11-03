@@ -69,8 +69,6 @@ class TransformationConfig:
     name: str
     query: Union[str, QueryConfig]
     authentication: Union[AuthConfig, ReadWriteAuthentication]
-    read_authentication: Optional[AuthConfig]
-    write_authentication: Optional[AuthConfig]
     schedule: Optional[str]
     destination: DestinationConfig
     notifications: List[str] = field(default_factory=list)

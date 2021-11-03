@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from os import environ
 from typing import List, Optional, Union
 
-from transformation_types import *
+from cognite.transformations_cli.commands.deploy.transformation_types import *
 
 # YamlDotNet is case insensitive on enums, for full backwards compatibility that
 # needs to be reflected here
@@ -17,7 +17,7 @@ def legacy_destination_type_to_new(input: str):
 
 def legacy_action_to_new(input: str):
     input_low = input.lower()
-    for en in DestinationType:
+    for en in ActionType:
         if en.name == input_low:
             return en
     raise TransformationConfigError(f"Invalid action type: {input}")
@@ -36,11 +36,13 @@ class AuthConfigLegacy:
     token_url: Optional[str]
     scopes: Optional[List[str]]
     cdf_project_name: Optional[str]
+    audience: Optional[str]
 
     def to_new(self):
         return AuthConfig(
+            api_key=None,
             client_id=environ[self.client_id],
-            audience=None,
+            audience=self.audience,
             client_secret=environ[self.client_secret],
             token_url=self.token_url,
             scopes=self.scopes,
@@ -77,12 +79,15 @@ class TransformationConfigLegacy:
     notifications: List[str] = field(default_factory=list)
     shared: bool = False
     ignore_null_fields: bool = True
-    action: ActionType = ActionType.upsert
+    action: str = "upsert"
     legacy: bool = True
 
     def to_new(self):
         query = QueryConfig(file=self.query)
-        auth = ReadWriteAuthentication(read=AuthConfig(), write=AuthConfig())
+        auth = ReadWriteAuthentication(
+            read=AuthConfig(None, None, None, None, None, None, None),
+            write=AuthConfig(None, None, None, None, None, None, None),
+        )
 
         if isinstance(self.authentication, ReadWriteAuthConfigLegacy):
             if self.authentication.read != None:
@@ -101,6 +106,7 @@ class TransformationConfigLegacy:
             auth.read.api_key = auth.write.api_key = environ[self.api_key]
 
         destination = self.destination.to_new()
+        action = legacy_action_to_new(self.action)
 
         return TransformationConfig(
             external_id=self.external_id,
@@ -111,6 +117,7 @@ class TransformationConfigLegacy:
             notifications=self.notifications,
             shared=self.shared,
             ignore_null_fields=self.ignore_null_fields,
-            action=self.action,
+            action=action,
+            schedule=self.schedule,
             legacy=True,
         )
