@@ -71,3 +71,30 @@ def test_jobs_by_external_id(
     assert len(cli_res_list) == 4  # Only 1 job produced, 3 lines for headers
     assert "Completed" in cli_res_list[3] or "Failed" in cli_res_list[3]  # Status is in the result
     assert cli_result.exit_code == 0
+
+
+def test_jobs_by_invalid_id(cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:
+    result = cli_runner.invoke(jobs, ["--id=10000000000000"], obj=obj)
+    assert result.exit_code == 1
+    assert "Cognite API error has occurred" in result.output
+
+
+def test_jobs_by_invalid_external_id(cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:
+    result = cli_runner.invoke(jobs, ["--external-id=emelemelemelemel"], obj=obj)
+    assert result.exit_code == 1
+    assert "Cognite API error has occurred" in result.output
+
+
+def test_jobs_by_id_with_no_jobs(
+    exp_client: ExpCogniteClient,
+    cli_runner: CliRunner,
+    obj: Dict[str, Optional[str]],
+    configs_to_create: List[Transformation],
+) -> None:
+    tr = exp_client.transformations.create(configs_to_create[0])  # Transformation with no jobs
+    cli_result = cli_runner.invoke(jobs, [f"--id={tr.id}"], obj=obj)
+
+    exp_client.transformations.delete(id=tr.id, ignore_unknown_ids=True)  # Clean up
+
+    assert cli_result.exit_code == 0
+    assert cli_result.output == f"Listing the latest jobs for transformation with id {tr.id}:\nNo jobs to list.\n"

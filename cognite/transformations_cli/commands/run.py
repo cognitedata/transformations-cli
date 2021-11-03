@@ -1,12 +1,13 @@
+import sys
 from typing import Dict, Optional
 
 import click
-from cognite.client.exceptions import CogniteAPIError
-from cognite.experimental.data_classes.transformation_jobs import TransformationJob
+from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import (
     exit_with_cognite_api_error,
+    get_id_from_external_id,
     is_id_exclusive,
     is_id_provided,
     print_jobs,
@@ -37,7 +38,7 @@ def run(
     watch: bool = False,
     watch_only: bool = False,
     time_out: Optional[int] = None,
-) -> Optional[TransformationJob]:
+) -> None:
     _, exp_client = get_clients(obj)
     is_id_provided(id, external_id)
     is_id_exclusive(id, external_id)
@@ -51,7 +52,7 @@ def run(
             )
         else:
             if external_id:
-                id = exp_client.transformations.retrieve(external_id=external_id).id
+                id = get_id_from_external_id(exp_client=exp_client, external_id=external_id)
             jobs = exp_client.transformations.jobs.list(transformation_id=id)
             job = jobs[0].wait(timeout=time_out) if jobs else None
         if job:
@@ -69,7 +70,13 @@ def run(
             if metrics:
                 click.echo("Progress:")
                 click.echo(print_metrics(metrics))
-        return job
-    except CogniteAPIError as e:
+    # Handle AttributeError because SDK fails here:
+    # transformation_id = self.retrieve(external_id=transformation_external_id).id
+    # with "AttributeError: 'NoneType' object has no attribute 'id'"
+    # when called with invalid external_id
+    # We mask that here with this trick until solved.
+    except AttributeError:
+        click.echo("Cognite API error has occurred: Transformation not found.")
+        sys.exit(1)
+    except (CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
-        return None

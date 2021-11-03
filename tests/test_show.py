@@ -80,3 +80,21 @@ def test_show_with_job_id(
 def test_show_both_ids(cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:
     cli_result = cli_runner.invoke(show, ["--external-id=asd, --id=1"], obj=obj)
     assert cli_result.exit_code == 1
+
+
+def test_show_by_invalid_id(cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:
+    result = cli_runner.invoke(show, ["--id=10000000000000"], obj=obj)
+    assert result.exit_code == 1
+    assert "Cognite API error has occurred" in result.output
+
+
+def test_show_by_invalid_external_id(cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:
+    result = cli_runner.invoke(show, ["--external-id=emelemelemelemel"], obj=obj)
+    assert result.exit_code == 1
+    assert "Cognite API error has occurred" in result.output
+
+
+def test_show_by_invalid_job_id(cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:
+    result = cli_runner.invoke(show, ["--job-id=10000000000000"], obj=obj)
+    assert result.exit_code == 1
+    assert "Cognite API error has occurred" in result.output

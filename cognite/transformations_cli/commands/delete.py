@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
 import click
-from cognite.client.exceptions import CogniteAPIError
+from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import exit_with_cognite_api_error, is_id_exclusive, is_id_provided
@@ -24,5 +24,5 @@ def delete(obj: Dict, id: Optional[int], external_id: Optional[str]) -> None:
             click.echo(f"Successfully deleted the transformation with id {id}.")
         else:
             click.echo(f"Successfully deleted the transformation with external id {external_id}.")
-    except CogniteAPIError as e:
+    except (CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)

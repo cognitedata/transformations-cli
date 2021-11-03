@@ -8,7 +8,7 @@ destination:
 shared: True
 action: "upsert"
 query:
-  file: example/my_transform.sql
+  file: tests/example/my_transform.sql
 ignoreNullFields: False
 notifications:
   - emel.varol@cognite.com

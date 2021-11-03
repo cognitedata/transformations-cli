@@ -3,6 +3,7 @@ import sys
 from typing import List, Optional
 
 import sqlparse
+from cognite.experimental import CogniteClient as ExpCogniteClient
 from cognite.experimental.data_classes.transformation_jobs import TransformationJob, TransformationJobMetric
 from cognite.experimental.data_classes.transformation_notifications import TransformationNotification
 from cognite.experimental.data_classes.transformations import (
@@ -12,6 +13,23 @@ from cognite.experimental.data_classes.transformations import (
     TransformationPreviewResult,
 )
 from tabulate import tabulate
+
+
+def get_id_from_external_id(exp_client: ExpCogniteClient, external_id: str) -> int:
+    tr = exp_client.transformations.retrieve(external_id=external_id)
+    if tr:
+        return tr.id
+    sys.exit("Cognite API error has occurred: Transformation with external_id {external_id} not found.")
+
+
+def get_transformation(exp_client: ExpCogniteClient, id: Optional[int], external_id: Optional[str]) -> Transformation:
+    tr = exp_client.transformations.retrieve(external_id=external_id, id=id)
+    if tr:
+        return tr
+    msg = "external_id" if external_id else "id"
+    sys.exit(
+        f"Cognite API error has occurred: Transformation with {msg} {external_id if external_id else id} not found."
+    )
 
 
 def is_id_exclusive(id: Optional[int], externalId: Optional[str], should_exit: bool = True) -> bool:

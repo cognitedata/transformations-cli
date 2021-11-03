@@ -8,7 +8,7 @@ destination:
 shared: True
 action: "upsert"
 query:
-  file: oidc_examples/my_transform.sql
+  file: tests/oidc_examples/subfolder/my_transform.sql
 ignoreNullFields: False
 schedule: "5 4 * * *"
 notifications:

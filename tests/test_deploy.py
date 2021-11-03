@@ -1,15 +1,36 @@
-from typing import List
+from typing import Dict, List, Optional
 
+import pytest
+from click.testing import CliRunner
 from cognite.experimental import CogniteClient as ExpCogniteClient
 from cognite.experimental.data_classes.transformation_notifications import TransformationNotification
 from cognite.experimental.data_classes.transformation_schedules import TransformationSchedule
 from cognite.experimental.data_classes.transformations import Transformation
 
+from cognite.transformations_cli.commands.deploy.deploy import deploy
 from cognite.transformations_cli.commands.deploy.transformations_api import (
     upsert_notifications,
     upsert_schedules,
     upsert_transformations,
 )
+
+
+@pytest.mark.parametrize(
+    "path, output, exit_code",
+    [
+        (
+            "tests/invalid_example",
+            "Failed to parse transformation config, please check that you conform required fields and format:",
+            1,
+        ),
+        ("tests/oidc_examples", "Number of", 0),
+        ("invalid_path", "Transformation root folder not found: invalid_path", 1),
+    ],
+)
+def test_deploy(path: str, output: str, exit_code: int, cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:
+    cli_result = cli_runner.invoke(deploy, [path], obj=obj)
+    assert output in cli_result.output
+    assert cli_result.exit_code == exit_code
 
 
 def test_upsert_transformations(

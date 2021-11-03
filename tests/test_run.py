@@ -72,3 +72,15 @@ def test_watch_only(
     assert "Failed" in cli_result_list[2]
     assert "SELECT 'asd' AS externalId 'asd' AS name" == " ".join(cli_result_list[4])
     assert "mismatched input ''asd'' expecting {<EOF>, ';'}(line 1, pos 27)" == " ".join(cli_result_list[6])
+
+
+def test_run_by_invalid_id(cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:
+    result = cli_runner.invoke(run, ["--id=10000000000000"], obj=obj)
+    assert result.exit_code == 1
+    assert "Cognite API error has occurred" in result.output
+
+
+def test_run_by_invalid_external_id(cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:
+    result = cli_runner.invoke(run, ["--external-id=emelemelemelemel"], obj=obj)
+    assert result.exit_code == 1
+    assert "Cognite API error has occurred" in result.output
