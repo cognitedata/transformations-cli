@@ -5,7 +5,14 @@ from typing import List, Optional, Union
 from cognite.extractorutils.configtools import load_yaml
 from regex import regex
 
-from cognite.transformations_cli.commands.deploy.transformation_types import *
+from cognite.transformations_cli.commands.deploy.transformation_types import (
+    AuthConfig,
+    DestinationConfig,
+    DestinationType,
+    ReadWriteAuthentication,
+    TransformationConfig,
+    TransformationConfigError,
+)
 from cognite.transformations_cli.commands.deploy.transformation_types_legacy import TransformationConfigLegacy
 
 
@@ -44,7 +51,7 @@ def _parse_transformation_config(path: str) -> TransformationConfig:
     r = regex.compile(r"^legacy:\s*true\s*$", flags=regex.MULTILINE | regex.IGNORECASE)
     with open(path) as f:
         data = f.read()
-        if r.search(data) != None:
+        if r.search(data) is not None:
             legacy = load_yaml(data, TransformationConfigLegacy, case_style="camel")
             return legacy.to_new()
         else:

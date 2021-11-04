@@ -9,8 +9,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
 )
 
 
-def rmdir(directory: str):
-    directory = Path(directory)
+def rmdir(directory: Path) -> None:
     for item in directory.iterdir():
         if item.is_dir():
             rmdir(item)
@@ -19,14 +18,13 @@ def rmdir(directory: str):
     directory.rmdir()
 
 
-def write_config(test_name: str, contents: str, index: int):
+def write_config(test_name: str, contents: str, index: int) -> None:
     if index == 0 and os.path.isdir(test_name):
-        rmdir(test_name)
+        rmdir(Path(test_name))
     if index == 0:
         os.mkdir(test_name)
-    f = open(f"{test_name}/trans_{index}.yml", "w")
-    f.write(contents)
-    f.close()
+    with open(f"{test_name}/trans_{index}.yml", "w") as f:
+        f.write(contents)
 
 
 def test_load_config_file_api_key() -> None:
@@ -38,7 +36,7 @@ query: testQuery
 authentication:
     read:
         apiKey: testApiKeyRead
-    write: 
+    write:
         apiKey: testApiKeyWrite
 schedule: testSchedule
 destination:
@@ -73,7 +71,7 @@ action: delete
     assert not conf.ignore_null_fields
     assert conf.action == ActionType.delete
 
-    rmdir(test_name)
+    rmdir(Path(test_name))
 
 
 def test_load_config_file_oidc() -> None:
@@ -81,7 +79,7 @@ def test_load_config_file_oidc() -> None:
     file = """
 externalId: testExternalId
 name: testName
-query: 
+query:
     file: testQuery.sql
 authentication:
     read:
@@ -93,7 +91,7 @@ authentication:
             - testScope2
         cdfProjectName: testProject
         audience: testAudience
-    write: 
+    write:
         clientId: testClientIdWrite
         clientSecret: testClientSecretWrite
         tokenUrl: testTokenUrl
@@ -150,7 +148,7 @@ action: delete
     assert not conf.ignore_null_fields
     assert conf.action == ActionType.delete
 
-    rmdir(test_name)
+    rmdir(Path(test_name))
 
 
 def test_load_old_config_file_oidc() -> None:
@@ -170,7 +168,7 @@ authentication:
             - testScope2
         cdfProjectName: testProject
         audience: testAudience
-    write: 
+    write:
         clientId: TEST_CLIENT_ID_WRITE
         clientSecret: TEST_CLIENT_SECRET_WRITE
         tokenUrl: testTokenUrl
@@ -233,7 +231,7 @@ action: Delete
     assert not conf.ignore_null_fields
     assert conf.action == ActionType.delete
 
-    rmdir(test_name)
+    rmdir(Path(test_name))
 
 
 def test_load_old_config_file_api_key() -> None:
@@ -282,7 +280,7 @@ action: DELETE
     assert not conf.ignore_null_fields
     assert conf.action == ActionType.delete
 
-    rmdir(test_name)
+    rmdir(Path(test_name))
 
 
 def test_validate_destination_type() -> None:

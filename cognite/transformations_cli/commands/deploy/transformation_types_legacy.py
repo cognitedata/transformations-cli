@@ -2,12 +2,21 @@ from dataclasses import dataclass, field
 from os import environ
 from typing import List, Optional, Union
 
-from cognite.transformations_cli.commands.deploy.transformation_types import *
+from cognite.transformations_cli.commands.deploy.transformation_types import (
+    ActionType,
+    AuthConfig,
+    DestinationConfig,
+    DestinationType,
+    QueryConfig,
+    ReadWriteAuthentication,
+    TransformationConfig,
+    TransformationConfigError,
+)
 
 
 # YamlDotNet is case insensitive on enums, for full backwards compatibility that
 # needs to be reflected here
-def legacy_destination_type_to_new(input: str):
+def legacy_destination_type_to_new(input: str) -> DestinationType:
     input_low = input.lower()
     for en in DestinationType:
         clean_name = en.name.replace("_", "")
@@ -16,7 +25,7 @@ def legacy_destination_type_to_new(input: str):
     raise TransformationConfigError(f"Invalid destination type: {input}")
 
 
-def legacy_action_to_new(input: str):
+def legacy_action_to_new(input: str) -> ActionType:
     input_low = input.lower()
     for en in ActionType:
         if en.name == input_low:
@@ -39,12 +48,12 @@ class AuthConfigLegacy:
     cdf_project_name: Optional[str]
     audience: Optional[str]
 
-    def to_new(self):
+    def to_new(self) -> AuthConfig:
         return AuthConfig(
             api_key=None,
-            client_id=environ[self.client_id],
+            client_id=environ[self.client_id] if self.client_id is not None else None,
             audience=self.audience,
-            client_secret=environ[self.client_secret],
+            client_secret=environ[self.client_secret] if self.client_secret is not None else None,
             token_url=self.token_url,
             scopes=self.scopes,
             cdf_project_name=self.cdf_project_name,
@@ -63,7 +72,7 @@ class DestinationLegacy:
     raw_database: Optional[str] = None
     raw_table: Optional[str] = None
 
-    def to_new(self):
+    def to_new(self) -> DestinationConfig:
         new_type = legacy_destination_type_to_new(self.type)
         return DestinationConfig(new_type, self.raw_database, self.raw_table)
 
@@ -83,7 +92,7 @@ class TransformationConfigLegacy:
     action: str = "upsert"
     legacy: bool = True
 
-    def to_new(self):
+    def to_new(self) -> TransformationConfig:
         query = QueryConfig(file=self.query)
         auth = ReadWriteAuthentication(
             read=AuthConfig(None, None, None, None, None, None, None),
@@ -91,17 +100,17 @@ class TransformationConfigLegacy:
         )
 
         if isinstance(self.authentication, ReadWriteAuthConfigLegacy):
-            if self.authentication.read != None:
+            if self.authentication.read is not None:
                 auth.read = self.authentication.read.to_new()
-            if self.authentication.write != None:
+            if self.authentication.write is not None:
                 auth.write = self.authentication.write.to_new()
         elif isinstance(self.authentication, AuthConfigLegacy):
             auth.read = auth.write = self.authentication.to_new()
 
         if isinstance(self.api_key, ReadWriteApiKeyLegacy):
-            if self.api_key.read != None:
+            if self.api_key.read is not None:
                 auth.read.api_key = environ[self.api_key.read]
-            if self.api_key.write != None:
+            if self.api_key.write is not None:
                 auth.write.api_key = environ[self.api_key.write]
         elif isinstance(self.api_key, str):
             auth.read.api_key = auth.write.api_key = environ[self.api_key]
