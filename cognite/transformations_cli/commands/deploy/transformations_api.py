@@ -12,7 +12,7 @@ from cognite.experimental.data_classes.transformations import (
     TransformationDestination,
 )
 
-from cognite.transformations_cli.commands.deploy.transformation_config import (
+from cognite.transformations_cli.commands.deploy.transformation_types import (
     ActionType,
     AuthConfig,
     DestinationConfig,
