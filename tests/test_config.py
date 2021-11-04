@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 from cognite.transformations_cli.commands.deploy.transformation_config import parse_transformation_configs
 from cognite.transformations_cli.commands.deploy.transformation_types import (
     ActionType,

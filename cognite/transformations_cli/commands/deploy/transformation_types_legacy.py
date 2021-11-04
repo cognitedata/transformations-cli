@@ -4,6 +4,7 @@ from typing import List, Optional, Union
 
 from cognite.transformations_cli.commands.deploy.transformation_types import *
 
+
 # YamlDotNet is case insensitive on enums, for full backwards compatibility that
 # needs to be reflected here
 def legacy_destination_type_to_new(input: str):

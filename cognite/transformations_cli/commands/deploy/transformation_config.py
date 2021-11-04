@@ -1,13 +1,12 @@
 import glob
 import os
-
 from typing import List, Optional, Union
 
 from cognite.extractorutils.configtools import load_yaml
-from cognite.transformations_cli.commands.deploy.transformation_types_legacy import TransformationConfigLegacy
-from cognite.transformations_cli.commands.deploy.transformation_types import *
-
 from regex import regex
+
+from cognite.transformations_cli.commands.deploy.transformation_types import *
+from cognite.transformations_cli.commands.deploy.transformation_types_legacy import TransformationConfigLegacy
 
 
 def _validate_destination_type(external_id: str, destination_type: DestinationConfig) -> None:
