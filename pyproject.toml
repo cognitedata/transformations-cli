@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cognite-transformations-cli"
-version = "0.1.0"
+version = "0.2.0"
 description = "A CLI for the Transformations service in CDF"
 authors = ["Mathias Lohne <mathias.lohne@cognite.com>", "Emel Varol <emel.varol@cognite.com>", "Einar Marstrander Omang <einar.omang@cognite.com>"]
 license = "Apache-2.0"
@@ -21,7 +21,7 @@ line_length=120                # corresponds to -w  flag
 multi_line_output=3            # corresponds to -m  flag
 include_trailing_comma=true    # corresponds to -tc flag
 skip_glob = '^((?!py$).)*$'    # this makes sort all Python files
-known_third_party = ["click", "pytest", "sqlparse", "tabulate"]
+known_third_party = ["click", "pytest", "regex", "sqlparse", "tabulate"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
