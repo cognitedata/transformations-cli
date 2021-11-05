@@ -1,98 +1,19 @@
 import glob
 import os
-from dataclasses import dataclass, field
-from enum import Enum
 from typing import List, Optional, Union
 
 from cognite.extractorutils.configtools import load_yaml
+from regex import regex
 
-
-class DestinationType(Enum):
-    assets = "assets"
-    timeseries = "timeseries"
-    asset_hierarchy = "asset_hierarchy"
-    events = "events"
-    datapoints = "datapoints"
-    string_datapoints = "string_datapoints"
-    sequences = "sequences"
-    files = "files"
-    labels = "labels"
-    relationships = "relationships"
-    raw = "raw"
-    data_sets = "data_sets"
-
-
-class ActionType(Enum):
-    create = "create"
-    abort = "abort"
-    update = "update"
-    upsert = "upsert"
-    delete = "delete"
-
-
-class TransformationConfigError(Exception):
-    """Exception raised for config parser
-
-    Attributes:
-        message -- explanation of the error
-    """
-
-    def __init__(self, message: str):
-        self.message = message
-        super().__init__(self.message)
-
-
-@dataclass
-class AuthConfig:
-    api_key: Optional[str]
-    client_id: Optional[str]
-    client_secret: Optional[str]
-    token_url: Optional[str]
-    scopes: Optional[List[str]]
-    cdf_project_name: Optional[str]
-    audience: Optional[str]
-
-
-@dataclass
-class ReadWriteAuthentication:
-    read: AuthConfig
-    write: AuthConfig
-
-
-@dataclass
-class DestinationConfig:
-    """
-    Valid type values are: assets, asset_hierarchy, events, timeseries, datapoints, string_datapoints, raw (needs database and table)
-    """
-
-    type: DestinationType
-    raw_database: Optional[str] = None
-    raw_table: Optional[str] = None
-
-
-@dataclass
-class QueryConfig:
-    file: str
-
-
-@dataclass
-class TransformationConfig:
-    """
-    Master configuration class of a transformation
-    """
-
-    external_id: str
-    name: str
-    query: Union[str, QueryConfig]
-    authentication: Union[AuthConfig, ReadWriteAuthentication]
-    read_authentication: Optional[AuthConfig]
-    write_authentication: Optional[AuthConfig]
-    schedule: Optional[str]
-    destination: DestinationConfig
-    notifications: List[str] = field(default_factory=list)
-    shared: bool = False
-    ignore_null_fields: bool = True
-    action: ActionType = ActionType.upsert
+from cognite.transformations_cli.commands.deploy.transformation_types import (
+    AuthConfig,
+    DestinationConfig,
+    DestinationType,
+    ReadWriteAuthentication,
+    TransformationConfig,
+    TransformationConfigError,
+)
+from cognite.transformations_cli.commands.deploy.transformation_types_legacy import TransformationConfigLegacy
 
 
 def _validate_destination_type(external_id: str, destination_type: DestinationConfig) -> None:
@@ -127,8 +48,14 @@ def _validate_config(config: TransformationConfig) -> None:
 
 
 def _parse_transformation_config(path: str) -> TransformationConfig:
+    r = regex.compile(r"^legacy:\s*true\s*$", flags=regex.MULTILINE | regex.IGNORECASE)
     with open(path) as f:
-        return load_yaml(f, TransformationConfig, case_style="camel")
+        data = f.read()
+        if r.search(data) is not None:
+            legacy = load_yaml(data, TransformationConfigLegacy, case_style="camel")
+            return legacy.to_new()
+        else:
+            return load_yaml(data, TransformationConfig, case_style="camel")
 
 
 def parse_transformation_configs(base_dir: Optional[str]) -> List[TransformationConfig]:
