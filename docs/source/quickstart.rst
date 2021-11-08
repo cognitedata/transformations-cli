@@ -80,7 +80,7 @@ By default, transformations-cli runs against the main CDF cluster (europe-west1-
      - 
      - Deploy transformations
 
-``help``
+Help
 --------
 .. code-block:: bash
 
@@ -89,6 +89,30 @@ By default, transformations-cli runs against the main CDF cluster (europe-west1-
 
 ``transformations-cli list``
 ----------------------------
+``transformations-cli list`` can list transformations in a CDF project. ``--limit`` option is used to change number of transformations to list, defaults to 10.
+
+.. code-block:: bash
+
+    transformations-cli list
+    transformations-cli list --limit=2
+
+It prints transformations details in a tabular format.
+
+.. list-table:: List options
+   :widths: 25 25 25 25 25
+   :header-rows: 1
+
+   * - Option
+     - Default
+     - Flag
+     - Required
+     - Description
+   * - ``--limit``
+     - 10
+     - No
+     - No
+     - Number of transformations to list. Use -1 to list all.
+
 
 ``transformations-cli show``
 ----------------------------
@@ -104,6 +128,28 @@ At minimum, this command requires either an ``--id`` or ``--external-id`` or ``-
 
 It prints the transformation details in a tabular format, such as latest job's metrics and notifications.
 
+.. list-table:: Show options
+   :widths: 25 25 25 25
+   :header-rows: 1
+
+   * - Option
+     - Flag
+     - Required
+     - Description
+   * - ``--id``
+     - No
+     - No
+     - The ``id`` of the transformation to show. Either this or ``--external-id`` must be specified if ``job-id`` not specified.
+   * - ``--external-id``
+     - No
+     - No
+     - The ```external_id``` of the transformation to show. Either this or ``--id`` must be specified if ``job-id`` not specified.
+   * - ``--job-id``
+     - No
+     - No
+     - The id of the job to show. Include this to show job details.
+
+
 ``transformations-cli jobs``
 ----------------------------
 ``transformations-cli jobs`` can list the latest jobs. 
@@ -116,6 +162,32 @@ You can also provide ``--limit``, which defaults to 10. Use ``--limit=-1`` if yo
     transformations-cli jobs --limit=2
     transformations-cli jobs --id=1234
     transformations-cli jobs --external-id=my-transformation
+
+
+.. list-table:: Jobs options
+   :widths: 25 25 25 25 25
+   :header-rows: 1
+
+   * - Option
+     - Default
+     - Flag
+     - Required
+     - Description
+   * - ``--limit``
+     - 10
+     - No
+     - No
+     - Limit for the job history. Use -1 to retrieve all results.
+   * - ``--id``
+     - 
+     - No
+     - No
+     - List jobs by transformation ``id``. Either this or ``--external-id`` must be specified.
+   * - ``--external-id``
+     - 
+     - No
+     - No
+     - List jobs by transformation ``external_id``. Either this or ``--id`` must be specified.
 
 ``transformations-cli delete``
 ------------------------------
@@ -134,8 +206,88 @@ You can also specify ``--delete-schedule`` flag to delete a scheduled transforma
 
     transformations-cli delete --id=1234 --delete-schedule
 
+
+.. list-table:: Delete options
+   :widths: 25 25 25 25 25
+   :header-rows: 1
+
+   * - Option
+     - Default
+     - Flag
+     - Required
+     - Description
+   * - ``--id``
+     - 
+     - No
+     - No
+     - ``id`` of the transformation to be deleted. Either this or ``--external-id`` must be specified.
+   * - ``--external-id``
+     - 
+     - No
+     - No
+     - ``external_id`` of the transformation to be deleted. Either this or ``--id`` must be specified.
+   * - ``--delete-schedule``
+     - False
+     - Yes
+     - No
+     - Scheduled transformations cannot be deleted, delete schedule along with the transformation.
+
 Make a query: ``transformations-cli query``
 -------------------------------------------
+transformations-cli also allows you to run queries.
+
+.. code-block:: bash
+
+    transformations-cli query "select * from _cdf.assets limit 100"
+
+This will print the schema and the results. 
+The query command is intended for previewing your SQL queries, and is not designed for large data exports. For this reason, there are a few limits in place. Query command takes ``--infer-schema-limit``, ``--source-limit`` and ``--limit`` options. Default values are 100, 100 and 1000 in the corresponding order.
+
+
+.. list-table:: Query args
+   :widths: 25 25 25
+   :header-rows: 1
+
+   * - Arg
+     - Required
+     - Description
+   * - ``query``
+     - Yes
+     - SQL query to preview, string.
+
+.. list-table:: Query options
+   :widths: 25 25 25 25 25
+   :header-rows: 1
+
+   * - Option
+     - Default
+     - Flag
+     - Required
+     - Description
+   * - ``--limit``
+     - 1000
+     - No
+     - No
+     - This is equivalent to a final LIMIT clause on your query.
+   * - ``--source-limit``
+     - 100
+     - No
+     - No
+     - This limits the number of rows to read from each data source.
+   * - ``--infer-schema-limit``
+     - 100
+     - No
+     - No
+     - Schema inference limit.
+
+More details on ``source limit`` and ``infer schema limit``:
+    - ``--source-limit``: For example, if the source limit is 100, and you take the UNION of two tables, you will get 200 rows back. This parameter is set to 100 by default, but you can remove this limit by setting it to -1.
+    - ``--infer-schema-limit``: As RAW tables have no predefined schema, we need to read some number of rows to infer the schema of the table. As with the source limit, this is set to 100 by default, and can be made unlimited by setting it to -1. If your RAW data is not properly being split into separate columns, you should try to increase or remove this limit.
+
+.. code-block:: bash
+
+    transformations-cli query --source-limit=-1 "select * from db.table"
+
 
 Start a transformation job: ``transformations-cli run``
 -------------------------------------------------------
@@ -158,8 +310,83 @@ When using the ``--watch`` option, transformation-cli will return a non-zero exi
 
 If you want to watch a job for completion without actually starting a transformation job, specify ``--watch-only`` instead of ``--watch``. This will watch the most recently started job for completion.
 
-Create or update transformations: ``transformations-cli deploy``
-----------------------------------------------------------------
 
-``Github Action``
------------------
+.. list-table:: Run options
+   :widths: 25 25 25 25 25
+   :header-rows: 1
+
+   * - Option
+     - Default
+     - Flag
+     - Required
+     - Description
+   * - ``--id``
+     - 
+     - No
+     - No
+     - The ``id`` of the transformation to run. Either this or ``--external-id`` must be specified.
+   * - ``--external-id``
+     - 
+     - No
+     - No
+     - The ``external_id`` of the transformation to run. Either thisor ``--id`` must be specified.
+   * - ``--watch``
+     - False
+     - Yes
+     - No
+     - Wait until job has completed.
+   * - ``--watch-only``
+     - False
+     - Yes
+     - No
+     - Do not start a transformation job, only watch the most recent job for completion.
+   * - ``--time-out``
+     - 12 hr (in secs)
+     - No
+     - No
+     - Maximum amount of time to wait for job to complete in seconds.
+
+Deploy transformations: ``transformations-cli deploy``
+----------------------------------------------------------------
+``transformations-cli deploy`` is used to create or update transformations described by manifests.
+
+The primary purpose of transformations-cli is to support continuous delivery, allowing you to manage transformations in a version control system:
+    - Transformations are described by YAML files, whose structure is described further below in this document.
+    - It is recommended to place these manifest files in their own directory, to avoid conflicts with other files.
+
+To deploy a set of transformations, use the deploy subcommand:
+
+.. code-block:: bash
+
+    transformations-cli deploy <path>
+
+The ``<path>`` argument should point to a directory containing YAML manifests. 
+This directory is scanned recursively for ``*.yml`` and ``*.yaml`` files, so you can organize your transformations into separate subdirectories.
+
+.. list-table:: Deploy args
+   :widths: 25 25 25 25
+   :header-rows: 1
+
+   * - Arg
+     - Default
+     - Required
+     - Description
+   * - ``path``
+     - .
+     - Yes
+     - Root folder of transformation manifests. 
+
+
+``Transformation Manifest``
+---------------------------
+Important notes:
+    - When a scheduled transformations represented in a manifest without ``schedule`` provided, deploy will delete the existing schedule.
+    - When an existing notification is not provided along with the transformation to be updated, notification will be deleted.
+    - Values specified as ``${VALUE}`` are treated as environment variables while ``VALUE`` is directly used as the actual value.
+    - Old ``jetfire-cli`` style manifests can be used by adding ``legacy: true`` inside the old manifest.
+
+.. literalinclude:: transformation_oidc.yaml
+  :language: YAML
+
+.. literalinclude:: transformation_apikey.yaml
+  :language: YAML

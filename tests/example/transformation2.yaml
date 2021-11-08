@@ -1,4 +1,3 @@
-# version: v3
 externalId: "test-cli-transform-raw"
 name: "test-cli-transform-raw"
 destination: 

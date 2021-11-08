@@ -5,9 +5,20 @@ destination:
 shared: True
 action: "upsert"
 query: "select 'asd' as name, 'asd' as externalId"
+# query:
+#   file: query.sql
+schedule: "* * * * *"
 ignoreNullFields: False
-schedule: "5 4 * * *"
 notifications:
   - emel.varol@cognite.com
 authentication:
   apiKey: ${API_KEY}
+
+# # If you need to specity read/write authentication separately
+# authentication:
+#   read:
+#     apiKey: ${API_KEY}
+#   write:
+#     apiKey: ${API_KEY}
+
+

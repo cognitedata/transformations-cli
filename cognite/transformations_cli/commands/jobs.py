@@ -13,10 +13,8 @@ from cognite.transformations_cli.commands.utils import (
 
 
 @click.command(help="Show latest jobs for a given transformation")
-@click.option("--id", help="The id of the transformation to show. Either this or --external-id must be specified.")
-@click.option(
-    "--external-id", help="The externalId of the transformation to show. Either this or --id must be specified."
-)
+@click.option("--id", help="List jobs by transformation id. Either this or --external-id must be specified.")
+@click.option("--external-id", help="List jobs by transformation external_id. Either this or --id must be specified.")
 @click.option("--limit", default=10, help="Limit for the job history, defaults to 10. Use -1 to retrieve all results.")
 @click.pass_obj
 def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 10) -> None:

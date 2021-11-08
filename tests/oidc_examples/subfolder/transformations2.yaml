@@ -1,4 +1,3 @@
-# version: v3
 externalId: "test-cli-transform-oidc-raw"
 name: "test-cli-transform-oidc-raw"
 destination: 

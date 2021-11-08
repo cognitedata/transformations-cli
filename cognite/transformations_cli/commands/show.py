@@ -1,3 +1,4 @@
+import sys
 from typing import Dict, Optional
 
 import click
@@ -17,17 +18,18 @@ from cognite.transformations_cli.commands.utils import (
 
 
 @click.command(help="Show detalis of a transformation")
-@click.option("--id", help="The id of the transformation to show. Either this or --external-id must be specified.")
+@click.option("--id", help="The id of the transformation to show. Either this or --external-id can be specified.")
 @click.option(
-    "--external-id", help="The externalId of the transformation to show. Either this or --id must be specified."
+    "--external-id", help="The external_id of the transformation to show. Either this or --id can be specified."
 )
-@click.option(
-    "--job-id", help="The id of the job to show. Include this to show job details instead of transformation details."
-)
+@click.option("--job-id", help="The id of the job to show. Include this to show job details.")
 @click.pass_obj
 def show(obj: Dict, id: Optional[int], external_id: Optional[str], job_id: Optional[int]) -> None:
     _, exp_client = get_clients(obj)
     is_id_exclusive(id, external_id)
+    if not (id or external_id or job_id):
+        click.echo("Please provide id, external_id or job_id")
+        sys.exit(1)
     try:
         tr = None
         job = None

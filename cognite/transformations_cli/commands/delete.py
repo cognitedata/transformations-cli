@@ -10,7 +10,7 @@ from cognite.transformations_cli.commands.utils import exit_with_cognite_api_err
 @click.command(help="Delete a transformation")
 @click.option("--id", help="The id of the transformation to show. Either this or --external-id must be specified.")
 @click.option(
-    "--external-id", help="The externalId of the transformation to show. Either this or --id must be specified."
+    "--external-id", help="The external_id of the transformation to show. Either this or --id must be specified."
 )
 @click.option("--delete-schedule", is_flag=False, help="Delete the schedule before deleting the transformation.")
 @click.pass_obj

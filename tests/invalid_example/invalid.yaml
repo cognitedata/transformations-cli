@@ -1,4 +1,3 @@
-# version: v3
 name: "test-cli-transform-oidc"
 destination: 
   type: "assets"

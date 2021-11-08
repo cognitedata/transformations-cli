@@ -20,18 +20,18 @@ from cognite.transformations_cli.commands.utils import (
 @click.command(help="Start and/or watch transformation jobs")
 @click.option("--id", help="The id of the transformation to run. Either this or --external-id must be specified.")
 @click.option(
-    "--external-id", help="The externalId of the transformation to run. Either this or --id must be specified."
+    "--external-id", help="The external_id of the transformation to run. Either this or --id must be specified."
 )
-@click.option("--watch", is_flag=True, help="Wait until job has completed")
+@click.option("--watch", is_flag=True, help="Wait until job has completed.")
 @click.option(
     "--watch-only",
     is_flag=True,
-    help="Do not start a transformation job, only watch the most recent job for completion",
+    help="Do not start a transformation job, only watch the most recent job for completion.",
 )
 @click.option(
     "--time-out",
     default=(12 * 60 * 60),
-    help="Maximum amount of time to wait for job to complete in seconds, 12 hours by default",
+    help="Maximum amount of time to wait for job to complete in seconds, 12 hours by default.",
 )
 @click.pass_obj
 def run(
