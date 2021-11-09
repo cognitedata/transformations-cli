@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.0.1] - 2021-11-09
+### Added
+- Publish documentation in Read The Docs
+
 ## [1.0.0] - 2021-11-08
 ### Added
 - Add Quickstart documentation
