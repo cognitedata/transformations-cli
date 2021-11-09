@@ -72,7 +72,7 @@ class TransformationConfig:
     schedule: Optional[str]
     destination: DestinationConfig
     notifications: List[str] = field(default_factory=list)
-    shared: bool = False
+    shared: bool = True
     ignore_null_fields: bool = True
     action: ActionType = ActionType.upsert
     legacy: bool = False

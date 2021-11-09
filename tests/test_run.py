@@ -66,7 +66,7 @@ def test_watch_only(
     assert len(jobs) == 1  # check that 'run' didn't generate a new job as it is watch-only mode
     exp_client.transformations.delete(external_id=external_id)
 
-    assert cli_result.exit_code == 0
+    assert cli_result.exit_code == 1
 
     cli_result_list = from_table(cli_result.output)
     assert "Failed" in cli_result_list[2]

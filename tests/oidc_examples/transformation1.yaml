@@ -1,8 +1,7 @@
-# version: v3
 externalId: "test-cli-transform-oidc"
 name: "test-cli-transform-oidc"
 destination: 
-  type: "assets"
+  type: "string_datapoints"
 shared: True
 action: "upsert"
 query: "select 'asd' as name, 'asd' as externalId"
