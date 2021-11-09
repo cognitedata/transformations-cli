@@ -5,9 +5,11 @@
 Cognite Python `transformations-cli`
 ================================
 [![Build Status](https://github.com/cognitedata/transformations-cli/workflows/release/badge.svg)](https://github.com/cognitedata/transformations-cli/actions)
+[![Documentation Status](https://readthedocs.com/projects/cognite-transformations-cli/badge/?version=latest&token=a9bab88214cbf624706005f6a71bbd77964efc910f8e527c7b3d75edc016397c)](https://cognite-transformations-cli.readthedocs-hosted.com/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/cognitedata/transformations-cli/branch/main/graph/badge.svg?token=PSkli74vvX)](https://codecov.io/gh/cognitedata/transformations-cli)
 [![PyPI version](https://badge.fury.io/py/cognite-transformations-cli.svg)](https://pypi.org/project/cognite-transformations-cli)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/cognite-transformations-cli)
+[![License](https://img.shields.io/github/license/cognitedata/python-extractor-utils)](LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 # Transformations CLI
