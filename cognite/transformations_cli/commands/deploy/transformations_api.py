@@ -1,3 +1,4 @@
+import os
 import sys
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -27,7 +28,7 @@ TupleResult = List[Tuple[str, str]]
 StandardResult = List[str]
 
 
-def to_transformation(config: TransformationConfig, cluster: str = "europe-west1-1") -> Transformation:
+def to_transformation(conf_path: str, config: TransformationConfig, cluster: str = "europe-west1-1") -> Transformation:
     return Transformation(
         name=config.name,
         external_id=config.external_id,
@@ -35,7 +36,7 @@ def to_transformation(config: TransformationConfig, cluster: str = "europe-west1
         conflict_mode=to_action(config.action),
         is_public=config.shared,
         ignore_null_fields=config.ignore_null_fields,
-        query=to_query(config.query),
+        query=to_query(conf_path, config.query),
         source_api_key=to_read_api_key(config.authentication),
         destination_api_key=to_write_api_key(config.authentication),
         source_oidc_credentials=to_read_oidc(config.authentication, cluster),
@@ -53,10 +54,12 @@ def to_destination(destination: DestinationConfig) -> TransformationDestination:
     return TransformationDestination(destination.type.value)
 
 
-def to_query(query: Union[str, QueryConfig]) -> str:
+def to_query(conf_path: str, query: Union[str, QueryConfig]) -> str:
     try:
+        dir_path = os.path.dirname(conf_path)
         if isinstance(query, QueryConfig):
-            with open(query.file, "r") as f:
+            sql_path = os.path.join(dir_path, query.file)
+            with open(sql_path, "r") as f:
                 return f.read().replace("\n", "")
         return query
     except:

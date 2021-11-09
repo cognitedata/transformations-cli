@@ -117,7 +117,7 @@ The following sections show migrating different manifest properties:
 - No changes required.
 
 #### Migrate `query`:
-In the old version, `query` field expected **sql file path**. Now it is slightly different, you can either provide a sql file path relative to the working directory or provide the query as a string directly.
+In the old version, `query` field expected **sql file path**. Now it is slightly different, you can either provide a sql file path or provide the query as a string directly.
 
 
 <table>

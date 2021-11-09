@@ -54,8 +54,12 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
     click.echo("Deploying transformation...")
     try:
         _, exp_client = get_clients(obj)
+        cluster = obj["cluster"]
         transformation_configs = parse_transformation_configs(path)
-        transformations = [to_transformation(t) for t in transformation_configs]
+        transformations = [
+            to_transformation(conf_path, transformation_configs[conf_path], cluster)
+            for conf_path in transformation_configs
+        ]
         transformations_ext_ids = [t.external_id for t in transformation_configs]
 
         existing_transformations_ext_ids = get_existing_trasformation_ext_ids(exp_client, transformations_ext_ids)
