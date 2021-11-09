@@ -19,6 +19,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     DestinationType,
     QueryConfig,
     ReadWriteAuthentication,
+    ScheduleConfig,
     TransformationConfig,
 )
 from cognite.transformations_cli.commands.utils import exit_with_cognite_api_error
@@ -130,8 +131,14 @@ def to_write_oidc(
     )
 
 
-def to_schedule(transformation_external_id: str, interval: str) -> TransformationSchedule:
-    return TransformationSchedule(external_id=transformation_external_id, interval=interval)
+def to_schedule(transformation_external_id: str, schedule: Union[str, ScheduleConfig]) -> TransformationSchedule:
+    if isinstance(schedule, ScheduleConfig):
+        interval = schedule.interval
+        is_paused = schedule.is_paused
+    else:
+        interval = schedule
+        is_paused = False
+    return TransformationSchedule(external_id=transformation_external_id, interval=interval, is_paused=is_paused)
 
 
 def to_notification(transformation_external_id: str, destination: str) -> TransformationNotification:
