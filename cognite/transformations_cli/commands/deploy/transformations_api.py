@@ -81,7 +81,7 @@ def to_write_api_key(authentication: Union[AuthConfig, ReadWriteAuthentication])
 
 def stringify_scopes(scopes: Optional[List[str]]) -> Optional[str]:
     if scopes:
-        " ".join(scopes)
+        return " ".join(scopes)
     return None
 
 
