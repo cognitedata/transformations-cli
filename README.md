@@ -30,7 +30,7 @@ Documentation for CLI is hosted [here](https://cognite-transformations-cli.readt
 #### Transformation Manifests
 
 Important notes:
-- When a scheduled transformations represented in a manifest without schedule provided, deploy will delete the existing schedule.
+- When a scheduled transformation is represented in a manifest without schedule provided, deploy will delete the existing schedule.
 
 - When an existing notification is not provided along with the transformation to be updated, notification will be deleted.
 
