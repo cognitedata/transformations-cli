@@ -19,15 +19,13 @@ Usage
 -----
 
 Authenticate with API keys
---------------------------
-
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To use transformations-cli:
     - The ``TRANSFORMATIONS_API_KEY`` environment variable must be set to a valid API key for a service account which has access to Transformations. 
     - ``TRANSFORMATIONS_PROJECT`` environment variable is optional for API key authentication, CDF project can be inferred from API key if skipped. 
 
 Authenticate with OIDC credentials
-----------------------------------
-
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 When using OIDC, you need to set the environment variables:
     - ``TRANSFORMATIONS_CLIENT_ID``: Required
     - ``TRANSFORMATIONS_CLIENT_SECRET``: Required
@@ -378,7 +376,7 @@ This directory is scanned recursively for ``*.yml`` and ``*.yaml`` files, so you
 
 
 ``Transformation Manifest``
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Important notes:
     - When a scheduled transformations represented in a manifest without ``schedule`` provided, deploy will delete the existing schedule.
     - When an existing notification is not provided along with the transformation to be updated, notification will be deleted.

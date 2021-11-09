@@ -1,5 +1,5 @@
 Cognite transformations-cli package
-===============================
+===================================
 
 Command-line interface for Cognite Transformations.
 
