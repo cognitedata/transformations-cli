@@ -15,7 +15,9 @@ Cognite Python `transformations-cli`
 The Transormations CLI is a replacement for [jetfire-cli](https://github.com/cognitedata/jetfire-cli) rewritten on top
 of the new Python SDK for Transformations.
 
-Documentation for command line interface is hosted [here](https://cognite-transformations-cli.readthedocs-hosted.com/en/latest/).
+### CLI Documentation
+
+Documentation for CLI is hosted [here](https://cognite-transformations-cli.readthedocs-hosted.com/en/latest/).
 
 ### Github Action
 
