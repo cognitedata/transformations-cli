@@ -23,7 +23,7 @@ Documentation for CLI is hosted [here](https://cognite-transformations-cli.readt
 
 ### Github Action
 
-`transformations-cli` also provides a GitHub Action, which can be used to deploy transformations. You can find the documentation for transformations-cli Github action [here](githubaction.md).
+`transformations-cli` also provides a GitHub Action which can be used to deploy transformations. You can find the documentation for transformations-cli GitHub action [here](githubaction.md).
 
 
 ### Github Action Migration: jetfire-cli@v2 to transformations-cli@main
