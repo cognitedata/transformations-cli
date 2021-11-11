@@ -4,10 +4,10 @@ destination:
   type: "string_datapoints"
 shared: True
 action: "upsert"
-query: "select 'asd' as name, 'asd' as externalId"
+query: "select 0 as timestamp, 'invalid transformation' as value, 'invalid' as externalId"
 ignoreNullFields: False
 notifications:
-  - emel.varol@cognite.com
+  - example@cognite.com
 authentication:
   clientId: ${CLIENT_ID}
   clientSecret: ${CLIENT_SECRET}

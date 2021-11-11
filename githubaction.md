@@ -2,9 +2,9 @@
 
 `transformations-cli` also provides a GitHub Action, which can be used to deploy transformations.
 
-1- Create transformation manifests and place them into a folder structure in your repository.
+1. Create transformation manifests and place them into a folder structure in your repository.
 
-## Transformation Manifests
+## Transformation manifests
 
 Important notes:
 - When a scheduled transformation is represented in a manifest without schedule provided, deploy will delete the existing schedule.
@@ -26,13 +26,13 @@ Important notes:
    type: "assets"
    shared: True
    action: "upsert"
-   query: "select 'asd' as name, 'asd' as externalId"
+   query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
    # query:
    #   file: query.sql
    schedule: "* * * * *"
    ignoreNullFields: False
    notifications:
-   - emel.varol@cognite.com
+   - example@cognite.com
    authentication:
    apiKey: ${API_KEY}
 
@@ -78,7 +78,7 @@ shared: True
 action: "upsert"
 
 # Required
-query: "select 'asd' as name, 'asd' as externalId"
+query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
 
 # Or the path to a file containing the SQL query for this transformation.
 # query:
@@ -93,6 +93,7 @@ ignoreNullFields: False
 # List of email adresses to send emails to on transformation errors
 notifications:
   - example@cognite.com
+  - example2@cognite.com
 
 # The client credentials to be used in the transformation
 authentication:
@@ -124,7 +125,7 @@ authentication:
 #     # audience: ""
 ```
 
-2- To deploy a set of transformations in a GitHub workflow, add a step which references the action in your job.
+2. To deploy a set of transformations in a GitHub workflow, add a step which references the action in your job.
 
 ## Deploy step with API keys
 

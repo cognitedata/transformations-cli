@@ -1,1 +1,1 @@
-select 1 as key, 'asd' as name, 'asd' as externalId
+select 1 as key, 'example' as name, 'example' as externalId

@@ -11,7 +11,7 @@ query:
 ignoreNullFields: False
 schedule: "5 4 * * *"
 notifications:
-  - emel.varol@cognite.com
+  - example@cognite.com
 authentication:
   read:
     clientId: ${CLIENT_ID}

@@ -29,7 +29,7 @@ shared: True
 action: "upsert"
 
 # Required
-query: "select 'asd' as name, 'asd' as externalId"
+query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
 
 # Or the path to a file containing the SQL query for this transformation.
 # query:

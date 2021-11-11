@@ -3,7 +3,7 @@ destination:
   type: "assets"
 shared: True
 notification:
-  - emel.varol@cognite.com
+  - example@cognite.com
   
 
 

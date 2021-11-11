@@ -28,7 +28,7 @@ Documentation for CLI is hosted [here](https://cognite-transformations-cli.readt
 
 ### Github Action Migration: jetfire-cli@v2 to transformations-cli@main
 
-We recommend you start using the new Github Action. You can find the migration guide [here](migrationguide.md).
+If you've already used the old `jetfire-cli` in a GitHub action we recommend you migrate to the new Github Action. You can find the migration guide [here](migrationguide.md).
 
 ### Contributing
 

@@ -1,14 +1,14 @@
 # Migration from jetfire-cli@v2 to transformations-cli@main
 
 ## Deploy Step Changes:
-1- Deploy step should use `transformations-cli@main` instead of `jetfire-cli@v2`:
+1. Deploy step should use `transformations-cli@main` instead of `jetfire-cli@v2`:
 ```yaml
 # Github workflow
       - name: Transformations Deploy step
         uses: transformations-cli@main
 ```
 
-2- `project-name` input should be renamed as `cdf-project-name`:
+2. `project-name` input should be renamed as `cdf-project-name`:
 
 ```yaml
 # Github workflow
@@ -51,7 +51,7 @@ authentication:
 ```
 
 ## Manifest Changes:
-There are two options to achieve this:
+There are two options to achieve this: Set `legacy` flag on your existing manifest with no changes or start using the new format!
 
 ### Set legacy flag in your legacy manifest:
 Add `legacy: true` to your legacy transformation manifests.
@@ -65,12 +65,12 @@ externalId: hello
 ```
 
 ### Start using the new manifest format:
-Although we provide backward compatibility with `legacy` flag, we recommend using the new manifest format:
+Although we provide backward compatibility with the `legacy` flag, we recommend using the new manifest format as:
 - It has an improved structure
 - It will be maintained with new functionalities and properties
 - It leaves whether to use environment variables or actual values for manifest fields to the user. So it is flexible.
 
-The following sections show migrating different manifest properties:
+The following sections show the requirements for migrating the different fields of the manifest:
 
 #### Migrate `name`:
 - No changes required.
@@ -79,9 +79,9 @@ The following sections show migrating different manifest properties:
 - No changes required.
 
 #### Migrate `destination`:
--  `assets`, `events`, `timeseries`, `datapoints`, `sequences`, `labels`, `relationships`, `files`, `raw` remain the same but now, it is **case sensitive**.
-- Additionally, `data_sets` is supported.
-- Changed destination types:
+-  `assets`, `events`, `timeseries`, `datapoints`, `sequences`, `labels`, `relationships`, `files`, `raw` are now **case sensitive** and should be lower case.
+- We now also support `data_sets`.
+- These resource types change formatting:
 <table>
 <tr>
 <th> Legacy (Case insensitive) </th>
@@ -117,7 +117,7 @@ The following sections show migrating different manifest properties:
 - No changes required.
 
 #### Migrate `query`:
-In the old version, `query` field expected **sql file path**. Now it is slightly different, you can either provide a sql file path or provide the query as a string directly.
+In the old version, the `query` field expected the path to a SQL file. Now you can either provide a SQL file path or provide the query directly as a string.
 
 
 <table>
@@ -138,7 +138,7 @@ query: my_query.sql
 
 ```yaml
 #  Transformation manifest
-query: "select 'asd' as name"
+query: "select 'asset1' as name"
 ```
 
 ```yaml
@@ -191,6 +191,50 @@ authentication:
 </table>
 
 
+#### Migrate `authentication`:
+- `clientId` and `clientSecret` were assumed to be environment variables while others are used as actual values.:
+- Also, we added support for `audience` parameter to retrieve the token.
+<table>
+<tr>
+<th> Legacy </th>
+<th> New </th>
+</tr>
+<tr>
+<td>
+
+```yaml
+# Legacy ransformation manifest
+...
+  # The following two is given as the name of an environment variable
+  clientId: COGNITE_CLIENT_ID
+  clientSecret: COGNITE_CLIENT_SECRET
+  # The following are explicit values, not environment variables
+  tokenUrl: https://my-idp.com/oauth2/token
+  scopes:
+    - https://bluefield.cognitedata.com/.default
+  cdfProjectName: my-project
+...
+```
+</td>
+<td>
+
+```yaml
+# Transformation manifest
+...
+  clientId: ${CLIENT_ID}
+  clientSecret: ${CLIENT_SECRET}
+  tokenUrl: https://my-idp.com/oauth2/token
+  scopes: 
+    - https://bluefield.cognitedata.com/.default
+  cdfProjectName: my-project
+  # audience: ""
+...
+```
+
+</td>
+</tr>
+</table>
+
 - `apiKey` configuration is moved under `authentication`.
 
 <table>
@@ -228,50 +272,6 @@ authentication:
     apiKey: 
         read: ${READ_API_KEY} # as provided in deploy step
         write: ${WRITE_API_KEY} # as provided in deploy step
-```
-
-</td>
-</tr>
-</table>
-
-#### Migrate `authentication`:
-- Client credential configuration is almost the same. `clientId` and `clientSecret` were assumed to be environment variables while others are used as actual values. In the new Action, we expect a different syntax, descibed in `Migrate apiKey` section:
-- Also, we added support for `audience` parameter to retrieve the token.
-<table>
-<tr>
-<th> Legacy </th>
-<th> New </th>
-</tr>
-<tr>
-<td>
-
-```yaml
-# Legacy ransformation manifest
-...
-  # The following two is given as the name of an environment variable
-  clientId: COGNITE_CLIENT_ID
-  clientSecret: COGNITE_CLIENT_SECRET
-  # The following are explicit values, not environment variables
-  tokenUrl: https://my-idp.com/oauth2/token
-  scopes:
-    - https://bluefield.cognitedata.com/.default
-  cdfProjectName: my-project
-...
-```
-</td>
-<td>
-
-```yaml
-# Transformation manifest
-...
-  clientId: ${CLIENT_ID}
-  clientSecret: ${CLIENT_SECRET}
-  tokenUrl: https://my-idp.com/oauth2/token
-  scopes: 
-    - https://bluefield.cognitedata.com/.default
-  cdfProjectName: my-project
-  # audience: ""
-...
 ```
 
 </td>

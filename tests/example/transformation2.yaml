@@ -10,7 +10,7 @@ query:
   file: my_transform.sql
 ignoreNullFields: False
 notifications:
-  - emel.varol@cognite.com
+  - example@cognite.com
 authentication:
   read:
     apiKey: ${API_KEY}

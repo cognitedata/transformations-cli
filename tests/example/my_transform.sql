@@ -1,1 +1,1 @@
-select 'asd' as key, 'asd' as externalId
+select 'My Asset Transformation' as key, 'asset1' as externalId
