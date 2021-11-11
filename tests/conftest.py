@@ -32,17 +32,17 @@ def token_uri() -> str:
 
 @pytest.fixture
 def scopes() -> str:
-    return "https://bluefield.cognitedata.com/.default"
+    return "https://westeurope-1.cognitedata.com/.default"
 
 
 @pytest.fixture
 def cdf_project_name() -> str:
-    return "extractor-bluefield-testing"
+    return "jetfiretest-westeurope1"
 
 
 @pytest.fixture
 def cluster() -> str:
-    return "bluefield"
+    return "westeurope-1"
 
 
 @pytest.fixture
