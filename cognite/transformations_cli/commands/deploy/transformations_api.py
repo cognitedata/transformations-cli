@@ -49,10 +49,12 @@ def to_action(action: ActionType) -> str:
 
 
 def to_destination(destination: DestinationConfig) -> TransformationDestination:
-    if destination.type == DestinationType.raw:
-        return RawTable("raw", destination.raw_database, destination.raw_table)
-    return TransformationDestination(destination.type.value)
-
+    if isinstance(destination) == DestinationConfig:
+        if destination.type == DestinationType.raw:
+            return RawTable("raw", destination.raw_database, destination.raw_table)
+        return TransformationDestination(destination.type.value)
+    else:
+        return TransformationDestination(destination)
 
 def to_query(conf_path: str, query: Union[str, QueryConfig]) -> str:
     try:
