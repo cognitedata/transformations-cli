@@ -27,7 +27,7 @@ def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 
             id_str = f"id {id}"
         if external_id:
             id = get_id_from_external_id(exp_client=exp_client, external_id=external_id)
-            id_str = f"id {external_id}"
+            id_str = f"external_id {external_id}"
 
         if id_str:
             click.echo(f"Listing the latest jobs for transformation with {id_str}:")
