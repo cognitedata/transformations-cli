@@ -30,6 +30,9 @@ name: "test-cli-transform-oidc"
 # "string_datapoints", "sequences", "files", "labels", "relationships", "raw", "data_sets"
 destination: 
   type: "assets"
+
+# destination: "assets"
+
 # When writing to RAW tables, use the following syntax:
 # destination:
 #   type: raw
