@@ -378,7 +378,7 @@ This directory is scanned recursively for ``*.yml`` and ``*.yaml`` files, so you
 ``Transformation Manifest``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Important notes:
-    - When a scheduled transformations represented in a manifest without ``schedule`` provided, deploy will delete the existing schedule.
+    - When a scheduled transformation is represented in a manifest without ``schedule`` provided, deploy will delete the existing schedule.
     - When an existing notification is not provided along with the transformation to be updated, notification will be deleted.
     - Values specified as ``${VALUE}`` are treated as environment variables while ``VALUE`` is directly used as the actual value.
     - Old ``jetfire-cli`` style manifests can be used by adding ``legacy: true`` inside the old manifest.

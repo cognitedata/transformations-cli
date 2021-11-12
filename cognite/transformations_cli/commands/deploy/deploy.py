@@ -54,9 +54,13 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
     click.echo("Deploying transformation...")
     try:
         _, exp_client = get_clients(obj)
+        cluster = obj["cluster"]
         transformation_configs = parse_transformation_configs(path)
-        transformations = [to_transformation(t) for t in transformation_configs]
-        transformations_ext_ids = [t.external_id for t in transformation_configs]
+        transformations = [
+            to_transformation(conf_path, transformation_configs[conf_path], cluster)
+            for conf_path in transformation_configs
+        ]
+        transformations_ext_ids = [t.external_id for t in transformation_configs.values()]
 
         existing_transformations_ext_ids = get_existing_trasformation_ext_ids(exp_client, transformations_ext_ids)
         new_transformation_ext_ids = get_new_transformation_ids(
@@ -74,7 +78,7 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
         existing_notifications_dict = get_existing_notifications_dict(exp_client, transformations_ext_ids)
 
         requested_schedules_dict = {
-            t.external_id: to_schedule(t.external_id, t.schedule) for t in transformation_configs if t.schedule
+            t.external_id: to_schedule(t.external_id, t.schedule) for t in transformation_configs.values() if t.schedule
         }
 
         deleted_schedules, updated_schedules, created_schedules = upsert_schedules(
@@ -90,7 +94,7 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
         print_results("schedule", "create", created_schedules, debug)
 
         requested_notifications_dict = dict()
-        for t in transformation_configs:
+        for t in transformation_configs.values():
             if t.notifications:
                 notifs = [to_notification(t.external_id, dest) for dest in t.notifications]
                 requested_notifications_dict[t.external_id] = notifs

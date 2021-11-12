@@ -52,7 +52,7 @@ action: delete
 """
     write_config(test_name, file, 0)
     configs = parse_transformation_configs(test_name)
-    conf = configs[0]
+    conf = list(configs.values())[0]
 
     assert conf.external_id == "testExternalId"
     assert conf.name == "testName"
@@ -114,7 +114,7 @@ action: delete
 """
     write_config(test_name, file, 0)
     configs = parse_transformation_configs(test_name)
-    conf = configs[0]
+    conf = list(configs.values())[0]
 
     assert conf.external_id == "testExternalId"
     assert conf.name == "testName"
@@ -197,7 +197,7 @@ action: Delete
     os.environ["TEST_CLIENT_SECRET_WRITE"] = "testClientSecretWrite"
 
     configs = parse_transformation_configs(test_name)
-    conf = configs[0]
+    conf = list(configs.values())[0]
 
     assert conf.external_id == "testExternalId"
     assert conf.name == "testName"
@@ -261,7 +261,7 @@ action: DELETE
     os.environ["TEST_API_KEY_WRITE"] = "testApiKeyWrite"
 
     configs = parse_transformation_configs(test_name)
-    conf = configs[0]
+    conf = list(configs.values())[0]
 
     assert conf.external_id == "testExternalId"
     assert conf.name == "testName"

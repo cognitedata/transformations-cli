@@ -1,6 +1,6 @@
 import glob
 import os
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from cognite.extractorutils.configtools import load_yaml
 from regex import regex
@@ -58,14 +58,14 @@ def _parse_transformation_config(path: str) -> TransformationConfig:
             return load_yaml(data, TransformationConfig, case_style="camel")
 
 
-def parse_transformation_configs(base_dir: Optional[str]) -> List[TransformationConfig]:
+def parse_transformation_configs(base_dir: Optional[str]) -> Dict[str, TransformationConfig]:
     if base_dir is None:
         base_dir = "."
 
     if os.path.isdir(base_dir) is False:
         raise TransformationConfigError(f"Transformation root folder not found: {base_dir}")
 
-    transformations: List[TransformationConfig] = []
+    transformations: Dict[str, TransformationConfig] = dict()
     yaml_paths: List[str] = glob.glob(f"{base_dir}/**/*.yaml", recursive=True) + glob.glob(
         f"{base_dir}/**/*.yml", recursive=True
     )
@@ -75,7 +75,7 @@ def parse_transformation_configs(base_dir: Optional[str]) -> List[Transformation
             parsed_conf = _parse_transformation_config(file_path)
             # This will raise exceptions if invalid
             _validate_config(parsed_conf)
-            transformations.append(parsed_conf)
+            transformations[file_path] = parsed_conf
         except Exception as e:
             raise TransformationConfigError(
                 f"Failed to parse transformation config, please check that you conform required fields and format: {e}"

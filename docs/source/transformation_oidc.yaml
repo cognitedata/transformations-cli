@@ -29,7 +29,7 @@ shared: True
 action: "upsert"
 
 # Required
-query: "select 'asd' as name, 'asd' as externalId"
+query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
 
 # Or the path to a file containing the SQL query for this transformation.
 # query:
@@ -44,6 +44,7 @@ ignoreNullFields: False
 # List of email adresses to send emails to on transformation errors
 notifications:
   - example@cognite.com
+  - example2@cognite.com
 
 # The client credentials to be used in the transformation
 authentication:
@@ -55,7 +56,7 @@ authentication:
   cdfProjectName: ${CDF_PROJECT_NAME}
   # audience: ""
 
-# If you need to specity read/write credentials separately
+# If you need to specify read/write credentials separately
 # authentication:
 #   read:
 #     clientId: ${CLIENT_ID}
