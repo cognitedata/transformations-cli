@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.2.0] - 2021-11-16
+### Added
+- Add support for simple pagination in jobs and transformations
+
 ## [1.1.0] - 2021-11-12
 ### Added
 - Support str on TransformationConfig.destination when the target is not raw.
