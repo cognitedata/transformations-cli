@@ -28,13 +28,13 @@ def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 
         if external_id:
             id = get_id_from_external_id(exp_client=exp_client, external_id=external_id)
             id_str = f"id: {external_id}"
-        
+
         click.echo(f"Listing the latest jobs for transformation with {id_str}:")
         jobs = exp_client.transformations.jobs.list(limit=limit, transformation_id=id)
 
         if jobs:
             if interactive:
-                chunks = [jobs[i:i + 10] for i in range(0, len(jobs), 10)]
+                chunks = [jobs[i : i + 10] for i in range(0, len(jobs), 10)]
                 for chunk in chunks:
                     click.clear()
                     click.echo(f"Resulting jobs for transformation with {id_str}:")
