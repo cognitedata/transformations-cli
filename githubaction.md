@@ -137,7 +137,7 @@ authentication:
     api-key: ${{ secrets.TRANSFORMATIONS_API_KEY }}
     # If not using the main europe-west1-1 cluster:
     # cluster: greenfield
-    # cdf-project-name: my-project # to supress python sdk warning, it is not required for API keys.
+    # cdf-project-name: my-project # to suppress python SDK warning (not required for API keys).
   env:
     # API key to be used when running your transformations,
     # As referenced in your transformation manifests
