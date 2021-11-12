@@ -66,9 +66,9 @@ externalId: hello
 
 ### Start using the new manifest format:
 Although we provide backward compatibility with the `legacy` flag, we recommend using the new manifest format as:
-- It has an improved structure
-- It will be maintained with new functionalities and properties
-- It leaves whether to use environment variables or actual values for manifest fields to the user. So it is flexible.
+- it has an improved structure
+- new functionality will only be made available in the new format
+- it enables the use of environment variables
 
 The following sections show the requirements for migrating the different fields of the manifest:
 
