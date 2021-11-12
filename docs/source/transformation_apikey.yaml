@@ -11,6 +11,7 @@ schedule: "* * * * *"
 ignoreNullFields: False
 notifications:
   - example@cognite.com
+  - example2@cognite.com
 authentication:
   apiKey: ${API_KEY}
 

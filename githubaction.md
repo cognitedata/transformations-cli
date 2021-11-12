@@ -1,4 +1,4 @@
-# `transformations-cli` Github Action
+# `transformations-cli` GitHub Action
 
 `transformations-cli` also provides a GitHub Action, which can be used to deploy transformations.
 
@@ -33,6 +33,7 @@ Important notes:
    ignoreNullFields: False
    notifications:
    - example@cognite.com
+   - example2@cognite.com
    authentication:
    apiKey: ${API_KEY}
 
@@ -125,7 +126,7 @@ authentication:
 #     # audience: ""
 ```
 
-2. To deploy a set of transformations in a GitHub workflow, add a step which references the action in your job.
+2. To deploy a set of transformations in a GitHub workflow, add a step which references the Action in your job.
 
 ## Deploy step with API keys
 
@@ -144,7 +145,7 @@ authentication:
     SOME_API_KEY: ${{ secrets.SOME_API_KEY }}
 ```
 
-This GitHub action takes the following inputs:
+This GitHub Action takes the following inputs:
 
 | Name      | Description |
 |-----------|-------------|
@@ -156,7 +157,7 @@ Additionally, you must specify environment variables for any API keys or environ
 
 ## Deploy step with OIDC credentials
 
-Alternatively when using OIDC, the action needs the client details instead of `api-key`:
+Alternatively when using OIDC, the Action needs the client details instead of `api-key`:
 ```yaml
 - name: Deploy transformations
   uses: cognitedata/transformations-cli@main
@@ -177,7 +178,7 @@ Alternatively when using OIDC, the action needs the client details instead of `a
       # audience: "" # Optional
 ```
 
-This GitHub action takes the following inputs:
+This GitHub Action takes the following inputs:
 
 | Name      | Description |
 |-----------|-------------|

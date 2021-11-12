@@ -21,14 +21,14 @@ of the new Python SDK for Transformations.
 
 Documentation for CLI is hosted [here](https://cognite-transformations-cli.readthedocs-hosted.com/en/latest/).
 
-### Github Action
+### GitHub Action
 
-`transformations-cli` also provides a GitHub Action which can be used to deploy transformations. You can find the documentation for transformations-cli GitHub action [here](githubaction.md).
+`transformations-cli` also provides a GitHub Action which can be used to deploy transformations. You can find the documentation for transformations-cli GitHub Action [here](githubaction.md).
 
 
-### Github Action Migration: jetfire-cli@v2 to transformations-cli@main
+### GitHub Action Migration: jetfire-cli@v2 to transformations-cli@main
 
-If you've already used the old `jetfire-cli` in a GitHub action we recommend you migrate to the new Github Action. You can find the migration guide [here](migrationguide.md).
+If you've already used the old `jetfire-cli` in a GitHub Action we recommend you migrate to the new GitHub Action. You can find the migration guide [here](migrationguide.md).
 
 ### Contributing
 

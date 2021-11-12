@@ -3,7 +3,7 @@
 ## Deploy Step Changes:
 1. Deploy step should use `transformations-cli@main` instead of `jetfire-cli@v2`:
 ```yaml
-# Github workflow
+# GitHub Workflow
       - name: Transformations Deploy step
         uses: transformations-cli@main
 ```
@@ -11,7 +11,7 @@
 2. `project-name` input should be renamed as `cdf-project-name`:
 
 ```yaml
-# Github workflow
+# GitHub Workflow
        with:
           path: <transformations_folder>
           ...
@@ -22,7 +22,7 @@
 3- Make sure `scopes` are space separated if you need multiple scopes:
 
 ```yaml
-# Github workflow
+# GitHub Workflow
        with:
           path: <transformations_folder>
           ...
@@ -32,7 +32,7 @@
 
 4- You can reference values as environment values or actual values in manifests, make sure you provide env variables you need in your manifests.
 ```yaml
-# Github workflow
+# GitHub Workflow
       env:
           TOKEN_URL: https://login.microsoftonline.com/someaad/oauth2/v2.0/token
           CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}

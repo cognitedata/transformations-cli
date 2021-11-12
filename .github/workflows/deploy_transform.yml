@@ -19,7 +19,7 @@ jobs:
         with:
           path: tests/example
           api-key: ${{secrets.EXAMPLE_API_KEY}}
-          cdf-project-name: jetfiretest # to supress python sdk warning
+          cdf-project-name: jetfiretest # to suppress python SDK warning (not required for API keys).
       - name: Transformations Deploy step with OIDC
         uses: ./
         id: deploy-tranformations-2

@@ -44,6 +44,7 @@ ignoreNullFields: False
 # List of email adresses to send emails to on transformation errors
 notifications:
   - example@cognite.com
+  - example2@cognite.com
 
 # The client credentials to be used in the transformation
 authentication:
