@@ -17,34 +17,6 @@ Important notes:
 
 - The manifest directory is scanned recursively for `*.yml` and `*.yaml` files, so you can organize your transformations into separate subdirectories.
 
-### Manifest with API keys
-
-```yaml
-   externalId: "test-cli-transform"
-   name: "test-cli-transform"
-   destination: 
-   type: "assets"
-   shared: True
-   action: "upsert"
-   query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
-   # query:
-   #   file: query.sql
-   schedule: "* * * * *"
-   ignoreNullFields: False
-   notifications:
-   - example@cognite.com
-   - example2@cognite.com
-   authentication:
-   apiKey: ${API_KEY}
-
-   # # If you need to specity read/write authentication separately
-   # authentication:
-   #   read:
-   #     apiKey: ${API_KEY}
-   #   write:
-   #     apiKey: ${API_KEY}
-```
-
 ### Manifest with OIDC Credentials
 
 ```yaml
@@ -106,7 +78,7 @@ authentication:
   cdfProjectName: ${CDF_PROJECT_NAME}
   # audience: ""
 
-# If you need to specity read/write credentials separately
+# If you need to specify read/write credentials separately
 # authentication:
 #   read:
 #     clientId: ${CLIENT_ID}
@@ -126,34 +98,35 @@ authentication:
 #     # audience: ""
 ```
 
-2. To deploy a set of transformations in a GitHub workflow, add a step which references the Action in your job.
-
-## Deploy step with API keys
+### Manifest with API keys
 
 ```yaml
-- name: Deploy transformations
-  uses: cognitedata/transformations-cli@main
-  with:
-    path: transformations # Transformation manifest folder, relative to github root dir
-    api-key: ${{ secrets.TRANSFORMATIONS_API_KEY }}
-    # If not using the main europe-west1-1 cluster:
-    # cluster: greenfield
-    # cdf-project-name: my-project # to suppress python SDK warning (not required for API keys).
-  env:
-    # API key to be used when running your transformations,
-    # As referenced in your transformation manifests
-    SOME_API_KEY: ${{ secrets.SOME_API_KEY }}
+   externalId: "test-cli-transform"
+   name: "test-cli-transform"
+   destination: 
+   type: "assets"
+   shared: True
+   action: "upsert"
+   query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
+   # query:
+   #   file: query.sql
+   schedule: "* * * * *"
+   ignoreNullFields: False
+   notifications:
+   - example@cognite.com
+   - example2@cognite.com
+   authentication:
+   apiKey: ${API_KEY}
+
+   # # If you need to specity read/write authentication separately
+   # authentication:
+   #   read:
+   #     apiKey: ${API_KEY}
+   #   write:
+   #     apiKey: ${API_KEY}
 ```
 
-This GitHub Action takes the following inputs:
-
-| Name      | Description |
-|-----------|-------------|
-| `path`    | _(Required)_ The path to a directory containing transformation manifests. This is relative to `$GITHUB_WORKSPACE`, which will be the root of the repository when using [actions/checkout](https://github.com/actions/checkout) with default settings. |
-| `api-key` | _(Required)_ The API key used for authenticating with transformations. Equivalent to setting the `TRANSFORMATIONS_API_KEY` environment variable. |
-| `cluster` | _(Optional)_ The name of the cluster where Transformations is hosted. Equivalent to setting the `TRANSFORMATIONS_CLUSTER` environment variable. |
-
-Additionally, you must specify environment variables for any API keys or environment variables referenced in transformation manifests.
+2. To deploy a set of transformations in a GitHub workflow, add a step which references the Action in your job.
 
 ## Deploy step with OIDC credentials
 
@@ -168,7 +141,7 @@ Alternatively when using OIDC, the Action needs the client details instead of `a
       COGNITE_CLIENT_SECRET: ${{ secrets.cognite_client_secret }}
   with:
       # Credentials used for deployment
-      path: transformations  # Transformation manifest folder, relative to github root dir
+      path: transformations  # Transformation manifest folder, relative to GITHUB_WORKSPACE
       client-id: my-jetfire-client-id
       client-secret: ${{ secrets.jetfire_client_secret] }}
       token-url: https://login.microsoftonline.com/<my-azure-tenant-id>/oauth2/v2.0/token
@@ -192,3 +165,30 @@ This GitHub Action takes the following inputs:
 | `cluster` | _(Optional)_ The name of the cluster where Transformations is hosted. Equivalent to setting the `TRANSFORMATIONS_CLUSTER` environment variable. |
 
 Additionally, you must specify environment variables for any credentials or environment variables referenced in transformation manifests.
+
+## Deploy step with API keys
+
+```yaml
+- name: Deploy transformations
+  uses: cognitedata/transformations-cli@main
+  with:
+    path: transformations # Transformation manifest folder, relative to GITHUB_WORKSPACE
+    api-key: ${{ secrets.TRANSFORMATIONS_API_KEY }}
+    # If not using the main europe-west1-1 cluster:
+    # cluster: greenfield
+    # cdf-project-name: my-project # to suppress python SDK warning (not required for API keys).
+  env:
+    # API key to be used when running your transformations,
+    # As referenced in your transformation manifests
+    SOME_API_KEY: ${{ secrets.SOME_API_KEY }}
+```
+
+This GitHub Action takes the following inputs:
+
+| Name      | Description |
+|-----------|-------------|
+| `path`    | _(Required)_ The path to a directory containing transformation manifests. This is relative to `$GITHUB_WORKSPACE`, which will be the root of the repository when using [actions/checkout](https://github.com/actions/checkout) with default settings. |
+| `api-key` | _(Required)_ The API key used for authenticating with transformations. Equivalent to setting the `TRANSFORMATIONS_API_KEY` environment variable. |
+| `cluster` | _(Optional)_ The name of the cluster where Transformations is hosted. Equivalent to setting the `TRANSFORMATIONS_CLUSTER` environment variable. |
+
+Additionally, you must specify environment variables for any API keys or environment variables referenced in transformation manifests.

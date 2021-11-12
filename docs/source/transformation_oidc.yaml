@@ -56,7 +56,7 @@ authentication:
   cdfProjectName: ${CDF_PROJECT_NAME}
   # audience: ""
 
-# If you need to specity read/write credentials separately
+# If you need to specify read/write credentials separately
 # authentication:
 #   read:
 #     clientId: ${CLIENT_ID}
