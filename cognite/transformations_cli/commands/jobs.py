@@ -22,14 +22,18 @@ def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 
     _, exp_client = get_clients(obj)
     is_id_exclusive(id, external_id)
     try:
-        id_str = ""
+        id_str = None
         if id:
             id_str = f"id {id}"
         if external_id:
             id = get_id_from_external_id(exp_client=exp_client, external_id=external_id)
-            id_str = f"id: {external_id}"
+            id_str = f"id {external_id}"
 
-        click.echo(f"Listing the latest jobs for transformation with {id_str}:")
+        if id_str:
+            click.echo(f"Listing the latest jobs for transformation with {id_str}:")
+        else:
+            click.echo("Listing the latest jobs for all transformations:")
+
         jobs = exp_client.transformations.jobs.list(limit=limit, transformation_id=id)
 
         if jobs:
@@ -37,13 +41,15 @@ def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 
                 chunks = [jobs[i : i + 10] for i in range(0, len(jobs), 10)]
                 for chunk in chunks:
                     click.clear()
-                    click.echo(f"Resulting jobs for transformation with {id_str}:")
+                    if id_str:
+                        click.echo(f"Resulting jobs for transformation with {id_str}:")
                     click.echo(print_jobs(chunk))
                     ch = input("Press Enter to continue, q to quit ")
                     if ch == "q":
                         return
             else:
-                click.echo(f"Resulting jobs for transformation with {id_str}:")
+                if id_str:
+                    click.echo(f"Resulting jobs for transformation with {id_str}:")
                 click.echo(print_jobs(jobs))
         else:
             click.echo("No jobs to list.")
