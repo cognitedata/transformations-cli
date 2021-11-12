@@ -13,7 +13,6 @@ from cognite.transformations_cli.commands.utils import print_transformations
     "-i", "--interactive", is_flag=True, help="Display only 10 transformations at a time, then page through them."
 )
 @click.pass_obj
-# TODO idea: make this interactive, user can go back and forth through pages
 def list(obj: Dict, limit: int = 10, interactive: bool = False) -> None:
     _, exp_client = get_clients(obj)
     try:
