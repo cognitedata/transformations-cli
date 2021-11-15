@@ -70,7 +70,7 @@ class TransformationConfig:
     query: Union[str, QueryConfig]
     authentication: Union[AuthConfig, ReadWriteAuthentication]
     schedule: Optional[str]
-    destination: DestinationConfig
+    destination: Union[DestinationType, DestinationConfig]
     notifications: List[str] = field(default_factory=list)
     shared: bool = True
     ignore_null_fields: bool = True

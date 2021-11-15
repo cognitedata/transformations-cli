@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.1.0] - 2021-11-12
+### Added
+- Support str on TransformationConfig.destination when the target is not raw.
+
 ## [1.0.1] - 2021-11-09
 ### Fixed
 - Make query file path relative to the manifest path.

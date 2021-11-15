@@ -1,7 +1,6 @@
 externalId: "test-cli-transform-oidc"
 name: "test-cli-transform-oidc"
-destination: 
-  type: "assets"
+destination: "assets"
 shared: True
 action: "upsert"
 query: "select 'My Assets Transformation' as name, 'asset1' as externalId"

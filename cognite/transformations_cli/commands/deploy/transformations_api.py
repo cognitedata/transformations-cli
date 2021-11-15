@@ -48,10 +48,13 @@ def to_action(action: ActionType) -> str:
     return "abort" if action == ActionType.create else action.value
 
 
-def to_destination(destination: DestinationConfig) -> TransformationDestination:
-    if destination.type == DestinationType.raw:
-        return RawTable("raw", destination.raw_database, destination.raw_table)
-    return TransformationDestination(destination.type.value)
+def to_destination(destination: Union[DestinationType, DestinationConfig]) -> TransformationDestination:
+    if isinstance(destination, DestinationConfig):
+        if destination.type == DestinationType.raw:
+            return RawTable("raw", destination.raw_database, destination.raw_table)
+        return TransformationDestination(destination.type.value)
+    else:
+        return TransformationDestination(destination.value)
 
 
 def to_query(conf_path: str, query: Union[str, QueryConfig]) -> str:

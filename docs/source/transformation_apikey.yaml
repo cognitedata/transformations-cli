@@ -2,6 +2,7 @@ externalId: "test-cli-transform"
 name: "test-cli-transform"
 destination: 
   type: "assets"
+# destination: "assets"
 shared: True
 action: "upsert"
 query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
