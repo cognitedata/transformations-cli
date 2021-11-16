@@ -165,6 +165,4 @@ def paginate(items: List[T], action: Callable[[List[T]], None]) -> None:
     for chunk in chunks:
         click.clear()
         action(chunk)
-        ch = input("Press Enter to continue, q to quit ")
-        if ch == "q":
-            return
+        input("Press Enter to continue")
