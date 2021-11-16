@@ -1,12 +1,18 @@
+from os import name
 from typing import Dict, Union
 
 import click
+from cognite import client
+from cognite.client.beta import CogniteClient
+from cognite.experimental.data_classes.transformations import OidcCredentials, Transformation
 
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.deploy.transformation_config import (
     TransformationConfigError,
     parse_transformation_configs,
 )
+
+from cognite.client import CogniteClient as Client
 from cognite.transformations_cli.commands.deploy.transformations_api import (
     StandardResult,
     TupleResult,
@@ -21,6 +27,31 @@ from cognite.transformations_cli.commands.deploy.transformations_api import (
     upsert_schedules,
     upsert_transformations,
 )
+
+def verify_oidc_credentials(type: str, credentials: OidcCredentials):
+    extraArgs = None
+    if credentials.audience != None:
+        extraArgs = { "audience": credentials.audience }
+
+    client = Client(
+        project=credentials.cdf_project_name,
+        token_url=credentials.token_uri,
+        token_client_id=credentials.client_id,
+        token_client_secret=credentials.client_secret,
+        token_scopes=credentials.scopes,
+        token_custom_args=extraArgs
+    )
+
+    try:
+        client.iam.token.inspect()
+    except:
+        raise TransformationConfigError(f"Credentials for {type} failed to validate")
+
+def verify_credentials(t: Transformation):
+    if t.has_destination_oidc_credentials:
+        verify_oidc_credentials(f"{t.name} write", t.destination_oidc_credentials)
+    if t.has_source_oidc_credentials:
+        verify_oidc_credentials(f"{t.name} read", t.source_oidc_credentials)
 
 
 def print_results(
@@ -61,6 +92,9 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
             for conf_path in transformation_configs
         ]
         transformations_ext_ids = [t.external_id for t in transformation_configs.values()]
+
+        for t in transformations:
+            verify_credentials(t)
 
         existing_transformations_ext_ids = get_existing_trasformation_ext_ids(exp_client, transformations_ext_ids)
         new_transformation_ext_ids = get_new_transformation_ids(
