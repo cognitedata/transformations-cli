@@ -1,15 +1,23 @@
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 import click
 from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
+from cognite.experimental.data_classes.transformation_jobs import TransformationJob
 
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import (
     exit_with_cognite_api_error,
     get_id_from_external_id,
     is_id_exclusive,
+    paginate,
     print_jobs,
 )
+
+
+def log_jobs(id_str: Optional[str], items: List[TransformationJob]) -> None:
+    if id_str:
+        click.echo(f"Resulting jobs for transformation with {id_str}:")
+    click.echo(print_jobs(items))
 
 
 @click.command(help="Show latest jobs for a given transformation")
@@ -38,19 +46,9 @@ def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 
 
         if jobs:
             if interactive:
-                chunks = [jobs[i : i + 10] for i in range(0, len(jobs), 10)]
-                for chunk in chunks:
-                    click.clear()
-                    if id_str:
-                        click.echo(f"Resulting jobs for transformation with {id_str}:")
-                    click.echo(print_jobs(chunk))
-                    ch = input("Press Enter to continue, q to quit ")
-                    if ch == "q":
-                        return
+                paginate(jobs, lambda chunk: log_jobs(id_str, chunk))
             else:
-                if id_str:
-                    click.echo(f"Resulting jobs for transformation with {id_str}:")
-                click.echo(print_jobs(jobs))
+                log_jobs(id_str, jobs)
         else:
             click.echo("No jobs to list.")
     except (CogniteNotFoundError, CogniteAPIError) as e:

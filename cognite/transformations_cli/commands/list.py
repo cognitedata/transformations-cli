@@ -1,10 +1,15 @@
-from typing import Dict
+from typing import Dict, List
 
 import click
 from cognite.client.exceptions import CogniteAPIError
+from cognite.experimental.data_classes.transformations import Transformation
 
 from cognite.transformations_cli.clients import get_clients
-from cognite.transformations_cli.commands.utils import print_transformations
+from cognite.transformations_cli.commands.utils import paginate, print_transformations
+
+
+def log_transformations(transformations: List[Transformation]) -> None:
+    click.echo(print_transformations(transformations))
 
 
 @click.command(help="List transformations")
@@ -18,14 +23,8 @@ def list(obj: Dict, limit: int = 10, interactive: bool = False) -> None:
     try:
         transformations = exp_client.transformations.list(limit=limit)
         if interactive:
-            chunks = [transformations[i : i + 10] for i in range(0, len(transformations), 10)]
-            for chunk in chunks:
-                click.clear()
-                click.echo(print_transformations(chunk))
-                ch = input("Press Enter to continue, q to quit ")
-                if ch == "q":
-                    return
+            paginate(transformations, log_transformations)
         else:
-            click.echo(print_transformations(transformations))
+            log_transformations(transformations)
     except CogniteAPIError as e:
         exit(f"Cognite API error has occurred: {e}")

@@ -1,7 +1,8 @@
 import datetime
 import sys
-from typing import List, Optional
+from typing import Callable, List, Optional, TypeVar
 
+import click
 import sqlparse
 from cognite.experimental import CogniteClient as ExpCogniteClient
 from cognite.experimental.data_classes.transformation_jobs import TransformationJob, TransformationJobMetric
@@ -154,3 +155,16 @@ def print_jobs(jobs: List[TransformationJob]) -> str:
         headers="firstrow",
         tablefmt="rst",
     )
+
+
+T = TypeVar("T")
+
+
+def paginate(items: List[T], action: Callable[[List[T]], None]) -> None:
+    chunks = [items[i : i + 10] for i in range(0, len(items), 10)]
+    for chunk in chunks:
+        click.clear()
+        action(chunk)
+        ch = input("Press Enter to continue, q to quit ")
+        if ch == "q":
+            return
