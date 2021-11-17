@@ -44,5 +44,5 @@ runs:
     TRANSFORMATIONS_SCOPES: ${{ inputs.scopes }}
     TRANSFORMATIONS_AUDIENCE: ${{ inputs.audience }}
     TRANSFORMATIONS_CLUSTER: "${{ inputs.cluster }}"
-  args: ["deploy", "${{ inputs.path }}" ]
+  args: ["deploy", "${{ inputs.path }}" , "--debug"]
   
