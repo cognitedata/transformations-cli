@@ -51,7 +51,7 @@ By default, transformations-cli runs against the main CDF cluster (europe-west1-
      - Description
    * - list
      - 
-     - ``--limit``
+     - ``--limit``, ``--interactive``
      - List transformations
    * - show
      - 
@@ -59,7 +59,7 @@ By default, transformations-cli runs against the main CDF cluster (europe-west1-
      - Show a transformation/job
    * - jobs
      - 
-     - ``--external-id``, ``--id``, ``--limit``
+     - ``--external-id``, ``--id``, ``--limit``, ``--interactive``
      - List jobs
    * - delete
      - 
@@ -110,6 +110,11 @@ It prints transformations details in a tabular format.
      - No
      - No
      - Number of transformations to list. Use -1 to list all.
+   * - ``--interactive``
+     - False
+     - Yes
+     - No
+     - Show 10 transformations at a time, waiting for keypress to display next batch.
 
 
 ``transformations-cli show``
@@ -186,6 +191,11 @@ You can also provide ``--limit``, which defaults to 10. Use ``--limit=-1`` if yo
      - No
      - No
      - List jobs by transformation ``external_id``. Either this or ``--id`` must be specified.
+   * - ``--interactive``
+     - False
+     - Yes
+     - No
+     - Show 10 jobs at a time, waiting for keypress to display next batch.
 
 ``transformations-cli delete``
 ------------------------------

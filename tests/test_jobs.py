@@ -39,7 +39,9 @@ def test_jobs_by_id(
     configs_to_create: List[Transformation],
 ) -> None:
     tr = exp_client.transformations.create(configs_to_create[0])
-    result_job = tr.run(wait=True)  # Make sure transformation has a job and it is finished so we can check the output.
+    result_job = tr.run(
+        wait=True, timeout=300.0
+    )  # Make sure transformation has a job and it is finished so we can check the output.
 
     cli_result = cli_runner.invoke(jobs, [f"--id={tr.id}"], obj=obj)
 
@@ -60,7 +62,9 @@ def test_jobs_by_external_id(
     configs_to_create: List[Transformation],
 ) -> None:
     tr = exp_client.transformations.create(configs_to_create[0])
-    result_job = tr.run(wait=True)  # Make sure transformation has a job and it is finished so we can check the output.
+    result_job = tr.run(
+        wait=True, timeout=300.0
+    )  # Make sure transformation has a job and it is finished so we can check the output.
 
     cli_result = cli_runner.invoke(jobs, [f"--external-id={tr.external_id}"], obj=obj)
 
