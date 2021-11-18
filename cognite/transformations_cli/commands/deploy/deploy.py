@@ -28,30 +28,33 @@ from cognite.transformations_cli.commands.deploy.transformations_api import (
     upsert_transformations,
 )
 
-def verify_oidc_credentials(type: str, credentials: OidcCredentials):
-    extraArgs = None
-    if credentials.audience != None:
-        extraArgs = { "audience": credentials.audience }
+def verify_oidc_credentials(type: str, credentials: OidcCredentials, cluster: str):
 
-    client = Client(
-        project=credentials.cdf_project_name,
-        token_url=credentials.token_uri,
-        token_client_id=credentials.client_id,
-        token_client_secret=credentials.client_secret,
-        token_scopes=credentials.scopes,
-        token_custom_args=extraArgs
-    )
-
+    token_inspect = None
+    base_url = f"https://{cluster}.cognitedata.com"
     try:
-        client.iam.token.inspect()
-    except:
-        raise TransformationConfigError(f"Credentials for {type} failed to validate")
+        client = Client(
+            base_url=base_url,
+            client_name="transformations-cli-credentials-test",
+            project=credentials.cdf_project_name,
+            token_url=credentials.token_uri,
+            token_client_id=credentials.client_id,
+            token_client_secret=credentials.client_secret,
+            token_scopes=credentials.scopes,
+            token_custom_args={"audience": credentials.audience} if credentials.audience else None,
+        )
+        token_inspect = client.iam.token.inspect()
+    except Exception as ex:
+        raise TransformationConfigError(f"Credentials for {type} failed to validate: {str(ex)}")
+    
+    if not next((x for x in token_inspect.projects if x.url_name == credentials.cdf_project_name), None):
+        raise TransformationConfigError(f"Credentials for {type} failed to validate: they lack projects:list and groups:list in project {credentials.cdf_project_name}")
 
-def verify_credentials(t: Transformation):
+def verify_credentials(t: Transformation, cluster: str):
     if t.has_destination_oidc_credentials:
-        verify_oidc_credentials(f"{t.name} write", t.destination_oidc_credentials)
+        verify_oidc_credentials(f"{t.name} write", t.destination_oidc_credentials, cluster)
     if t.has_source_oidc_credentials:
-        verify_oidc_credentials(f"{t.name} read", t.source_oidc_credentials)
+        verify_oidc_credentials(f"{t.name} read", t.source_oidc_credentials, cluster)
 
 
 def print_results(
@@ -94,7 +97,7 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
         transformations_ext_ids = [t.external_id for t in transformation_configs.values()]
 
         for t in transformations:
-            verify_credentials(t)
+            verify_credentials(t, cluster)
 
         existing_transformations_ext_ids = get_existing_trasformation_ext_ids(exp_client, transformations_ext_ids)
         new_transformation_ext_ids = get_new_transformation_ids(
