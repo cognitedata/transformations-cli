@@ -12,6 +12,12 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.2.1] - 2021-11-17
+### Fixed
+- Fix transformation list by upgrading to cognite-sdk with fixed TransformationBlockedInfo class
+### Added
+- Add GitHub Action `--debug` option to make it easier to follow the progress.
+
 ## [1.2.0] - 2021-11-16
 ### Added
 - Add support for simple pagination in jobs and transformations

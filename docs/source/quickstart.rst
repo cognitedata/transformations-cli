@@ -74,7 +74,7 @@ By default, transformations-cli runs against the main CDF cluster (europe-west1-
      - ``--external-id``, ``--id``, ``--watch``, ``--watch-only``, ``--time-out``
      - Run a transformation
    * - deploy
-     - ``path``
+     - ``path``, ``--debug``
      - 
      - Deploy transformations
 
@@ -384,6 +384,20 @@ This directory is scanned recursively for ``*.yml`` and ``*.yaml`` files, so you
      - Yes
      - Root folder of transformation manifests. 
 
+.. list-table:: Debug options
+   :widths: 25 25 25 25 25
+   :header-rows: 1
+
+   * - Option
+     - Default
+     - Flag
+     - Required
+     - Description
+   * - ``--debug``
+     - Yes
+     - No
+     - No
+     - Print `external_id``s for the upserted resources besides the counts.
 
 ``Transformation Manifest``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
