@@ -1,9 +1,7 @@
-from os import name
 from typing import Dict, Union
 
 import click
-from cognite import client
-from cognite.client.beta import CogniteClient
+from cognite.client import CogniteClient as Client
 from cognite.experimental.data_classes.transformations import OidcCredentials, Transformation
 
 from cognite.transformations_cli.clients import get_clients
@@ -11,8 +9,6 @@ from cognite.transformations_cli.commands.deploy.transformation_config import (
     TransformationConfigError,
     parse_transformation_configs,
 )
-
-from cognite.client import CogniteClient as Client
 from cognite.transformations_cli.commands.deploy.transformations_api import (
     StandardResult,
     TupleResult,
@@ -28,8 +24,8 @@ from cognite.transformations_cli.commands.deploy.transformations_api import (
     upsert_transformations,
 )
 
-def verify_oidc_credentials(type: str, credentials: OidcCredentials, cluster: str):
 
+def verify_oidc_credentials(type: str, credentials: OidcCredentials, cluster: str) -> None:
     token_inspect = None
     base_url = f"https://{cluster}.cognitedata.com"
     try:
@@ -46,11 +42,14 @@ def verify_oidc_credentials(type: str, credentials: OidcCredentials, cluster: st
         token_inspect = client.iam.token.inspect()
     except Exception as ex:
         raise TransformationConfigError(f"Credentials for {type} failed to validate: {str(ex)}")
-    
-    if not next((x for x in token_inspect.projects if x.url_name == credentials.cdf_project_name), None):
-        raise TransformationConfigError(f"Credentials for {type} failed to validate: they lack projects:list and groups:list in project {credentials.cdf_project_name}")
 
-def verify_credentials(t: Transformation, cluster: str):
+    if not next((x for x in token_inspect.projects if x.url_name == credentials.cdf_project_name), None):
+        raise TransformationConfigError(
+            f"Credentials for {type} failed to validate: they lack projects:list and groups:list in project {credentials.cdf_project_name}"
+        )
+
+
+def verify_credentials(t: Transformation, cluster: str) -> None:
     if t.has_destination_oidc_credentials:
         verify_oidc_credentials(f"{t.name} write", t.destination_oidc_credentials, cluster)
     if t.has_source_oidc_credentials:
