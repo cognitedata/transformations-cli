@@ -2,8 +2,8 @@
     <img src="https://github.com/cognitedata/cognite-python-docs/blob/master/img/cognite_logo.png" alt="Cognite logo" title="Cognite" align="right" height="80" />
 </a>
 
-Cognite Python `transformations-cli`
-================================
+# Cognite Transformations CLI
+
 [![Build Status](https://github.com/cognitedata/transformations-cli/workflows/release/badge.svg)](https://github.com/cognitedata/transformations-cli/actions)
 [![Documentation Status](https://readthedocs.com/projects/cognite-transformations-cli/badge/?version=latest)](https://cognite-transformations-cli.readthedocs-hosted.com/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/cognitedata/transformations-cli/branch/main/graph/badge.svg?token=PSkli74vvX)](https://codecov.io/gh/cognitedata/transformations-cli)
@@ -14,54 +14,49 @@ Cognite Python `transformations-cli`
 
 # Transformations CLI
 
-The Transormations CLI is a replacement for [jetfire-cli](https://github.com/cognitedata/jetfire-cli) rewritten on top
-of the new Python SDK for Transformations.
+Use the Transformations command-line interface (**Transformations CLI**) to process data from the CDF staging area (RAW), into the CDF data model. To learn more about how the Cognite Transformations CLI package works, see the **documentation** [here](https://cognite-transformations-cli.readthedocs-hosted.com/en/latest/)
 
-### CLI Documentation
-
-Documentation for CLI is hosted [here](https://cognite-transformations-cli.readthedocs-hosted.com/en/latest/).
+The **Transformations CLI** is based on Python and replaces the [Jetfire CLI](https://github.com/cognitedata/jetfire-cli).
 
 ### GitHub Action
 
-`transformations-cli` also provides a GitHub Action which can be used to deploy transformations. You can find the documentation for transformations-cli GitHub Action [here](githubaction.md).
+The **Transformations CLI** provides a GitHub Action to deploy transformations. You'll find the documentation [here](githubaction.md).
 
+### Migrating from Jetfire CLI
 
-### GitHub Action Migration: jetfire-cli@v2 to transformations-cli@main
-
-If you've already used the old `jetfire-cli` in a GitHub Action we recommend you migrate to the new GitHub Action. You can find the migration guide [here](migrationguide.md).
+**Transformations CLI** replaces the [Jetfire CLI](https://github.com/cognitedata/jetfire-cli). If you've already used the **Jetfire CLI** in a GitHub Action, we recommend migrating to the **Transformations CLI** GitHub Action. You'll find the migration guide [here](migrationguide.md).
 
 ### Contributing
 
 We use [poetry](https://python-poetry.org) to manage dependencies and to administrate virtual environments. To develop
-`transformations-cli`, follow the following steps to set up your local environment:
+**Transformations CLI**, follow these steps to set up your local environment:
 
- 1. Install poetry: (add `--user` if desirable)
+1.  Install poetry: (add `--user` if desirable)
     ```
     $ pip install poetry
     ```
- 2. Clone repository:
+2.  Clone repository:
     ```
     $ git clone git@github.com:cognitedata/transformations-cli.git
     ```
- 3. Move into the newly created local repository:
+3.  Move into the newly created local repository:
     ```
     $ cd transformations-cli
     ```
- 4. Create virtual environment and install dependencies:
+4.  Create a virtual environment and install dependencies:
+
     ```
     $ poetry install
     ```
 
-All code must pass [black](https://github.com/ambv/black) and [isort](https://github.com/timothycrosley/isort) style
-checks to be merged. It is recommended to install pre-commit hooks to ensure this locally before commiting code:
+5.  All the code must pass [black](https://github.com/ambv/black) and [isort](https://github.com/timothycrosley/isort) style
+    checks before it can be merged. We recommend installing pre-commit hooks to ensure this locally before you commit your code:
 
 ```
 $ poetry run pre-commit install
 ```
 
-To publish a new version change the version in `cognite/transformations_cli/__init__.py` and `pyproject.toml`. Also, remember to add an entry to `CHANGELOG`.
+6. To publish a new version, change the version in `cognite/transformations_cli/__init__.py` and `pyproject.toml`. Make sure to update the `CHANGELOG`.
 
 This project adheres to the [Contributor Covenant v2.0](https://www.contributor-covenant.org/version/2/0/code_of_conduct/)
 as a code of conduct.
-
-
