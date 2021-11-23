@@ -1,7 +1,3 @@
-<a href="https://cognite.com/">
-    <img src="https://github.com/cognitedata/cognite-python-docs/blob/master/img/cognite_logo.png" alt="Cognite logo" title="Cognite" align="right" height="80" />
-</a>
-
 # Cognite Transformations CLI
 
 [![Build Status](https://github.com/cognitedata/transformations-cli/workflows/release/badge.svg)](https://github.com/cognitedata/transformations-cli/actions)
@@ -12,7 +8,7 @@
 [![License](https://img.shields.io/github/license/cognitedata/python-extractor-utils)](LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-# Transformations CLI
+## Transformations CLI
 
 Use the Transformations command-line interface (**Transformations CLI**) to process data from the CDF staging area (RAW), into the CDF data model. To learn more about how the Cognite Transformations CLI package works, see the **documentation** [here](https://cognite-transformations-cli.readthedocs-hosted.com/en/latest/)
 
