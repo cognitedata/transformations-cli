@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.2.3] - 2021-12-01
+### Fixed
+- Use new SDK version
+
 ## [1.2.1] - 2021-11-17
 ### Fixed
 - Fix transformation list by upgrading to cognite-sdk with fixed TransformationBlockedInfo class
