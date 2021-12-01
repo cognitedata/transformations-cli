@@ -16,6 +16,10 @@ Changes are grouped as follows
 ### Fixed
 - Use new SDK version
 
+## [1.2.2] - 2021-11-22
+### Added
+- Support validating read/write credentials
+
 ## [1.2.1] - 2021-11-17
 ### Fixed
 - Fix transformation list by upgrading to cognite-sdk with fixed TransformationBlockedInfo class
