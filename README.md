@@ -10,13 +10,15 @@
 
 ## Transformations CLI
 
-Use the Transformations command-line interface (**Transformations CLI**) to process data from the CDF staging area (RAW), into the CDF data model. To learn more about how the Cognite Transformations CLI package works, see the **documentation** [here](https://cognite-transformations-cli.readthedocs-hosted.com/en/latest/)
+Use the Transformations command-line interface (**Transformations CLI**) to manage the lifecycle of your transformation jobs using the command line. With the Transformations CLI, you can process data from the CDF staging area (RAW) into the CDF data model. To learn more about how the Cognite Transformations CLI package works, see the **documentation** [here](https://cognite-transformations-cli.readthedocs-hosted.com/en/latest/)
 
 The **Transformations CLI** is based on Python and replaces the [Jetfire CLI](https://github.com/cognitedata/jetfire-cli).
 
 ### GitHub Action
 
 The **Transformations CLI** provides a GitHub Action to deploy transformations. You'll find the documentation [here](githubaction.md).
+
+We've also created a **CI/CD template** that uses GitHub Workflows. You'll find the documentation [here](https://github.com/cognitedata/transformations-action-template).
 
 ### Migrating from Jetfire CLI
 
