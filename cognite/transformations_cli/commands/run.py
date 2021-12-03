@@ -72,7 +72,7 @@ def run(
             click.echo("Job details:")
             click.echo(print_jobs([job]))
             click.echo("SQL Query:")
-            click.echo(print_sql(job.raw_query))
+            click.echo(print_sql(job.query))
             if job.status == "Failed":
                 click.echo(f"Job Failed, error details: {job.error}")
             if metrics:
