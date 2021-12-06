@@ -51,7 +51,7 @@ def to_action(action: ActionType) -> str:
 def to_destination(destination: Union[DestinationType, DestinationConfig]) -> TransformationDestination:
     if isinstance(destination, DestinationConfig):
         if destination.type == DestinationType.raw:
-            return RawTable("raw", destination.raw_database, destination.raw_table)
+            return RawTable(destination.raw_database, destination.raw_table)
         return TransformationDestination(destination.type.value)
     else:
         return TransformationDestination(destination.value)
