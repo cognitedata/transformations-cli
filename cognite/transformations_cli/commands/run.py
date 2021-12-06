@@ -8,7 +8,6 @@ from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import (
     exit_with_cognite_api_error,
-    get_id_from_external_id,
     is_id_exclusive,
     is_id_provided,
     print_jobs,
@@ -56,9 +55,7 @@ def run(
             )
             duration_end = time.time()
         else:
-            if external_id:
-                id = get_id_from_external_id(exp_client=exp_client, external_id=external_id)
-            jobs = exp_client.transformations.jobs.list(transformation_id=id)
+            jobs = exp_client.transformations.jobs.list(transformation_id=id, transformation_external_id=external_id)
 
             duration_start = time.time()
             job = jobs[0].wait(timeout=time_out) if jobs else None
@@ -72,7 +69,7 @@ def run(
             click.echo("Job details:")
             click.echo(print_jobs([job]))
             click.echo("SQL Query:")
-            click.echo(print_sql(job.raw_query))
+            click.echo(print_sql(job.query))
             if job.status == "Failed":
                 click.echo(f"Job Failed, error details: {job.error}")
             if metrics:
@@ -85,7 +82,6 @@ def run(
                 if duration_end - duration_start > (time_out + 1) and job.status != "Completed":
                     click.echo(f"Transformation job runtime exceeds the provided timeout: {time_out} seconds")
                     sys.exit(1)
-
     # Handle AttributeError because SDK fails here:
     # transformation_id = self.retrieve(external_id=transformation_external_id).id
     # with "AttributeError: 'NoneType' object has no attribute 'id'"

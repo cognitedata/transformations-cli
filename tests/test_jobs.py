@@ -83,12 +83,6 @@ def test_jobs_by_invalid_id(cli_runner: CliRunner, obj: Dict[str, Optional[str]]
     assert "Cognite API error has occurred" in result.output
 
 
-def test_jobs_by_invalid_external_id(cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:
-    result = cli_runner.invoke(jobs, ["--external-id=emelemelemelemel"], obj=obj)
-    assert result.exit_code == 1
-    assert "Cognite API error has occurred" in result.output
-
-
 def test_jobs_by_id_with_no_jobs(
     exp_client: ExpCogniteClient,
     cli_runner: CliRunner,
