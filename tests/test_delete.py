@@ -69,4 +69,3 @@ def test_delete_by_invalid_id(cli_runner: CliRunner, obj: Dict[str, Optional[str
 def test_delete_by_invalid_external_id(cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:
     result = cli_runner.invoke(delete, ["--external-id=emelemelemelemel"], obj=obj)
     assert result.exit_code == 1
-    assert "Cognite API error has occurred" in result.output
