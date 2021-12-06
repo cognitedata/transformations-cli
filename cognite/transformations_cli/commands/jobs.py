@@ -1,8 +1,8 @@
 from typing import Dict, List, Optional
 
 import click
+from cognite.client.data_classes import TransformationJob
 from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
-from cognite.experimental.data_classes.transformation_jobs import TransformationJob
 
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import (
@@ -26,7 +26,7 @@ def log_jobs(id_str: Optional[str], items: List[TransformationJob]) -> None:
 @click.option("-i", "--interactive", is_flag=True, help="Display only 10 jobs at a time, paging through them.")
 @click.pass_obj
 def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 10, interactive: bool = False) -> None:
-    _, exp_client = get_clients(obj)
+    client = get_clients(obj)
     is_id_exclusive(id, external_id)
     try:
         id_str = None
@@ -41,7 +41,7 @@ def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 
         else:
             click.echo("Listing the latest jobs for all transformations:")
 
-        jobs = exp_client.transformations.jobs.list(
+        jobs = client.transformations.jobs.list(
             limit=limit, transformation_id=id, transformation_external_id=external_id
         )
 

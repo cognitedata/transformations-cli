@@ -15,14 +15,14 @@ from cognite.transformations_cli.commands.utils import exit_with_cognite_api_err
 @click.option("--delete-schedule", is_flag=False, help="Delete the schedule before deleting the transformation.")
 @click.pass_obj
 def delete(obj: Dict, id: Optional[int], external_id: Optional[str], delete_schedule: bool = False) -> None:
-    _, exp_client = get_clients(obj)
+    client = get_clients(obj)
     id = int(id) if id else None
     is_id_provided(id, external_id)
     is_id_exclusive(id, external_id)
     try:
         if delete_schedule:
-            exp_client.transformations.schedules.delete(external_id=external_id, id=id, ignore_unknown_ids=True)
-        exp_client.transformations.delete(external_id=external_id, id=id)
+            client.transformations.schedules.delete(external_id=external_id, id=id, ignore_unknown_ids=True)
+        client.transformations.delete(external_id=external_id, id=id)
         if id:
             click.echo(f"Successfully deleted the transformation with id {id}.")
         else:

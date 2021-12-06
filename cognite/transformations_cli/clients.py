@@ -1,12 +1,11 @@
 import sys
-from typing import Dict, Tuple
+from typing import Dict
 
 from cognite.client import CogniteClient
 from cognite.client.exceptions import CogniteAPIKeyError
-from cognite.experimental import CogniteClient as ExpCogniteClient
 
 
-def get_clients(obj: Dict) -> Tuple[CogniteClient, ExpCogniteClient]:
+def get_clients(obj: Dict) -> CogniteClient:
     api_key = obj["api_key"]
     client_id = obj["client_id"]
     client_secret = obj["client_secret"]
@@ -28,36 +27,19 @@ def get_clients(obj: Dict) -> Tuple[CogniteClient, ExpCogniteClient]:
         ):
             sys.exit("Please provide only API key configuration or only OAuth2 configuration.")
         elif api_key is not None:
-            return (
-                CogniteClient(
-                    client_name="transformations_cli", api_key=api_key, base_url=base_url, project=cdf_project_name
-                ),
-                ExpCogniteClient(
-                    client_name="transformations_cli", api_key=api_key, base_url=base_url, project=cdf_project_name
-                ),
+            return CogniteClient(
+                client_name="transformations_cli", api_key=api_key, base_url=base_url, project=cdf_project_name
             )
         else:
-            return (
-                CogniteClient(
-                    base_url=base_url,
-                    client_name="transformations_cli",
-                    token_client_id=client_id,
-                    token_client_secret=client_secret,
-                    token_url=token_url,
-                    token_scopes=scopes,
-                    project=cdf_project_name,
-                    token_custom_args={"audience": audience} if audience else None,
-                ),
-                ExpCogniteClient(
-                    base_url=base_url,
-                    client_name="transformations_cli",
-                    token_client_id=client_id,
-                    token_client_secret=client_secret,
-                    token_url=token_url,
-                    token_scopes=scopes,
-                    project=cdf_project_name,
-                    token_custom_args={"audience": audience} if audience else None,
-                ),
+            return CogniteClient(
+                base_url=base_url,
+                client_name="transformations_cli",
+                token_client_id=client_id,
+                token_client_secret=client_secret,
+                token_url=token_url,
+                token_scopes=scopes,
+                project=cdf_project_name,
+                token_custom_args={"audience": audience} if audience else None,
             )
     except CogniteAPIKeyError as e:
         sys.exit(f"Cognite client cannot be initialised: {e}.")

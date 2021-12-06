@@ -4,13 +4,8 @@ from typing import Dict, List, Optional
 
 import pytest
 from click.testing import CliRunner
-from cognite.experimental import CogniteClient as ExpCogniteClient
-from cognite.experimental.data_classes.transformations import (
-    OidcCredentials,
-    RawTable,
-    Transformation,
-    TransformationDestination,
-)
+from cognite.client import CogniteClient
+from cognite.client.data_classes import OidcCredentials, RawTable, Transformation, TransformationDestination
 
 from cognite.transformations_cli.clients import get_clients
 
@@ -135,7 +130,7 @@ def obj(
 
 
 @pytest.fixture
-def exp_client(obj: Dict[str, Optional[str]]) -> ExpCogniteClient:
+def client(obj: Dict[str, Optional[str]]) -> CogniteClient:
     return get_clients(obj)[1]
 
 
