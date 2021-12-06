@@ -16,13 +16,6 @@ from cognite.experimental.data_classes.transformations import (
 from tabulate import tabulate
 
 
-def get_id_from_external_id(exp_client: ExpCogniteClient, external_id: str) -> int:
-    tr = exp_client.transformations.retrieve(external_id=external_id)
-    if tr:
-        return tr.id
-    sys.exit("Cognite API error has occurred: Transformation with external_id {external_id} not found.")
-
-
 def get_transformation(exp_client: ExpCogniteClient, id: Optional[int], external_id: Optional[str]) -> Transformation:
     tr = exp_client.transformations.retrieve(external_id=external_id, id=id)
     if tr:

@@ -7,7 +7,6 @@ from cognite.experimental.data_classes.transformation_jobs import Transformation
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import (
     exit_with_cognite_api_error,
-    get_id_from_external_id,
     is_id_exclusive,
     paginate,
     print_jobs,
@@ -42,7 +41,9 @@ def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 
         else:
             click.echo("Listing the latest jobs for all transformations:")
 
-        jobs = exp_client.transformations.jobs.list(limit=limit, transformation_id=id, transformation_external_id=external_id)
+        jobs = exp_client.transformations.jobs.list(
+            limit=limit, transformation_id=id, transformation_external_id=external_id
+        )
 
         if jobs:
             if interactive:

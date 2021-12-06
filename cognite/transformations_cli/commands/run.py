@@ -8,7 +8,6 @@ from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 from cognite.transformations_cli.clients import get_clients
 from cognite.transformations_cli.commands.utils import (
     exit_with_cognite_api_error,
-    get_id_from_external_id,
     is_id_exclusive,
     is_id_provided,
     print_jobs,
@@ -83,14 +82,5 @@ def run(
                 if duration_end - duration_start > (time_out + 1) and job.status != "Completed":
                     click.echo(f"Transformation job runtime exceeds the provided timeout: {time_out} seconds")
                     sys.exit(1)
-
-    # Handle AttributeError because SDK fails here:
-    # transformation_id = self.retrieve(external_id=transformation_external_id).id
-    # with "AttributeError: 'NoneType' object has no attribute 'id'"
-    # when called with invalid external_id
-    # We mask that here with this trick until solved.
-    except AttributeError:
-        click.echo("Cognite API error has occurred: Transformation not found.")
-        sys.exit(1)
     except (CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
