@@ -32,9 +32,9 @@ def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 
     try:
         id_str = None
         if id:
+            id = int(id)
             id_str = f"id {id}"
         if external_id:
-            id = get_id_from_external_id(exp_client=exp_client, external_id=external_id)
             id_str = f"external_id {external_id}"
 
         if id_str:
@@ -42,7 +42,7 @@ def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 
         else:
             click.echo("Listing the latest jobs for all transformations:")
 
-        jobs = exp_client.transformations.jobs.list(limit=limit, transformation_id=id)
+        jobs = exp_client.transformations.jobs.list(limit=limit, transformation_id=id, transformation_external_id=external_id)
 
         if jobs:
             if interactive:

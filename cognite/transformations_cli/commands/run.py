@@ -56,9 +56,7 @@ def run(
             )
             duration_end = time.time()
         else:
-            if external_id:
-                id = get_id_from_external_id(exp_client=exp_client, external_id=external_id)
-            jobs = exp_client.transformations.jobs.list(transformation_id=id)
+            jobs = exp_client.transformations.jobs.list(transformation_id=id, transformation_external_id=external_id)
 
             duration_start = time.time()
             job = jobs[0].wait(timeout=time_out) if jobs else None
