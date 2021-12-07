@@ -6,14 +6,13 @@ import click
 import sqlparse
 from cognite.client import CogniteClient
 from cognite.client.data_classes import (
-    RawTable,
     Transformation,
     TransformationDestination,
     TransformationJob,
     TransformationJobMetric,
     TransformationNotification,
-    TransformationPreviewResult,
 )
+from cognite.client.data_classes.transformations import RawTable, TransformationPreviewResult
 from tabulate import tabulate
 
 

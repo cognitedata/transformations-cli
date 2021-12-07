@@ -5,7 +5,6 @@ from typing import Dict, List, Optional, Tuple, Union
 from cognite.client import CogniteClient
 from cognite.client.data_classes import (
     OidcCredentials,
-    RawTable,
     Transformation,
     TransformationDestination,
     TransformationNotification,
@@ -51,7 +50,7 @@ def to_action(action: ActionType) -> str:
 def to_destination(destination: Union[DestinationType, DestinationConfig]) -> TransformationDestination:
     if isinstance(destination, DestinationConfig):
         if destination.type == DestinationType.raw:
-            return RawTable(destination.raw_database, destination.raw_table)
+            return TransformationDestination.raw(destination.raw_database, destination.raw_table)
         return TransformationDestination(destination.type.value)
     else:
         return TransformationDestination(destination.value)
