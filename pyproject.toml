@@ -32,6 +32,7 @@ tabulate = "^0.8.9"
 types-tabulate = "^0.8.3"
 sqlparse = "^0.4.2"
 cognite-sdk = "^2.38.0"
+regex = "^2021.11.10"
 
 [tool.poetry.dev-dependencies]
 black = "^21.6b0"
