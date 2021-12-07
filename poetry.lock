@@ -186,7 +186,7 @@ retry = ">=0.9.2,<0.10.0"
 
 [[package]]
 name = "cognite-sdk"
-version = "2.38.0"
+version = "2.38.1"
 description = "Client library for Cognite Data Fusion (CDF)"
 category = "main"
 optional = false
@@ -1109,7 +1109,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "6a709d502d7653905ec7bb076f841e52a932f93d057e109bf992713476670e5b"
+content-hash = "0f865e3779b9425284a0da5f071fadc314bf265f737c4f0bdd02b951159f475a"
 
 [metadata.files]
 alabaster = [
@@ -1220,8 +1220,8 @@ cognite-extractor-utils = [
     {file = "cognite_extractor_utils-1.5.4-py3-none-any.whl", hash = "sha256:ad4fa93769357449356b662e03270e93f0c45252fc051981e111a40497511042"},
 ]
 cognite-sdk = [
-    {file = "cognite-sdk-2.38.0.tar.gz", hash = "sha256:019a7c68f6b02741bb3eba93aacd8dbc5f789ffd4032578588e835172806ddf3"},
-    {file = "cognite_sdk-2.38.0-py3-none-any.whl", hash = "sha256:a7647418465ca19b05f607dc5fe374607a994de0d9d77d593b998faddf392ad0"},
+    {file = "cognite-sdk-2.38.1.tar.gz", hash = "sha256:df0e991979cc4633c4f1e33c841256d8b0f5608b010a6432c3e772e3164c783a"},
+    {file = "cognite_sdk-2.38.1-py3-none-any.whl", hash = "sha256:488e010f3a80a2754a56a82e50fd914fb9560e26deaaef940b5dc77e83f97f5a"},
 ]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
