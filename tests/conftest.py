@@ -131,7 +131,7 @@ def obj(
 
 @pytest.fixture
 def client(obj: Dict[str, Optional[str]]) -> CogniteClient:
-    return get_clients(obj)[1]
+    return get_clients(obj)
 
 
 @pytest.fixture
