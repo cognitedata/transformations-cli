@@ -4,20 +4,21 @@ from typing import Callable, List, Optional, TypeVar
 
 import click
 import sqlparse
-from cognite.experimental import CogniteClient as ExpCogniteClient
-from cognite.experimental.data_classes.transformation_jobs import TransformationJob, TransformationJobMetric
-from cognite.experimental.data_classes.transformation_notifications import TransformationNotification
-from cognite.experimental.data_classes.transformations import (
+from cognite.client import CogniteClient
+from cognite.client.data_classes import (
     RawTable,
     Transformation,
     TransformationDestination,
+    TransformationJob,
+    TransformationJobMetric,
+    TransformationNotification,
     TransformationPreviewResult,
 )
 from tabulate import tabulate
 
 
-def get_transformation(exp_client: ExpCogniteClient, id: Optional[int], external_id: Optional[str]) -> Transformation:
-    tr = exp_client.transformations.retrieve(external_id=external_id, id=id)
+def get_transformation(client: CogniteClient, id: Optional[int], external_id: Optional[str]) -> Transformation:
+    tr = client.transformations.retrieve(external_id=external_id, id=id)
     if tr:
         return tr
     msg = "external_id" if external_id else "id"

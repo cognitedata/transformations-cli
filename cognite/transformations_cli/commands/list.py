@@ -1,10 +1,10 @@
 from typing import Dict, List
 
 import click
+from cognite.client.data_classes import Transformation
 from cognite.client.exceptions import CogniteAPIError
-from cognite.experimental.data_classes.transformations import Transformation
 
-from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.clients import get_client
 from cognite.transformations_cli.commands.utils import paginate, print_transformations
 
 
@@ -19,9 +19,9 @@ def log_transformations(transformations: List[Transformation]) -> None:
 )
 @click.pass_obj
 def list(obj: Dict, limit: int = 10, interactive: bool = False) -> None:
-    _, exp_client = get_clients(obj)
+    client = get_client(obj)
     try:
-        transformations = exp_client.transformations.list(limit=limit)
+        transformations = client.transformations.list(limit=limit)
         if interactive:
             paginate(transformations, log_transformations)
         else:

@@ -5,7 +5,7 @@ from typing import Dict, Optional
 import click
 from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
-from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.clients import get_client
 from cognite.transformations_cli.commands.utils import (
     exit_with_cognite_api_error,
     is_id_exclusive,
@@ -41,7 +41,7 @@ def run(
     watch_only: bool = False,
     time_out: int = (12 * 60 * 60),
 ) -> None:
-    _, exp_client = get_clients(obj)
+    client = get_client(obj)
     is_id_provided(id, external_id)
     is_id_exclusive(id, external_id)
     try:
@@ -50,12 +50,12 @@ def run(
         id = int(id) if id else None
         if not watch_only:
             duration_start = time.time()
-            job = exp_client.transformations.run(
+            job = client.transformations.run(
                 transformation_id=id, transformation_external_id=external_id, wait=watch, timeout=time_out
             )
             duration_end = time.time()
         else:
-            jobs = exp_client.transformations.jobs.list(transformation_id=id, transformation_external_id=external_id)
+            jobs = client.transformations.jobs.list(transformation_id=id, transformation_external_id=external_id)
 
             duration_start = time.time()
             job = jobs[0].wait(timeout=time_out) if jobs else None
@@ -63,7 +63,7 @@ def run(
         if job:
             metrics = [
                 m
-                for m in exp_client.transformations.jobs.list_metrics(id=job.id)
+                for m in client.transformations.jobs.list_metrics(id=job.id)
                 if m.name != "requestsWithoutRetries" and m.name != "requests"
             ]
             click.echo("Job details:")

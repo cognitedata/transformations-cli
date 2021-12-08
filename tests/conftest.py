@@ -4,15 +4,10 @@ from typing import Dict, List, Optional
 
 import pytest
 from click.testing import CliRunner
-from cognite.experimental import CogniteClient as ExpCogniteClient
-from cognite.experimental.data_classes.transformations import (
-    OidcCredentials,
-    RawTable,
-    Transformation,
-    TransformationDestination,
-)
+from cognite.client import CogniteClient
+from cognite.client.data_classes import OidcCredentials, Transformation, TransformationDestination
 
-from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.clients import get_client
 
 
 @pytest.fixture
@@ -80,7 +75,7 @@ def configs_to_create(
             name=test_transformation_ext_ids[0],
             source_oidc_credentials=valid_credentials,
             destination_oidc_credentials=valid_credentials,
-            destination=TransformationDestination("assets"),
+            destination=TransformationDestination.assets(),
             conflict_mode="upsert",
             query="select 'asd' as name, 'asd' as externalId",
             is_public=True,
@@ -90,7 +85,7 @@ def configs_to_create(
             name=test_transformation_ext_ids[1],
             source_oidc_credentials=valid_credentials,
             destination_oidc_credentials=valid_credentials,
-            destination=RawTable(type="raw", database="cli-test-db", table="cli-test"),
+            destination=TransformationDestination.raw(database="cli-test-db", table="cli-test"),
             conflict_mode="upsert",
             query="select 'asd' as key, 'asd' as externalId",
             is_public=True,
@@ -100,7 +95,7 @@ def configs_to_create(
             name=test_transformation_ext_ids[2],
             source_oidc_credentials=valid_credentials,
             destination_oidc_credentials=valid_credentials,
-            destination=TransformationDestination("events"),
+            destination=TransformationDestination.events(),
             conflict_mode="update",
             query="select 'asd' as externalId",
             is_public=True,
@@ -110,7 +105,7 @@ def configs_to_create(
             name=test_transformation_ext_ids[3],
             source_oidc_credentials=valid_credentials,
             destination_oidc_credentials=valid_credentials,
-            destination=TransformationDestination(type="timeseries"),
+            destination=TransformationDestination.timeseries(),
             conflict_mode="upsert",
             query="select 'asd' as externalId 'asd' as name",
             is_public=True,
@@ -135,8 +130,8 @@ def obj(
 
 
 @pytest.fixture
-def exp_client(obj: Dict[str, Optional[str]]) -> ExpCogniteClient:
-    return get_clients(obj)[1]
+def client(obj: Dict[str, Optional[str]]) -> CogniteClient:
+    return get_client(obj)
 
 
 @pytest.fixture

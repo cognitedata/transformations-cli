@@ -2,16 +2,15 @@ import os
 import sys
 from typing import Dict, List, Optional, Tuple, Union
 
-from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
-from cognite.experimental import CogniteClient as ExpCogniteClient
-from cognite.experimental.data_classes import TransformationNotification
-from cognite.experimental.data_classes.transformation_schedules import TransformationSchedule
-from cognite.experimental.data_classes.transformations import (
+from cognite.client import CogniteClient
+from cognite.client.data_classes import (
     OidcCredentials,
-    RawTable,
     Transformation,
     TransformationDestination,
+    TransformationNotification,
+    TransformationSchedule,
 )
+from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
 
 from cognite.transformations_cli.commands.deploy.transformation_types import (
     ActionType,
@@ -51,7 +50,7 @@ def to_action(action: ActionType) -> str:
 def to_destination(destination: Union[DestinationType, DestinationConfig]) -> TransformationDestination:
     if isinstance(destination, DestinationConfig):
         if destination.type == DestinationType.raw:
-            return RawTable("raw", destination.raw_database, destination.raw_table)
+            return TransformationDestination.raw(destination.raw_database, destination.raw_table)
         return TransformationDestination(destination.type.value)
     else:
         return TransformationDestination(destination.value)
@@ -144,10 +143,10 @@ def to_notification(transformation_external_id: str, destination: str) -> Transf
     return TransformationNotification(transformation_external_id=transformation_external_id, destination=destination)
 
 
-def get_existing_trasformation_ext_ids(exp_client: ExpCogniteClient, all_ext_ids: List[str]) -> List[str]:
+def get_existing_trasformation_ext_ids(client: CogniteClient, all_ext_ids: List[str]) -> List[str]:
     return [
         t.external_id
-        for t in exp_client.transformations.retrieve_multiple(external_ids=all_ext_ids, ignore_unknown_ids=True)
+        for t in client.transformations.retrieve_multiple(external_ids=all_ext_ids, ignore_unknown_ids=True)
     ]
 
 
@@ -155,39 +154,33 @@ def get_new_transformation_ids(all_ext_ids: List[str], existig_ext_ids: List[str
     return list(set(all_ext_ids) - set(existig_ext_ids))
 
 
-def get_existing_schedules_dict(
-    exp_client: ExpCogniteClient, all_ext_ids: List[str]
-) -> Dict[str, TransformationSchedule]:
+def get_existing_schedules_dict(client: CogniteClient, all_ext_ids: List[str]) -> Dict[str, TransformationSchedule]:
     return {
         s.external_id: s
-        for s in exp_client.transformations.schedules.retrieve_multiple(
-            external_ids=all_ext_ids, ignore_unknown_ids=True
-        )
+        for s in client.transformations.schedules.retrieve_multiple(external_ids=all_ext_ids, ignore_unknown_ids=True)
     }
 
 
 def get_existing_notifications_dict(
-    exp_client: ExpCogniteClient, all_ext_ids: List[str]
+    client: CogniteClient, all_ext_ids: List[str]
 ) -> Dict[str, List[TransformationNotification]]:
     existing_notifications = dict()
     for ext_id in all_ext_ids:
-        notifications = exp_client.transformations.notifications.list(transformation_external_id=ext_id, limit=-1)
+        notifications = client.transformations.notifications.list(transformation_external_id=ext_id, limit=-1)
         if notifications:
             existing_notifications[ext_id] = notifications
     return existing_notifications
 
 
 def upsert_transformations(
-    exp_client: ExpCogniteClient,
+    client: CogniteClient,
     transformations: List[Transformation],
     existing_ext_ids: List[str],
     new_ext_ids: List[str],
 ) -> Tuple[StandardResult, StandardResult, StandardResult]:
     try:
-        updated = exp_client.transformations.update(
-            [tr for tr in transformations if tr.external_id in existing_ext_ids]
-        )
-        created = exp_client.transformations.create([tr for tr in transformations if tr.external_id in new_ext_ids])
+        updated = client.transformations.update([tr for tr in transformations if tr.external_id in existing_ext_ids])
+        created = client.transformations.create([tr for tr in transformations if tr.external_id in new_ext_ids])
         return [], [t.external_id for t in updated], [t.external_id for t in created]
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
@@ -195,7 +188,7 @@ def upsert_transformations(
 
 
 def upsert_schedules(
-    exp_client: ExpCogniteClient,
+    client: CogniteClient,
     existing_schedules_dict: Dict[str, TransformationSchedule],
     requested_schedules_dict: Dict[str, TransformationSchedule],
     existing_transformations_ext_ids: List[str],
@@ -213,16 +206,16 @@ def upsert_schedules(
             elif ext_id in requested_schedules_dict:
                 to_create.append(ext_id)
         to_create += [ext_id for ext_id in new_transformations_ext_ids if ext_id in requested_schedules_dict]
-        exp_client.transformations.schedules.delete(external_id=to_delete)
-        exp_client.transformations.schedules.update([requested_schedules_dict[ext_id] for ext_id in to_update])
-        exp_client.transformations.schedules.create([requested_schedules_dict[ext_id] for ext_id in to_create])
+        client.transformations.schedules.delete(external_id=to_delete)
+        client.transformations.schedules.update([requested_schedules_dict[ext_id] for ext_id in to_update])
+        client.transformations.schedules.create([requested_schedules_dict[ext_id] for ext_id in to_create])
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
     return to_delete, to_update, to_create
 
 
 def upsert_notifications(
-    exp_client: ExpCogniteClient,
+    client: CogniteClient,
     existing_notifications_dict: Dict[str, List[TransformationNotification]],
     requested_notifications_dict: Dict[str, List[TransformationNotification]],
     existing_transformations_ext_ids: List[str],
@@ -245,8 +238,8 @@ def upsert_notifications(
                 {e.id: (ext_id, e.destination) for e in existing_notif if e.destination not in requested_destinations}
             )
             to_create += [e for e in requested_notif if e.destination not in existing_destinations]
-        exp_client.transformations.notifications.delete(list(to_delete.keys()))
-        exp_client.transformations.notifications.create(to_create)
+        client.transformations.notifications.delete(list(to_delete.keys()))
+        client.transformations.notifications.create(to_create)
         return (
             [to_delete[key] for key in to_delete],
             [],
