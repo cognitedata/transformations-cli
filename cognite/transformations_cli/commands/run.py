@@ -5,7 +5,7 @@ from typing import Dict, Optional
 import click
 from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
-from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.clients import get_client
 from cognite.transformations_cli.commands.utils import (
     exit_with_cognite_api_error,
     is_id_exclusive,
@@ -41,7 +41,7 @@ def run(
     watch_only: bool = False,
     time_out: int = (12 * 60 * 60),
 ) -> None:
-    client = get_clients(obj)
+    client = get_client(obj)
     is_id_provided(id, external_id)
     is_id_exclusive(id, external_id)
     try:

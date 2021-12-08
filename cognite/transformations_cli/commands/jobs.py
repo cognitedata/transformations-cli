@@ -4,7 +4,7 @@ import click
 from cognite.client.data_classes import TransformationJob
 from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
-from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.clients import get_client
 from cognite.transformations_cli.commands.utils import (
     exit_with_cognite_api_error,
     is_id_exclusive,
@@ -26,7 +26,7 @@ def log_jobs(id_str: Optional[str], items: List[TransformationJob]) -> None:
 @click.option("-i", "--interactive", is_flag=True, help="Display only 10 jobs at a time, paging through them.")
 @click.pass_obj
 def jobs(obj: Dict, id: Optional[int], external_id: Optional[str], limit: int = 10, interactive: bool = False) -> None:
-    client = get_clients(obj)
+    client = get_client(obj)
     is_id_exclusive(id, external_id)
     try:
         id_str = None

@@ -4,7 +4,7 @@ from typing import Dict, Optional
 import click
 from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
-from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.clients import get_client
 from cognite.transformations_cli.commands.utils import (
     exit_with_cognite_api_error,
     get_transformation,
@@ -25,7 +25,7 @@ from cognite.transformations_cli.commands.utils import (
 @click.option("--job-id", help="The id of the job to show. Include this to show job details.")
 @click.pass_obj
 def show(obj: Dict, id: Optional[int], external_id: Optional[str], job_id: Optional[int]) -> None:
-    client = get_clients(obj)
+    client = get_client(obj)
     is_id_exclusive(id, external_id)
     if not (id or external_id or job_id):
         click.echo("Please provide id, external_id or job_id")

@@ -3,7 +3,7 @@ from typing import Dict, Optional
 import click
 from cognite.client.exceptions import CogniteAPIError, CogniteNotFoundError
 
-from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.clients import get_client
 from cognite.transformations_cli.commands.utils import exit_with_cognite_api_error, is_id_exclusive, is_id_provided
 
 
@@ -15,7 +15,7 @@ from cognite.transformations_cli.commands.utils import exit_with_cognite_api_err
 @click.option("--delete-schedule", is_flag=False, help="Delete the schedule before deleting the transformation.")
 @click.pass_obj
 def delete(obj: Dict, id: Optional[int], external_id: Optional[str], delete_schedule: bool = False) -> None:
-    client = get_clients(obj)
+    client = get_client(obj)
     id = int(id) if id else None
     is_id_provided(id, external_id)
     is_id_exclusive(id, external_id)

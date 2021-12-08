@@ -4,7 +4,7 @@ import click
 from cognite.client.data_classes import Transformation
 from cognite.client.exceptions import CogniteAPIError
 
-from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.clients import get_client
 from cognite.transformations_cli.commands.utils import paginate, print_transformations
 
 
@@ -19,7 +19,7 @@ def log_transformations(transformations: List[Transformation]) -> None:
 )
 @click.pass_obj
 def list(obj: Dict, limit: int = 10, interactive: bool = False) -> None:
-    client = get_clients(obj)
+    client = get_client(obj)
     try:
         transformations = client.transformations.list(limit=limit)
         if interactive:

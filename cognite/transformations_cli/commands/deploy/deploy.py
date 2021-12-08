@@ -4,7 +4,7 @@ import click
 from cognite.client import CogniteClient
 from cognite.client.data_classes import OidcCredentials, Transformation
 
-from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.clients import get_client
 from cognite.transformations_cli.commands.deploy.transformation_config import (
     TransformationConfigError,
     parse_transformation_configs,
@@ -86,7 +86,7 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
     """
     click.echo("Deploying transformation...")
     try:
-        client = get_clients(obj)
+        client = get_client(obj)
         cluster = obj["cluster"]
         transformation_configs = parse_transformation_configs(path)
         transformations = [

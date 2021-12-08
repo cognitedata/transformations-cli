@@ -3,7 +3,7 @@ from typing import Dict
 import click
 from cognite.client.exceptions import CogniteAPIError
 
-from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.clients import get_client
 from cognite.transformations_cli.commands.utils import exit_with_cognite_api_error, print_query
 
 
@@ -19,7 +19,7 @@ from cognite.transformations_cli.commands.utils import exit_with_cognite_api_err
 @click.pass_obj
 def query(obj: Dict, query: str, source_limit: int = 100, infer_schema_limit: int = 100, limit: int = 1000) -> None:
     try:
-        client = get_clients(obj)
+        client = get_client(obj)
         src_lim = "all" if source_limit == -1 else source_limit  # TODO Until handled in SDK
         res = client.transformations.preview(
             query=query, source_limit=src_lim, infer_schema_limit=infer_schema_limit, limit=limit

@@ -7,7 +7,7 @@ from click.testing import CliRunner
 from cognite.client import CogniteClient
 from cognite.client.data_classes import OidcCredentials, Transformation, TransformationDestination
 
-from cognite.transformations_cli.clients import get_clients
+from cognite.transformations_cli.clients import get_client
 
 
 @pytest.fixture
@@ -131,7 +131,7 @@ def obj(
 
 @pytest.fixture
 def client(obj: Dict[str, Optional[str]]) -> CogniteClient:
-    return get_clients(obj)
+    return get_client(obj)
 
 
 @pytest.fixture

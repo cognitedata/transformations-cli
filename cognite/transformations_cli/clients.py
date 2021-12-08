@@ -5,7 +5,7 @@ from cognite.client import CogniteClient
 from cognite.client.exceptions import CogniteAPIKeyError
 
 
-def get_clients(obj: Dict) -> CogniteClient:
+def get_client(obj: Dict) -> CogniteClient:
     api_key = obj["api_key"]
     client_id = obj["client_id"]
     client_secret = obj["client_secret"]
