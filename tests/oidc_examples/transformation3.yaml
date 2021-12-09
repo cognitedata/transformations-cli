@@ -1,0 +1,22 @@
+externalId: "test-cli-transform-oidc2"
+name: "test-cli-transform-oidc2"
+destination: "assets"
+shared: True
+action: "upsert"
+query: "select 1"
+schedule:
+  interval: "* * * * *"
+  is_paused: true
+ignoreNullFields: False
+notifications:
+  - example@cognite.com
+authentication:
+  clientId: ${CLIENT_ID}
+  clientSecret: ${CLIENT_SECRET}
+  tokenUrl: "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token"
+  scopes: 
+    - "https://bluefield.cognitedata.com/.default"
+  cdfProjectName: "extractor-bluefield-testing"
+  # audience: ""
+
+
