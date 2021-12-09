@@ -38,7 +38,7 @@ authentication:
         apiKey: testApiKeyRead
     write:
         apiKey: testApiKeyWrite
-schedule: testSchedule
+schedule: "* * * * *"
 destination:
     type: data_sets
     rawDatabase: testDb
@@ -60,7 +60,7 @@ action: delete
     assert isinstance(conf.authentication, ReadWriteAuthentication)
     assert conf.authentication.read.api_key == "testApiKeyRead"
     assert conf.authentication.write.api_key == "testApiKeyWrite"
-    assert conf.schedule == "testSchedule"
+    assert conf.schedule == "* * * * *"
     assert conf.destination.type == DestinationType.data_sets
     assert conf.destination.raw_database == "testDb"
     assert conf.destination.raw_table == "testTable"
@@ -100,7 +100,7 @@ authentication:
             - testScope2
         cdfProjectName: testProject
         audience: testAudience
-schedule: testSchedule
+schedule: "* * * * *"
 destination:
     type: string_datapoints
     rawDatabase: testDb
@@ -137,7 +137,7 @@ action: delete
     assert conf.authentication.write.scopes[1] == "testScope2"
     assert conf.authentication.write.audience == "testAudience"
 
-    assert conf.schedule == "testSchedule"
+    assert conf.schedule == "* * * * *"
     assert conf.destination.type == DestinationType.string_datapoints
     assert conf.destination.raw_database == "testDb"
     assert conf.destination.raw_table == "testTable"
@@ -177,7 +177,7 @@ authentication:
             - testScope2
         cdfProjectName: testProject
         audience: testAudience
-schedule: testSchedule
+schedule: "* * * * *"
 destination:
     type: stringDatapoints
     rawDatabase: testDb
@@ -220,7 +220,7 @@ action: Delete
     assert conf.authentication.write.scopes[1] == "testScope2"
     assert conf.authentication.write.audience == "testAudience"
 
-    assert conf.schedule == "testSchedule"
+    assert conf.schedule == "* * * * *"
     assert conf.destination.type == DestinationType.string_datapoints
     assert conf.destination.raw_database == "testDb"
     assert conf.destination.raw_table == "testTable"
@@ -243,7 +243,7 @@ query: testQuery.sql
 apiKey:
     read: TEST_API_KEY_READ
     write: TEST_API_KEY_WRITE
-schedule: testSchedule
+schedule: "* * * * *"
 legacy: true
 destination:
     type: dataSets
@@ -269,7 +269,7 @@ action: DELETE
     assert isinstance(conf.authentication, ReadWriteAuthentication)
     assert conf.authentication.read.api_key == "testApiKeyRead"
     assert conf.authentication.write.api_key == "testApiKeyWrite"
-    assert conf.schedule == "testSchedule"
+    assert conf.schedule == "* * * * *"
     assert conf.destination.type == DestinationType.data_sets
     assert conf.destination.raw_database == "testDb"
     assert conf.destination.raw_table == "testTable"

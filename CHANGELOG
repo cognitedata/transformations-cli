@@ -12,9 +12,15 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.2.10] - 2021-12-09
+### Fixed
+- Update schedules one by one until backend is fixed for bulk updates.
+### Added
+- Add cron expression validation for schedule intervals.
+
 ## [1.2.9] - 2021-12-09
 ### Fixed
-- Fix result printing on tuples
+- Fix result printing on tuples.
 
 ## [1.2.8] - 2021-12-09
 ### Fixed
@@ -24,7 +30,7 @@ Changes are grouped as follows
 ### Fixed
 - Fix flat destination type style in transformation config
 ### Added
-- Added styled logs on deploy command
+- Add styled logs on deploy command
 
 ## [1.2.6] - 2021-12-09
 ### Added

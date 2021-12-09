@@ -3,6 +3,7 @@ import os
 from typing import Dict, List, Optional, Union
 
 from cognite.extractorutils.configtools import load_yaml
+from croniter import croniter
 from regex import regex
 
 from cognite.transformations_cli.commands.deploy.transformation_types import (
@@ -10,6 +11,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     DestinationConfig,
     DestinationType,
     ReadWriteAuthentication,
+    ScheduleConfig,
     TransformationConfig,
     TransformationConfigError,
 )
@@ -44,9 +46,19 @@ def _validate_auth(external_id: str, auth_config: Union[AuthConfig, ReadWriteAut
         _validate_exclusive_auth(external_id, auth_config.write)
 
 
+def _validate_schedule(external_id: str, schedule: Optional[Union[str, ScheduleConfig]]) -> None:
+    if not schedule:
+        return None
+    interval = schedule if isinstance(schedule, str) else schedule.interval
+    if schedule and not croniter.is_valid(interval):
+        raise Exception(f"Please provide a valid cron expression: {external_id}")
+    return None
+
+
 def _validate_config(config: TransformationConfig) -> None:
     _validate_destination_type(config.external_id, config.destination)
     _validate_auth(config.external_id, config.authentication)
+    _validate_schedule(config.external_id, config.schedule)
 
 
 def _parse_transformation_config(path: str) -> TransformationConfig:
