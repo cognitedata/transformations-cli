@@ -41,6 +41,9 @@ jobs:
 
     - name: Build package
       run: poetry build
+    
+    - name: Build docs
+      run: cd docs && make html
 
     - name: Release to PyPI
       env:

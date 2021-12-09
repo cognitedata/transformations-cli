@@ -76,9 +76,9 @@ class TransformationConfig:
     query: Union[str, QueryConfig]
     authentication: Union[AuthConfig, ReadWriteAuthentication]
     schedule: Optional[Union[str, ScheduleConfig]]
-    destination: DestinationConfig
+    destination: Union[DestinationType, DestinationConfig]
     notifications: List[str] = field(default_factory=list)
-    shared: bool = False
+    shared: bool = True
     ignore_null_fields: bool = True
     action: ActionType = ActionType.upsert
     legacy: bool = False

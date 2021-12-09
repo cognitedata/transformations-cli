@@ -12,6 +12,48 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.2.5] - 2021-12-07
+### Fixed
+- Use official cognite-sdk
+
+## [1.2.4] - 2021-12-06
+### Fixed
+- Use SDK version 0.60.30
+
+## [1.2.3] - 2021-12-01
+### Fixed
+- Use new SDK version
+
+## [1.2.2] - 2021-11-22
+### Added
+- Support validating read/write credentials
+
+## [1.2.1] - 2021-11-17
+### Fixed
+- Fix transformation list by upgrading to cognite-sdk with fixed TransformationBlockedInfo class
+### Added
+- Add GitHub Action `--debug` option to make it easier to follow the progress.
+
+## [1.2.0] - 2021-11-16
+### Added
+- Add support for simple pagination in jobs and transformations
+
+## [1.1.0] - 2021-11-12
+### Added
+- Support str on TransformationConfig.destination when the target is not raw.
+
+## [1.0.1] - 2021-11-09
+### Fixed
+- Make query file path relative to the manifest path.
+### Added
+- Add migration guide
+- Restructure the README.md
+- Publish documentation on Read The Docs.
+
+## [1.0.0] - 2021-11-08
+### Added
+- Add Quickstart documentation
+
 ## [0.1.O] - 2021-11-03
 ### Added
 - Everything

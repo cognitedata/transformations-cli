@@ -1,21 +1,20 @@
-# version: v3
 externalId: "test-cli-transform-oidc"
 name: "test-cli-transform-oidc"
 destination: 
-  type: "assets"
+  type: "string_datapoints"
 shared: True
 action: "upsert"
-query: "select 'asd' as name, 'asd' as externalId"
+query: "select 0 as timestamp, 'invalid transformation' as value, 'invalid' as externalId"
 ignoreNullFields: False
 notifications:
-  - emel.varol@cognite.com
+  - example@cognite.com
 authentication:
   clientId: ${CLIENT_ID}
   clientSecret: ${CLIENT_SECRET}
-  tokenUrl: ${TOKEN_URL}
+  tokenUrl: "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token"
   scopes: 
-    - ${SCOPES}
-  cdfProjectName: ${CDF_PROJECT_NAME}
+    - "https://bluefield.cognitedata.com/.default"
+  cdfProjectName: "extractor-bluefield-testing"
   # audience: ""
 
 

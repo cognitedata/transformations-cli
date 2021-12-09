@@ -1,27 +1,26 @@
 from typing import Dict, List, Optional
 
 from click.testing import CliRunner
-from cognite.experimental import CogniteClient as ExpCogniteClient
-from cognite.experimental.data_classes.transformation_notifications import TransformationNotification
-from cognite.experimental.data_classes.transformations import Transformation
+from cognite.client import CogniteClient
+from cognite.client.data_classes import Transformation, TransformationNotification
 
 from cognite.transformations_cli.commands.show import show
 from tests.helpers import from_table
 
 
 def test_show_with_id(
-    exp_client: ExpCogniteClient,
+    client: CogniteClient,
     cli_runner: CliRunner,
     obj: Dict[str, Optional[str]],
     configs_to_create: List[Transformation],
 ) -> None:
-    tr = exp_client.transformations.create(configs_to_create[0])
+    tr = client.transformations.create(configs_to_create[0])
     tr_id = tr.id
-    notif = exp_client.transformations.notifications.create(
+    notif = client.transformations.notifications.create(
         TransformationNotification(transformation_id=tr_id, destination="emel")
     )
     cli_result = cli_runner.invoke(show, [f"--id={tr_id}"], obj=obj)
-    exp_client.transformations.delete(id=tr_id)
+    client.transformations.delete(id=tr_id)
 
     assert cli_result.exit_code == 0
 
@@ -36,19 +35,19 @@ def test_show_with_id(
 
 
 def test_show_with_external_id(
-    exp_client: ExpCogniteClient,
+    client: CogniteClient,
     cli_runner: CliRunner,
     obj: Dict[str, Optional[str]],
     configs_to_create: List[Transformation],
 ) -> None:
     external_id = configs_to_create[0].external_id
-    tr = exp_client.transformations.create(configs_to_create[0])
-    notif = exp_client.transformations.notifications.create(
+    tr = client.transformations.create(configs_to_create[0])
+    notif = client.transformations.notifications.create(
         TransformationNotification(transformation_external_id=external_id, destination="emel")
     )
 
     cli_result = cli_runner.invoke(show, [f"--external-id={external_id}"], obj=obj)
-    exp_client.transformations.delete(external_id=external_id)
+    client.transformations.delete(external_id=external_id)
 
     assert cli_result.exit_code == 0
 
@@ -63,16 +62,16 @@ def test_show_with_external_id(
 
 
 def test_show_with_job_id(
-    exp_client: ExpCogniteClient,
+    client: CogniteClient,
     cli_runner: CliRunner,
     obj: Dict[str, Optional[str]],
     configs_to_create: List[Transformation],
 ) -> None:
-    tr = exp_client.transformations.create(configs_to_create[0])
+    tr = client.transformations.create(configs_to_create[0])
     job = tr.run(wait=True)
     job_id = job.id
     cli_result = cli_runner.invoke(show, [f"--job-id={job_id}"], obj=obj)
-    exp_client.transformations.delete(id=tr.id)
+    client.transformations.delete(id=tr.id)
     # TODO more detailed testing of the output
     assert cli_result.exit_code == 0
 

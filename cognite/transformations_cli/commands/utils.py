@@ -1,29 +1,24 @@
 import datetime
 import sys
-from typing import List, Optional
+from typing import Callable, List, Optional, TypeVar
 
+import click
 import sqlparse
-from cognite.experimental import CogniteClient as ExpCogniteClient
-from cognite.experimental.data_classes.transformation_jobs import TransformationJob, TransformationJobMetric
-from cognite.experimental.data_classes.transformation_notifications import TransformationNotification
-from cognite.experimental.data_classes.transformations import (
+from cognite.client import CogniteClient
+from cognite.client.data_classes import (
     RawTable,
     Transformation,
     TransformationDestination,
+    TransformationJob,
+    TransformationJobMetric,
+    TransformationNotification,
     TransformationPreviewResult,
 )
 from tabulate import tabulate
 
 
-def get_id_from_external_id(exp_client: ExpCogniteClient, external_id: str) -> int:
-    tr = exp_client.transformations.retrieve(external_id=external_id)
-    if tr:
-        return tr.id
-    sys.exit("Cognite API error has occurred: Transformation with external_id {external_id} not found.")
-
-
-def get_transformation(exp_client: ExpCogniteClient, id: Optional[int], external_id: Optional[str]) -> Transformation:
-    tr = exp_client.transformations.retrieve(external_id=external_id, id=id)
+def get_transformation(client: CogniteClient, id: Optional[int], external_id: Optional[str]) -> Transformation:
+    tr = client.transformations.retrieve(external_id=external_id, id=id)
     if tr:
         return tr
     msg = "external_id" if external_id else "id"
@@ -154,3 +149,14 @@ def print_jobs(jobs: List[TransformationJob]) -> str:
         headers="firstrow",
         tablefmt="rst",
     )
+
+
+T = TypeVar("T")
+
+
+def paginate(items: List[T], action: Callable[[List[T]], None]) -> None:
+    chunks = [items[i : i + 10] for i in range(0, len(items), 10)]
+    for chunk in chunks:
+        click.clear()
+        action(chunk)
+        input("Press Enter to continue")

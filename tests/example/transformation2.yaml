@@ -1,4 +1,3 @@
-# version: v3
 externalId: "test-cli-transform-raw"
 name: "test-cli-transform-raw"
 destination: 
@@ -8,10 +7,11 @@ destination:
 shared: True
 action: "upsert"
 query:
-  file: tests/example/my_transform.sql
+  file: my_transform.sql
 ignoreNullFields: False
 notifications:
-  - emel.varol@cognite.com
+  - example@cognite.com
+  - example2@cognite.com
 authentication:
   read:
     apiKey: ${API_KEY}

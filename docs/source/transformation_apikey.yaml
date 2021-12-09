@@ -2,12 +2,25 @@ externalId: "test-cli-transform"
 name: "test-cli-transform"
 destination: 
   type: "assets"
+# destination: "assets"
 shared: True
 action: "upsert"
 query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
+# query:
+#   file: query.sql
+schedule: "* * * * *"
 ignoreNullFields: False
-schedule: "5 4 * * *"
 notifications:
   - example@cognite.com
+  - example2@cognite.com
 authentication:
   apiKey: ${API_KEY}
+
+# # If you need to specity read/write authentication separately
+# authentication:
+#   read:
+#     apiKey: ${API_KEY}
+#   write:
+#     apiKey: ${API_KEY}
+
+

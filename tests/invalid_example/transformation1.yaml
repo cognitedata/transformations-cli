@@ -1,14 +1,12 @@
-# version: v3
 externalId: "test-cli-transform-oidc"
 name: "test-cli-transform-oidc"
-destination: 
-  type: "assets"
+destination: "assets"
 shared: True
 action: "upsert"
-query: "select 'asd' as name, 'asd' as externalId"
+query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
 ignoreNullFields: False
 notifications:
-  - emel.varol@cognite.com
+  - example@cognite.com
 authentication:
   clientId: ${CLIENT_ID}
   clientSecret: ${CLIENT_SECRET}
