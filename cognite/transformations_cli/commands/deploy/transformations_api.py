@@ -63,7 +63,7 @@ def to_query(conf_path: str, query: Union[str, QueryConfig]) -> str:
         if isinstance(query, QueryConfig):
             sql_path = os.path.join(dir_path, query.file)
             with open(sql_path, "r") as f:
-                return f.read().replace("\n", "")
+                return f.read()
         return query
     except:
         sys.exit("Please provide a valid path for sql file.")
