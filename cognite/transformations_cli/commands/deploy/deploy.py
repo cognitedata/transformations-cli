@@ -62,9 +62,9 @@ def print_results(
     if results:
         click.echo(click.style(f"Number of {resource_type}s {action}d: {len(results)}", fg="blue"))
         if debug:
-            click.echo(click.style(f"List of {resource_type}s {action}d:", fg="green"))
             if results:
-                click.echo("  " + "\n  ".join(results))
+                click.echo(click.style(f"List of {resource_type}s {action}d:", fg="green"))
+                click.echo("  " + "\n  ".join([str(i) for i in results]))
     return None
 
 
