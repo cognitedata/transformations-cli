@@ -60,6 +60,12 @@ class QueryConfig:
 
 
 @dataclass
+class ScheduleConfig:
+    interval: str
+    is_paused: bool = False
+
+
+@dataclass
 class TransformationConfig:
     """
     Master configuration class of a transformation
@@ -69,7 +75,7 @@ class TransformationConfig:
     name: str
     query: Union[str, QueryConfig]
     authentication: Union[AuthConfig, ReadWriteAuthentication]
-    schedule: Optional[str]
+    schedule: Optional[Union[str, ScheduleConfig]]
     destination: Union[DestinationType, DestinationConfig]
     notifications: List[str] = field(default_factory=list)
     shared: bool = True

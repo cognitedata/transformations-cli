@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.2.6] - 2021-12-09
+### Added
+- Support for the is_paused parameter with schedules
+
 ## [1.2.5] - 2021-12-07
 ### Fixed
 - Use official cognite-sdk
