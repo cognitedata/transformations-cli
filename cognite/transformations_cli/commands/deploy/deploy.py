@@ -60,10 +60,11 @@ def print_results(
     resource_type: str, action: str, results: Union[StandardResult, TupleResult], debug: bool = False
 ) -> None:
     if results:
-        click.echo(f"Number of {resource_type}s {action}d: {len(results)}")
+        click.echo(click.style(f"Number of {resource_type}s {action}d: {len(results)}", fg="blue"))
         if debug:
-            click.echo(f"List of {resource_type}s {action}d:")
-            click.echo(results)
+            click.echo(click.style(f"List of {resource_type}s {action}d:", fg="green"))
+            if results:
+                click.echo("  " + "\n  ".join(results))
     return None
 
 
@@ -84,7 +85,7 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
     Args:
         path (str): Root directory for transformations
     """
-    click.echo("Deploying transformation...")
+    click.echo(click.style("Deploying transformations...", fg="red"))
     try:
         client = get_client(obj)
         cluster = obj["cluster"]

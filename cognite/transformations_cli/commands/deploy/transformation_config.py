@@ -16,9 +16,11 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
 from cognite.transformations_cli.commands.deploy.transformation_types_legacy import TransformationConfigLegacy
 
 
-def _validate_destination_type(external_id: str, destination_type: DestinationConfig) -> None:
-    if destination_type.type == DestinationType.raw and (
-        destination_type.raw_database is None or destination_type.raw_table is None
+def _validate_destination_type(external_id: str, destination_type: Union[DestinationType, DestinationConfig]) -> None:
+    if (
+        isinstance(destination_type, DestinationConfig)
+        and destination_type.type == DestinationType.raw
+        and (destination_type.raw_database is None or destination_type.raw_table is None)
     ):
         raise Exception(f"Raw destination type requires database and table properties to be set: {external_id}")
     return None
