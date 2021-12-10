@@ -150,7 +150,7 @@ def to_notification(transformation_external_id: str, destination: str) -> Transf
     return TransformationNotification(transformation_external_id=transformation_external_id, destination=destination)
 
 
-def get_existing_trasformation_ext_ids(client: CogniteClient, all_ext_ids: List[str]) -> List[str]:
+def get_existing_transformation_ext_ids(client: CogniteClient, all_ext_ids: List[str]) -> List[str]:
     return [
         t.external_id
         for t in client.transformations.retrieve_multiple(external_ids=all_ext_ids, ignore_unknown_ids=True)
@@ -215,6 +215,7 @@ def upsert_schedules(
         to_create += [ext_id for ext_id in new_transformations_ext_ids if ext_id in requested_schedules_dict]
         client.transformations.schedules.delete(external_id=to_delete)
         # TODO Go back to bulk update once it is fixed in the backend.
+        # Bulk update of schedules over 10, sometimes even 10 fail with Internal Error 500.
         schedules_update_list = [requested_schedules_dict[ext_id] for ext_id in to_update]
         for s in schedules_update_list:
             client.transformations.schedules.update(s)
