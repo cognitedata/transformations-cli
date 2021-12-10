@@ -14,7 +14,7 @@ from cognite.transformations_cli.commands.deploy.transformations_api import (
     TupleResult,
     get_existing_notifications_dict,
     get_existing_schedules_dict,
-    get_existing_trasformation_ext_ids,
+    get_existing_transformation_ext_ids,
     get_new_transformation_ids,
     to_notification,
     to_schedule,
@@ -99,7 +99,7 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
         for t in transformations:
             verify_credentials(t, cluster)
 
-        existing_transformations_ext_ids = get_existing_trasformation_ext_ids(client, transformations_ext_ids)
+        existing_transformations_ext_ids = get_existing_transformation_ext_ids(client, transformations_ext_ids)
         new_transformation_ext_ids = get_new_transformation_ids(
             transformations_ext_ids, existing_transformations_ext_ids
         )

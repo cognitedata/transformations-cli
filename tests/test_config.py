@@ -363,7 +363,7 @@ def test_to_notification() -> None:
     pass
 
 
-def test_get_existing_trasformation_ext_ids() -> None:
+def test_get_existing_transformation_ext_ids() -> None:
     pass
 
 
