@@ -214,7 +214,10 @@ def upsert_schedules(
                 to_create.append(ext_id)
         to_create += [ext_id for ext_id in new_transformations_ext_ids if ext_id in requested_schedules_dict]
         client.transformations.schedules.delete(external_id=to_delete)
-        client.transformations.schedules.update([requested_schedules_dict[ext_id] for ext_id in to_update])
+        # TODO Go back to bulk update once it is fixed in the backend.
+        schedules_update_list = [requested_schedules_dict[ext_id] for ext_id in to_update]
+        for s in schedules_update_list:
+            client.transformations.schedules.update(s)
         client.transformations.schedules.create([requested_schedules_dict[ext_id] for ext_id in to_create])
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
