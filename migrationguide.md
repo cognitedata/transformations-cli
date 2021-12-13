@@ -4,39 +4,39 @@
 1. Deploy step should use `transformations-cli@main` instead of `jetfire-cli@v2`:
 ```yaml
 # GitHub Workflow
-      - name: Transformations Deploy step
-        uses: transformations-cli@main
+- name: Transformations Deploy step
+  uses: transformations-cli@main
 ```
 
 2. `project-name` input should be renamed as `cdf-project-name`:
 
 ```yaml
 # GitHub Workflow
-       with:
-          path: <transformations_folder>
-          ...
-          cdf-project-name: extractor-bluefield-testing
-          ...
+with:
+  path: <transformations_folder>
+    ..
+    cdf-project-name: extractor-bluefield-testing
+    ...
 ```
 
 3- Make sure `scopes` are space separated if you need multiple scopes:
 
 ```yaml
 # GitHub Workflow
-       with:
-          path: <transformations_folder>
-          ...
-          scopes: scope1 scope2 scope3
-          ...
+with:
+  path: <transformations_folder>
+  ...
+  scopes: scope1 scope2 scope3
+  ...
 ```
 
 4- You can reference values as environment values or actual values in manifests, make sure you provide env variables you need in your manifests.
 ```yaml
 # GitHub Workflow
-      env:
-          TOKEN_URL: https://login.microsoftonline.com/someaad/oauth2/v2.0/token
-          CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
-          FIXED_TRANSFORMATION_NAME: example
+env:
+  TOKEN_URL: https://login.microsoftonline.com/someaad/oauth2/v2.0/token
+  CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+  FIXED_TRANSFORMATION_NAME: example
 ```
 
 ```yaml
@@ -45,9 +45,9 @@
 name: ${FIXED_TRANSFORMATION_NAME} # read from environment variable
 externalId: hello # value is used directly
 authentication:
-   clientSecret: ${CLIENT_SECRET} # read from environment variable
-   clientId: randomclientid # value is used directly 
-   tokenUrl: ${TOKEN_URL} # read from environment variable
+  clientSecret: ${CLIENT_SECRET} # read from environment variable
+  clientId: randomclientid # value is used directly 
+  tokenUrl: ${TOKEN_URL} # read from environment variable
 ```
 
 ## Manifest Changes:
@@ -69,6 +69,8 @@ Although we provide backward compatibility with the `legacy` flag, we recommend 
 - it has an improved structure
 - new functionality will only be made available in the new format
 - it enables the use of environment variables
+
+You can find the full documentation of the transformation manifest [here](https://cognite-transformations-cli.readthedocs-hosted.com/en/latest/quickstart.html#transformation-manifest).
 
 The following sections show the requirements for migrating the different fields of the manifest:
 
@@ -144,8 +146,8 @@ query: "select 'asset1' as name"
 ```yaml
 #  Transformation manifest
 query:
-    file:
-        my_query.sql
+  file:
+    my_query.sql
 ```
 
 </td>
@@ -154,6 +156,14 @@ query:
 
 #### Migrate `schedule`:
 - No changes required.
+- `is_paused` option is supported in the new CLI. If you need to pause some schedules, you can use the following format:
+
+```yaml
+#  Transformation manifest
+schedule:
+  interval: "* * * * *"
+  is_paused: true
+```
 
 #### Migrate `shared`:
 - No changes required, default is changed to `true`.
@@ -183,7 +193,7 @@ apiKey: API_KEY # as provided in deploy step
 ```yaml
 #  Transformation manifest
 authentication:
-    apiKey: ${API_KEY} # as provided in deploy step
+  apiKey: ${API_KEY} # as provided in deploy step
 ```
 
 </td>
@@ -192,7 +202,9 @@ authentication:
 
 
 #### Migrate `authentication`:
-- `clientId` and `clientSecret` were assumed to be environment variables while others are used as actual values.:
+- `clientId` and `clientSecret` were assumed to be environment variables while others are used as actual values in the old CLI manifest. 
+`${MY_NAME}` will be treated as the value for the environment variable named `MY_NAME` while `MY_NAME` will be used as the value itself in the new manifest.
+This leaves where to use environment variables to the user so it is really flexible. 
 - Also, we added support for `audience` parameter to retrieve the token.
 <table>
 <tr>
@@ -203,32 +215,28 @@ authentication:
 <td>
 
 ```yaml
-# Legacy ransformation manifest
-...
-  # The following two is given as the name of an environment variable
-  clientId: COGNITE_CLIENT_ID
-  clientSecret: COGNITE_CLIENT_SECRET
-  # The following are explicit values, not environment variables
-  tokenUrl: https://my-idp.com/oauth2/token
-  scopes:
-    - https://bluefield.cognitedata.com/.default
-  cdfProjectName: my-project
-...
+# Legacy transformation manifest
+# The following two is given as the name of an environment variable
+clientId: COGNITE_CLIENT_ID
+clientSecret: COGNITE_CLIENT_SECRET
+# The following are explicit values, not environment variables
+tokenUrl: https://my-idp.com/oauth2/token
+scopes:
+  - https://bluefield.cognitedata.com/.default
+cdfProjectName: my-project
 ```
 </td>
 <td>
 
 ```yaml
 # Transformation manifest
-...
-  clientId: ${CLIENT_ID}
-  clientSecret: ${CLIENT_SECRET}
-  tokenUrl: https://my-idp.com/oauth2/token
-  scopes: 
-    - https://bluefield.cognitedata.com/.default
-  cdfProjectName: my-project
-  # audience: ""
-...
+clientId: ${CLIENT_ID}
+clientSecret: ${CLIENT_SECRET}
+tokenUrl: https://my-idp.com/oauth2/token
+scopes: 
+  - https://bluefield.cognitedata.com/.default
+cdfProjectName: my-project
+# audience: ""
 ```
 
 </td>
@@ -253,8 +261,8 @@ apiKey: API_KEY # as provided in deploy step
 ```yaml
 # Legacy ransformation manifest
 apiKey: 
-    read: READ_API_KEY # as provided in deploy step
-    write: WRITE_API_KEY # as provided in deploy step
+  read: READ_API_KEY # as provided in deploy step
+  write: WRITE_API_KEY # as provided in deploy step
 ```
 
 </td>
@@ -263,15 +271,15 @@ apiKey:
 ```yaml
 # Transformation manifest
 authentication:
-    apiKey: ${API_KEY} # as provided in deploy step
+  apiKey: ${API_KEY} # as provided in deploy step
 ```
 
 ```yaml
 # Transformation manifest
 authentication:
-    apiKey: 
-        read: ${READ_API_KEY} # as provided in deploy step
-        write: ${WRITE_API_KEY} # as provided in deploy step
+  apiKey: 
+    read: ${READ_API_KEY} # as provided in deploy step
+    write: ${WRITE_API_KEY} # as provided in deploy step
 ```
 
 </td>

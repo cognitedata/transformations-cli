@@ -8,7 +8,12 @@ action: "upsert"
 query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
 # query:
 #   file: query.sql
-schedule: "* * * * *"
+
+# schedule: "* * * * *"
+schedule:
+  interval: "* * * * *"
+  is_paused: true
+  
 ignoreNullFields: False
 notifications:
   - example@cognite.com
