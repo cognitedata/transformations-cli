@@ -214,12 +214,14 @@ def upsert_schedules(
                 to_create.append(ext_id)
         to_create += [ext_id for ext_id in new_transformations_ext_ids if ext_id in requested_schedules_dict]
         client.transformations.schedules.delete(external_id=to_delete)
-        # TODO Go back to bulk update once it is fixed in the backend.
+        # TODO Go back to bulk update/create once it is fixed in the backend.
         # Bulk update of schedules over 10, sometimes even 10 fail with Internal Error 500.
         schedules_update_list = [requested_schedules_dict[ext_id] for ext_id in to_update]
         for s in schedules_update_list:
             client.transformations.schedules.update(s)
-        client.transformations.schedules.create([requested_schedules_dict[ext_id] for ext_id in to_create])
+        schedules_create_list = [requested_schedules_dict[ext_id] for ext_id in to_create]
+        for c in schedules_create_list:
+            client.transformations.schedules.create(c)
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
     return to_delete, to_update, to_create
