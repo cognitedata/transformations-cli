@@ -5,7 +5,7 @@
 ```yaml
 # GitHub Workflow
 - name: Transformations Deploy step
-  uses: transformations-cli@main
+  uses: cognitedata/transformations-cli@main
 ```
 
 2. `project-name` input should be renamed as `cdf-project-name`:
