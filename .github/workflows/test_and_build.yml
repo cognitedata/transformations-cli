@@ -24,6 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         python3 -m pip install --upgrade pip poetry
+        poetry config virtualenvs.create false
         poetry install
 
     - name: Check codestyle
@@ -47,7 +48,7 @@ jobs:
       name: "Parse version2"
       run: |
         echo ${{ steps.parse_version.outputs.cli_version }}
-
+        
     - name: "Build and push Docker image"
       uses: docker/build-push-action@v2
       with:
