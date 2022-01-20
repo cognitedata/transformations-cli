@@ -39,9 +39,14 @@ jobs:
           CLIENT_ID: ${{secrets.EXTRACTORS_CLIENT_ID}}
           CLIENT_SECRET: ${{secrets.EXTRACTORS_CLIENT_SECRET}}
 
+    - id: parse_version
+      name: "Parse version"
+      run: |
+        echo "::set-output name=version::$(PYTHONPATH=cognite/transformations_cli poetry run python -m cognite.transformations_cli --version | cut -c 30-)"
+
     - name: "Print CLI version"
       run: |
-        PYTHONPATH=cognite/transformations_cli poetry run python -m cognite.transformations_cli --version | cut -c 30-
+        echo ${{ steps. parse_version.outputs.version }}
 
     - uses: codecov/codecov-action@v1
       with:
