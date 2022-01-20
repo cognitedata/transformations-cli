@@ -42,11 +42,10 @@ jobs:
     - id: parse_version
       name: "Parse version"
       run: |
-        echo "::set-output name=version::$(PYTHONPATH=cognite/transformations_cli poetry run python -m cognite.transformations_cli --version | cut -c 30-)"
+        echo "::set-output name=cli_version::$(PYTHONPATH=cognite/transformations_cli poetry run python -m cognite.transformations_cli --version | cut -c 30-)"
 
     - name: "Print CLI version"
-      run: |
-        echo ${{ steps. parse_version.outputs.version }}
+      run: echo ${{ steps.parse_version.outputs.cli_version }}
 
     - uses: codecov/codecov-action@v1
       with:

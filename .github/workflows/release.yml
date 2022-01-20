@@ -54,7 +54,7 @@ jobs:
     - id: parse_version
       name: "Parse version"
       run: |
-        echo "::set-output name=version::$(PYTHONPATH=cognite/transformations_cli poetry run python -m cognite.transformations_cli --version | cut -c 30-)"
+        echo "::set-output name=cli_version::$(PYTHONPATH=cognite/transformations_cli poetry run python -m cognite.transformations_cli --version | cut -c 30-)"
       
     - name: "Build and push Docker image"
       uses: docker/build-push-action@v2
@@ -62,4 +62,4 @@ jobs:
         context: .
         push: true
         file: ./Dockerfile
-        tags: cognite/transformations-cli:${{ steps. parse_version.outputs.version }}
+        tags: cognite/transformations-cli:${{ steps.parse_version.outputs.cli_version }}
