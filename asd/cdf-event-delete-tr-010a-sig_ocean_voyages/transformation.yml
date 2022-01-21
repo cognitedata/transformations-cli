@@ -1,0 +1,23 @@
+---
+externalId: cdf:event:delete:tr:010a:sig_ocean_voyages
+name: cdf:event:delete:tr:010a:sig_ocean_voyages
+shared: true
+
+# schedule: "1/15 * * * *"
+
+query:
+    file:
+        transformation.sql
+action: delete
+destination: events
+
+notifications:
+    - aaaaez5frjt3ah5lo5hdext7de@cognitedata.slack.com
+authentication:
+    tokenUrl: ${TOKEN_URL}
+    scopes:
+        - ${SCOPES}
+    cdfProjectName: ${COGNITE_PROJECT}
+    clientId: ${COGNITE_CLIENT_ID}
+    clientSecret: ${COGNITE_CLIENT_SECRET}
+...

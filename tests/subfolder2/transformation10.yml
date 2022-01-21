@@ -1,0 +1,22 @@
+---
+externalId: cdf:timeseries:upsert:tr:011e:sig_ocean_ton2
+name: cdf:timeseries:upsert:tr:011e:sig_ocean_ton2
+shared: true
+
+schedule: 
+  interval: "20,50 * * * *"
+  is_paused: !!bool ${IS_PAUSED}
+
+query:
+    file:
+        transformation.sql
+action: upsert
+destination: timeseries
+authentication:
+  clientId: fdf
+  clientSecret: fddf
+  tokenUrl: "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token"
+  scopes: 
+    - "https://bluefield.cognitedata.com/.default"
+  cdfProjectName: "extractor-bluefield-testing"
+...

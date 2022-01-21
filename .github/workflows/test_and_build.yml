@@ -49,16 +49,19 @@ jobs:
       run: |
         pwd   
 
-    - id: PWD2
-      name: "PWD2"
+    - id: cat_init
+      name: "CAT"
       run: |
-        pwd         
+        echo "::set-output name=init_content::$(cat  __init__.py)"         
       working-directory: cognite/transformations_cli
+
     - id: parse_version
       name: "Parse version"
       run: |
-        echo "::set-output name=cli_version::$('sed -n -e "/^__version__/p" __init__.py | cut -d\\" -f2')"
+        echo "::set-output name=cli_version::$('PYTHONPATH=cognite/transformations_cli sed -n -e "/^__version__/p" $INIT_CONTENT | cut -d\\" -f2')"
       working-directory: cognite/transformations_cli
+      env:
+        INIT_CONTENT: ${{ steps.cat_init.outputs.init_content }}
       
     - id: parse_version2
       name: "Parse version2"
