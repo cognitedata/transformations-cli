@@ -6,6 +6,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     ActionType,
     DestinationType,
     ReadWriteAuthentication,
+    ScheduleConfig,
 )
 
 
@@ -243,7 +244,9 @@ query: testQuery.sql
 apiKey:
     read: TEST_API_KEY_READ
     write: TEST_API_KEY_WRITE
-schedule: testSchedule
+schedule:
+    interval: testSchedule
+    isPaused: ${IS_PAUSED}
 legacy: true
 destination:
     type: dataSets
@@ -259,6 +262,7 @@ action: DELETE
     write_config(test_name, file, 0)
     os.environ["TEST_API_KEY_READ"] = "testApiKeyRead"
     os.environ["TEST_API_KEY_WRITE"] = "testApiKeyWrite"
+    os.environ["IS_PAUSED"] = "false"
 
     configs = parse_transformation_configs(test_name)
     conf = list(configs.values())[0]
@@ -269,7 +273,7 @@ action: DELETE
     assert isinstance(conf.authentication, ReadWriteAuthentication)
     assert conf.authentication.read.api_key == "testApiKeyRead"
     assert conf.authentication.write.api_key == "testApiKeyWrite"
-    assert conf.schedule == "testSchedule"
+    assert conf.schedule == ScheduleConfig("testSchedule", False)
     assert conf.destination.type == DestinationType.data_sets
     assert conf.destination.raw_database == "testDb"
     assert conf.destination.raw_table == "testTable"
