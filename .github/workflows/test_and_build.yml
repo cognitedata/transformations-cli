@@ -57,7 +57,8 @@ jobs:
     - id: parse_version
       name: "Parse version"
       run: |
-        echo "::set-output name=cli_version::$('sed -n -e "/^__version__/p" ./cognite/transformations_cli/__init__.py | cut -d\\" -f2')"
+        echo "::set-output name=cli_version::$('sed -n -e "/^__version__/p" __init__.py | cut -d\\" -f2')"
+      working-directory: cognite/transformations_cli
       
     - id: parse_version2
       name: "Parse version2"
