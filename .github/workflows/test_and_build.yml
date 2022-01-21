@@ -39,6 +39,21 @@ jobs:
     #       CLIENT_ID: ${{secrets.EXTRACTORS_CLIENT_ID}}
     #       CLIENT_SECRET: ${{secrets.EXTRACTORS_CLIENT_SECRET}}
 
+    - id: LS
+      name: "LS"
+      run: |
+        ls
+ 
+    - id: PWD
+      name: "PWD"
+      run: |
+        pwd   
+
+    - id: PWD2
+      name: "PWD2"
+      run: |
+        pwd         
+      working-directory: cognite/transformations_cli
     - id: parse_version
       name: "Parse version"
       run: |
