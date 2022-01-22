@@ -63,11 +63,6 @@ query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
 # Optional, default: null
 # If null, the transformation will not be scheduled.
 schedule: "* * * * *"
-# Or you can pause the schedules.
-# schedule:
-#   interval: "* * * * *"
-#   isPaused: true
-
 ignoreNullFields: False
 
 # Optional, default: null
