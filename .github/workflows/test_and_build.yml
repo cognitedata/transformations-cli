@@ -39,10 +39,10 @@ jobs:
     #       CLIENT_ID: ${{secrets.EXTRACTORS_CLIENT_ID}}
     #       CLIENT_SECRET: ${{secrets.EXTRACTORS_CLIENT_SECRET}}
           
-    - uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.xml
+    # - uses: codecov/codecov-action@v1
+    #   with:
+    #     token: ${{ secrets.CODECOV_TOKEN }}
+    #     file: ./coverage.xml
 
     - name: Build package
       run: poetry build
