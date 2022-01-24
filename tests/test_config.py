@@ -6,6 +6,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     ActionType,
     DestinationType,
     ReadWriteAuthentication,
+    ScheduleConfig,
 )
 
 
@@ -100,7 +101,9 @@ authentication:
             - testScope2
         cdfProjectName: testProject
         audience: testAudience
-schedule: testSchedule
+schedule:
+    interval: testSchedule
+    isPaused: ${IS_PAUSED}
 destination:
     type: string_datapoints
     rawDatabase: testDb
@@ -112,6 +115,7 @@ shared: true
 ignoreNullFields: False
 action: delete
 """
+    os.environ["IS_PAUSED"] = "false"
     write_config(test_name, file, 0)
     configs = parse_transformation_configs(test_name)
     conf = list(configs.values())[0]
@@ -137,7 +141,7 @@ action: delete
     assert conf.authentication.write.scopes[1] == "testScope2"
     assert conf.authentication.write.audience == "testAudience"
 
-    assert conf.schedule == "testSchedule"
+    assert conf.schedule == ScheduleConfig("testSchedule", False)
     assert conf.destination.type == DestinationType.string_datapoints
     assert conf.destination.raw_database == "testDb"
     assert conf.destination.raw_table == "testTable"
