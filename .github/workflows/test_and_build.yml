@@ -46,3 +46,14 @@ jobs:
 
     - name: Build package
       run: poetry build
+
+  tag-new-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - uses: salsify/action-detect-and-tag-new-version@v2
+        with:
+          version-command: |
+            sed -n -e "/^__version__/p" cognite/transformations_cli/__init__.py | cut -c 16- | sed -e 's/^"//' -e 's/"$//'
