@@ -71,7 +71,6 @@ def test_upsert_transformations(
     client.transformations.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
 
 
-@pytest.mark.skip(reason="Timing out on backend, unmask this later.")
 def test_upsert_notifications(
     client: CogniteClient, test_transformation_ext_ids: List[str], configs_to_create: List[Transformation]
 ) -> None:
