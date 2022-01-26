@@ -1,6 +1,5 @@
 from typing import Dict, List, Optional
 
-import pytest
 from click.testing import CliRunner
 from cognite.client import CogniteClient
 from cognite.client.data_classes import Transformation, TransformationNotification
@@ -9,7 +8,6 @@ from cognite.transformations_cli.commands.show import show
 from tests.helpers import from_table
 
 
-@pytest.mark.skip(reason="Timing out on backend, unmask this later.")
 def test_show_with_id(
     client: CogniteClient,
     cli_runner: CliRunner,
@@ -36,7 +34,6 @@ def test_show_with_id(
     assert notif.destination in cli_result_list[8]
 
 
-@pytest.mark.skip(reason="Timing out on backend, unmask this later.")
 def test_show_with_external_id(
     client: CogniteClient,
     cli_runner: CliRunner,
