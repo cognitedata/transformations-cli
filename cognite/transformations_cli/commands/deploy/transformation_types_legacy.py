@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 
 from cognite.transformations_cli.commands.deploy.transformation_types import (
     ActionType,
-    AuthConfig,
+    ClientCredentialsConfig,
     DestinationConfig,
     DestinationType,
     QueryConfig,
@@ -48,8 +48,8 @@ class AuthConfigLegacy:
     cdf_project_name: Optional[str]
     audience: Optional[str]
 
-    def to_new(self) -> AuthConfig:
-        return AuthConfig(
+    def to_new(self) -> ClientCredentialsConfig:
+        return ClientCredentialsConfig(
             api_key=None,
             client_id=environ[self.client_id] if self.client_id is not None else None,
             audience=self.audience,
@@ -95,8 +95,8 @@ class TransformationConfigLegacy:
     def to_new(self) -> TransformationConfig:
         query = QueryConfig(file=self.query)
         auth = ReadWriteAuthentication(
-            read=AuthConfig(None, None, None, None, None, None, None),
-            write=AuthConfig(None, None, None, None, None, None, None),
+            read=ClientCredentialsConfig(None, None, None, None, None, None),
+            write=ClientCredentialsConfig(None, None, None, None, None, None),
         )
 
         if isinstance(self.authentication, ReadWriteAuthConfigLegacy):

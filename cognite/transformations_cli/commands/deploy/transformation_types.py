@@ -27,20 +27,25 @@ class ActionType(Enum):
 
 
 @dataclass
-class AuthConfig:
-    api_key: Optional[str]
-    client_id: Optional[str]
-    client_secret: Optional[str]
-    token_url: Optional[str]
+class ClientCredentialsConfig:
+    client_id: str
+    client_secret: str
+    token_url: str
+    cdf_project_name: str
     scopes: Optional[List[str]]
-    cdf_project_name: Optional[str]
     audience: Optional[str]
 
+@dataclass
+class ApiKeyConfig:
+    api_key: str
+    cdf_project_name: Optional[str]
+
+AuthenticationType = Union[ApiKeyConfig, ClientCredentialsConfig]
 
 @dataclass
 class ReadWriteAuthentication:
-    read: AuthConfig
-    write: AuthConfig
+    read: AuthenticationType
+    write: AuthenticationType
 
 
 @dataclass
@@ -74,7 +79,7 @@ class TransformationConfig:
     external_id: str
     name: str
     query: Union[str, QueryConfig]
-    authentication: Union[AuthConfig, ReadWriteAuthentication]
+    authentication: Union[AuthenticationType, ReadWriteAuthentication]
     schedule: Optional[Union[str, ScheduleConfig]]
     destination: Union[DestinationType, DestinationConfig]
     notifications: List[str] = field(default_factory=list)

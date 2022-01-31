@@ -6,10 +6,8 @@ from cognite.extractorutils.configtools import load_yaml
 from regex import regex
 
 from cognite.transformations_cli.commands.deploy.transformation_types import (
-    AuthConfig,
     DestinationConfig,
     DestinationType,
-    ReadWriteAuthentication,
     TransformationConfig,
     TransformationConfigError,
 )
@@ -26,28 +24,9 @@ def _validate_destination_type(external_id: str, destination_type: Union[Destina
     return None
 
 
-def _validate_exclusive_auth(external_id: str, auth: Optional[AuthConfig]) -> None:
-    if (
-        auth
-        and auth.api_key
-        and (auth.client_id or auth.client_secret or auth.cdf_project_name or auth.scopes or auth.token_url)
-    ):
-        raise Exception(f"Please provide only one of api-key or OAuth2 credentials: {external_id}")
-    return None
-
-
-def _validate_auth(external_id: str, auth_config: Union[AuthConfig, ReadWriteAuthentication]) -> None:
-    if isinstance(auth_config, AuthConfig):
-        _validate_exclusive_auth(external_id, auth_config)
-    if isinstance(auth_config, ReadWriteAuthentication):
-        _validate_exclusive_auth(external_id, auth_config.read)
-        _validate_exclusive_auth(external_id, auth_config.write)
-
-
 def _validate_config(config: TransformationConfig) -> None:
+    # Add validation logic for transformation configs here.
     _validate_destination_type(config.external_id, config.destination)
-    _validate_auth(config.external_id, config.authentication)
-
 
 def _parse_transformation_config(path: str) -> TransformationConfig:
     r = regex.compile(r"^legacy:\s*true\s*$", flags=regex.MULTILINE | regex.IGNORECASE)

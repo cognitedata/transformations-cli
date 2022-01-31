@@ -14,7 +14,9 @@ from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, C
 
 from cognite.transformations_cli.commands.deploy.transformation_types import (
     ActionType,
-    AuthConfig,
+    ApiKeyConfig,
+    AuthenticationType,
+    ClientCredentialsConfig,
     DestinationConfig,
     DestinationType,
     QueryConfig,
@@ -69,43 +71,33 @@ def to_query(conf_path: str, query: Union[str, QueryConfig]) -> str:
         sys.exit("Please provide a valid path for sql file.")
 
 
-def to_read_api_key(authentication: Union[AuthConfig, ReadWriteAuthentication]) -> Optional[str]:
-    if isinstance(authentication, AuthConfig):
+def to_read_api_key(authentication: Union[AuthenticationType, ReadWriteAuthentication]) -> Optional[str]:
+    if isinstance(authentication, ApiKeyConfig):
         return authentication.api_key
-    if isinstance(authentication, ReadWriteAuthentication):
+    if isinstance(authentication, ReadWriteAuthentication) and isinstance(authentication.read, ApiKeyConfig):
         return authentication.read.api_key
     return None
 
 
-def to_write_api_key(authentication: Union[AuthConfig, ReadWriteAuthentication]) -> Optional[str]:
-    if isinstance(authentication, AuthConfig):
+def to_write_api_key(authentication: Union[AuthenticationType, ReadWriteAuthentication]) -> Optional[str]:
+    if isinstance(authentication, ApiKeyConfig):
         return authentication.api_key
-    if isinstance(authentication, ReadWriteAuthentication):
+    if isinstance(authentication, ReadWriteAuthentication) and isinstance(authentication.write, ApiKeyConfig):
         return authentication.write.api_key
     return None
 
 
 def stringify_scopes(scopes: Optional[List[str]]) -> Optional[str]:
-    if scopes:
-        return " ".join(scopes)
-    return None
-
+    return " ".join(scopes) if scopes else None
 
 def get_default_scopes(scopes: Optional[str], cluster: str) -> str:
     return scopes if scopes else f"https://{cluster}.cognitedata.com/.default"
 
 
-def is_oidc_defined(auth_config: AuthConfig) -> bool:
-    return (
-        auth_config.client_id and auth_config.client_secret and auth_config.token_url and auth_config.cdf_project_name
-    )
-
-
-def get_oidc(auth_config: AuthConfig, cluster: str) -> Optional[OidcCredentials]:
+def get_oidc(auth_config: ClientCredentialsConfig, cluster: str) -> Optional[OidcCredentials]:
     stringified_scopes = stringify_scopes(auth_config.scopes)
     scopes = stringified_scopes if auth_config.audience else get_default_scopes(stringified_scopes, cluster)
-    return (
-        OidcCredentials(
+    return OidcCredentials(
             client_id=auth_config.client_id,
             client_secret=auth_config.client_secret,
             scopes=scopes,
@@ -113,28 +105,23 @@ def get_oidc(auth_config: AuthConfig, cluster: str) -> Optional[OidcCredentials]
             cdf_project_name=auth_config.cdf_project_name,
             audience=auth_config.audience,
         )
-        if is_oidc_defined(auth_config)
-        else None
-    )
 
-
-def to_read_oidc(authentication: Union[AuthConfig, ReadWriteAuthentication], cluster: str) -> Optional[OidcCredentials]:
-    return (
-        get_oidc(authentication, cluster)
-        if isinstance(authentication, AuthConfig)
-        else get_oidc(authentication.read, cluster)
-    )
+def to_read_oidc(authentication: Union[AuthenticationType, ReadWriteAuthentication], cluster: str) -> Optional[OidcCredentials]:
+    if isinstance(authentication, ClientCredentialsConfig):
+        return get_oidc(authentication, cluster)
+    if isinstance(authentication, ReadWriteAuthentication) and isinstance(authentication.read, ClientCredentialsConfig):
+        return get_oidc(authentication.read, cluster)
+    return None
 
 
 def to_write_oidc(
-    authentication: Union[AuthConfig, ReadWriteAuthentication], cluster: str
+    authentication: Union[AuthenticationType, ReadWriteAuthentication], cluster: str
 ) -> Optional[OidcCredentials]:
-    return (
-        get_oidc(authentication, cluster)
-        if isinstance(authentication, AuthConfig)
-        else get_oidc(authentication.write, cluster)
-    )
-
+    if isinstance(authentication, ClientCredentialsConfig):
+        return get_oidc(authentication, cluster)
+    if isinstance(authentication, ReadWriteAuthentication) and isinstance(authentication.write, ClientCredentialsConfig):
+        return get_oidc(authentication.write, cluster)
+    return None
 
 def to_schedule(transformation_external_id: str, schedule: Union[str, ScheduleConfig]) -> TransformationSchedule:
     if isinstance(schedule, ScheduleConfig):
