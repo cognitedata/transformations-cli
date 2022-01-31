@@ -1,6 +1,6 @@
 import datetime
 import sys
-from typing import Callable, List, Optional, TypeVar
+from typing import Callable, Iterator, List, Optional, TypeVar
 
 import click
 import sqlparse
@@ -154,9 +154,13 @@ def print_jobs(jobs: List[TransformationJob]) -> str:
 T = TypeVar("T")
 
 
+def chunk_items(items: List[T], n: int = 10) -> Iterator[List[T]]:
+    for i in range(0, len(items), n):
+        yield items[i : i + n]
+
+
 def paginate(items: List[T], action: Callable[[List[T]], None]) -> None:
-    chunks = [items[i : i + 10] for i in range(0, len(items), 10)]
-    for chunk in chunks:
+    for chunk in chunk_items(items):
         click.clear()
         action(chunk)
         input("Press Enter to continue")

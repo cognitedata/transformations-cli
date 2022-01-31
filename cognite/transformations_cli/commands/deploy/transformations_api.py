@@ -22,7 +22,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     ScheduleConfig,
     TransformationConfig,
 )
-from cognite.transformations_cli.commands.utils import exit_with_cognite_api_error
+from cognite.transformations_cli.commands.utils import chunk_items, exit_with_cognite_api_error
 
 TupleResult = List[Tuple[str, str]]
 StandardResult = List[str]
@@ -186,9 +186,13 @@ def upsert_transformations(
     new_ext_ids: List[str],
 ) -> Tuple[StandardResult, StandardResult, StandardResult]:
     try:
-        updated = client.transformations.update([tr for tr in transformations if tr.external_id in existing_ext_ids])
-        created = client.transformations.create([tr for tr in transformations if tr.external_id in new_ext_ids])
-        return [], [t.external_id for t in updated], [t.external_id for t in created]
+        items_to_update = [tr for tr in transformations if tr.external_id in existing_ext_ids]
+        items_to_create = [tr for tr in transformations if tr.external_id in new_ext_ids]
+        for ulist in chunk_items(items_to_update):
+            client.transformations.update(ulist)
+        for clist in chunk_items(items_to_create):
+            client.transformations.create(clist)
+        return [], [t.external_id for t in items_to_update], [t.external_id for t in items_to_create]
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
     return [], [], []
@@ -213,14 +217,14 @@ def upsert_schedules(
             elif ext_id in requested_schedules_dict:
                 to_create.append(ext_id)
         to_create += [ext_id for ext_id in new_transformations_ext_ids if ext_id in requested_schedules_dict]
-        client.transformations.schedules.delete(external_id=to_delete)
-        # TODO Go back to bulk update/create once it is fixed in the backend.
-        # Bulk update of schedules over 10, sometimes even 10 fail with Internal Error 500.
+
+        for d in chunk_items(to_delete, 5):
+            client.transformations.schedules.delete(external_id=d)
         schedules_update_list = [requested_schedules_dict[ext_id] for ext_id in to_update]
-        for s in schedules_update_list:
+        for s in chunk_items(schedules_update_list, 5):
             client.transformations.schedules.update(s)
         schedules_create_list = [requested_schedules_dict[ext_id] for ext_id in to_create]
-        for c in schedules_create_list:
+        for c in chunk_items(schedules_create_list, 5):
             client.transformations.schedules.create(c)
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
@@ -251,8 +255,12 @@ def upsert_notifications(
                 {e.id: (ext_id, e.destination) for e in existing_notif if e.destination not in requested_destinations}
             )
             to_create += [e for e in requested_notif if e.destination not in existing_destinations]
-        client.transformations.notifications.delete(list(to_delete.keys()))
-        client.transformations.notifications.create(to_create)
+        delete_external_ids = list(to_delete.keys())
+
+        for d in chunk_items(delete_external_ids):
+            client.transformations.notifications.delete(d)
+        for c in chunk_items(to_create):
+            client.transformations.notifications.create(c)
         return (
             [to_delete[key] for key in to_delete],
             [],

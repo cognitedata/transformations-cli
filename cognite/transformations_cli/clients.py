@@ -1,11 +1,11 @@
 import sys
-from typing import Dict
+from typing import Dict, Optional
 
 from cognite.client import CogniteClient
 from cognite.client.exceptions import CogniteAPIKeyError
 
 
-def get_client(obj: Dict) -> CogniteClient:
+def get_client(obj: Dict, timeout: Optional[int] = None) -> CogniteClient:
     api_key = obj["api_key"]
     client_id = obj["client_id"]
     client_secret = obj["client_secret"]
@@ -28,7 +28,11 @@ def get_client(obj: Dict) -> CogniteClient:
             sys.exit("Please provide only API key configuration or only OAuth2 configuration.")
         elif api_key is not None:
             return CogniteClient(
-                client_name="transformations_cli", api_key=api_key, base_url=base_url, project=cdf_project_name
+                client_name="transformations_cli",
+                api_key=api_key,
+                base_url=base_url,
+                project=cdf_project_name,
+                timeout=timeout,
             )
         else:
             return CogniteClient(
@@ -40,6 +44,7 @@ def get_client(obj: Dict) -> CogniteClient:
                 token_scopes=scopes,
                 project=cdf_project_name,
                 token_custom_args={"audience": audience} if audience else None,
+                timeout=timeout,
             )
     except CogniteAPIKeyError as e:
         sys.exit(f"Cognite client cannot be initialised: {e}.")
