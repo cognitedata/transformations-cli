@@ -3,7 +3,7 @@ name: "test-cli-transform"
 destination: 
   type: "assets"
 # destination: "assets"
-shared: True
+shared: true
 action: "upsert"
 query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
 # query:
@@ -14,7 +14,8 @@ schedule:
   interval: "* * * * *"
   is_paused: true
   
-ignoreNullFields: False
+# Optional, default: true
+ignoreNullFields: false
 notifications:
   - example@cognite.com
   - example2@cognite.com

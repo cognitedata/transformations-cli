@@ -39,8 +39,8 @@ destination:
 #   rawDatabase: some_database
 #   rawTable: some_table
 
-# Optional, default: True
-shared: True
+# Optional, default: true
+shared: true
 
 # Optional, default: upsert
 # Valid values are:
@@ -68,7 +68,8 @@ schedule: "* * * * *"
 #   interval: "* * * * *"
 #   isPaused: true
 
-ignoreNullFields: False
+# Optional, default: true
+ignoreNullFields: false
 
 # Optional, default: null
 # List of email adresses to send emails to on transformation errors
@@ -113,13 +114,13 @@ authentication:
    name: "test-cli-transform"
    destination: 
    type: "assets"
-   shared: True
+   shared: true
    action: "upsert"
    query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
    # query:
    #   file: query.sql
    schedule: "* * * * *"
-   ignoreNullFields: False
+   ignoreNullFields: false
    notifications:
    - example@cognite.com
    - example2@cognite.com
