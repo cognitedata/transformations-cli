@@ -87,7 +87,7 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
     """
     click.echo(click.style("Deploying transformations...", fg="red"))
     try:
-        client = get_client(obj, 60)
+        client = get_client(obj, 90)
         cluster = obj["cluster"]
         transformation_configs = parse_transformation_configs(path)
         transformations = [

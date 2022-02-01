@@ -1,11 +1,11 @@
 import sys
-from typing import Dict, Optional
+from typing import Dict
 
 from cognite.client import CogniteClient
 from cognite.client.exceptions import CogniteAPIKeyError
 
 
-def get_client(obj: Dict, timeout: Optional[int] = None) -> CogniteClient:
+def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
     api_key = obj["api_key"]
     client_id = obj["client_id"]
     client_secret = obj["client_secret"]
