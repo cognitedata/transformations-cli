@@ -188,10 +188,10 @@ def upsert_transformations(
     try:
         items_to_update = [tr for tr in transformations if tr.external_id in existing_ext_ids]
         items_to_create = [tr for tr in transformations if tr.external_id in new_ext_ids]
-        for ulist in chunk_items(items_to_update):
-            client.transformations.update(ulist)
-        for clist in chunk_items(items_to_create):
-            client.transformations.create(clist)
+        for u in chunk_items(items_to_update):
+            client.transformations.update(u)
+        for c in chunk_items(items_to_create):
+            client.transformations.create(c)
         return [], [t.external_id for t in items_to_update], [t.external_id for t in items_to_create]
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
@@ -218,13 +218,13 @@ def upsert_schedules(
                 to_create.append(ext_id)
         to_create += [ext_id for ext_id in new_transformations_ext_ids if ext_id in requested_schedules_dict]
 
-        for d in chunk_items(to_delete, 5):
+        for d in chunk_items(to_delete):
             client.transformations.schedules.delete(external_id=d)
         schedules_update_list = [requested_schedules_dict[ext_id] for ext_id in to_update]
-        for s in chunk_items(schedules_update_list, 5):
-            client.transformations.schedules.update(s)
+        for u in chunk_items(schedules_update_list):
+            client.transformations.schedules.update(u)
         schedules_create_list = [requested_schedules_dict[ext_id] for ext_id in to_create]
-        for c in chunk_items(schedules_create_list, 5):
+        for c in chunk_items(schedules_create_list):
             client.transformations.schedules.create(c)
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
@@ -255,9 +255,9 @@ def upsert_notifications(
                 {e.id: (ext_id, e.destination) for e in existing_notif if e.destination not in requested_destinations}
             )
             to_create += [e for e in requested_notif if e.destination not in existing_destinations]
-        delete_external_ids = list(to_delete.keys())
+        to_delete_external_ids = list(to_delete.keys())
 
-        for d in chunk_items(delete_external_ids):
+        for d in chunk_items(to_delete_external_ids):
             client.transformations.notifications.delete(d)
         for c in chunk_items(to_create):
             client.transformations.notifications.create(c)

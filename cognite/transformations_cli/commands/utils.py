@@ -154,7 +154,7 @@ def print_jobs(jobs: List[TransformationJob]) -> str:
 T = TypeVar("T")
 
 
-def chunk_items(items: List[T], n: int = 10) -> Iterator[List[T]]:
+def chunk_items(items: List[T], n: int = 5) -> Iterator[List[T]]:
     for i in range(0, len(items), n):
         yield items[i : i + n]
 
