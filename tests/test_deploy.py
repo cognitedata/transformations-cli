@@ -54,7 +54,7 @@ def test_deploy_and_run(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
 ) -> None:
     test_name = "test_deploy_and_run"
-    external_id = uuid.uuid1()
+    external_id = str(uuid.uuid1())
     file = f"""
         externalId: {external_id}
         name: {external_id}
@@ -76,7 +76,7 @@ def test_deploy_and_run(
         dataSetId: {new_dataset.id}
         """
     write_config(test_name, file, 0)
-    cli_result = cli_runner.invoke(deploy, [Path(test_name)], obj=obj)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
@@ -89,7 +89,7 @@ def test_deploy_and_run(
     file = file.replace(f"dataSetId: {new_dataset.id}", "dataSetId: null")
     file = file.replace(f"name: {external_id}", "name: testCLI")
     write_config(test_name, file, 0)
-    cli_result = cli_runner.invoke(deploy, [Path(test_name)], obj=obj)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.data_set_id == new_dataset.id
@@ -97,6 +97,7 @@ def test_deploy_and_run(
 
     file = file.replace("dataSetId: null", "dataSetId: -1")
     write_config(test_name, file, 0)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.data_set_id is None
