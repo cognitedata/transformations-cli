@@ -91,7 +91,7 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
         cluster = obj["cluster"]
         transformation_configs = parse_transformation_configs(path)
         transformations = [
-            to_transformation(conf_path, transformation_configs[conf_path], cluster)
+            to_transformation(client, conf_path, transformation_configs[conf_path], cluster)
             for conf_path in transformation_configs
         ]
         transformations_ext_ids = [t.external_id for t in transformation_configs.values()]

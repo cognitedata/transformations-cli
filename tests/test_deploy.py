@@ -50,10 +50,10 @@ def test_deploy(path: str, output: str, exit_code: int, cli_runner: CliRunner, o
     assert cli_result.exit_code == exit_code
 
 
-def test_deploy_and_run(
+def test_deploy_with_ds_and_run(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
 ) -> None:
-    test_name = "test_deploy_and_run"
+    test_name = "test_deploy_with_ds_and_run"
     external_id = str(uuid.uuid1())
     file = f"""
         externalId: {external_id}
@@ -76,6 +76,7 @@ def test_deploy_and_run(
         dataSetId: {new_dataset.id}
         """
     write_config(test_name, file, 0)
+    # test deploying the transformation with data set ID
     cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
@@ -86,6 +87,7 @@ def test_deploy_and_run(
     assert new_conf.destination.type == "raw"
     assert new_conf.data_set_id == new_dataset.id
 
+    # test clearing the data set ID on the transformation
     file = file.replace(f"dataSetId: {new_dataset.id}", "dataSetId: null")
     file = file.replace(f"name: {external_id}", "name: testCLI")
     write_config(test_name, file, 0)
@@ -95,6 +97,7 @@ def test_deploy_and_run(
     assert new_conf.data_set_id is None
     assert new_conf.name == "testCLI"
 
+    # test updating the data set ID on the transformation
     file = file.replace("dataSetId: null", f"dataSetId: {new_dataset.id}")
     write_config(test_name, file, 0)
     cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
@@ -102,6 +105,28 @@ def test_deploy_and_run(
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.data_set_id == new_dataset.id
 
+    # test if it fails when data set ID and data set External ID are provided at the same time
+    file = file + "dataSetExternalId: test"
+    write_config(test_name, file, 0)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
+    assert cli_result.exit_code == 1
+
+    # test updating the data set ID on the transformation by the data set external ID
+    file = file.replace("dataSetExternalId: test", "dataSetExternalId: cli-transformation-ds")
+    file = file.replace(f"dataSetId: {new_dataset.id}", "")
+    write_config(test_name, file, 0)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
+    assert cli_result.exit_code == 0
+    new_conf = client.transformations.retrieve(external_id=external_id)
+    assert new_conf.data_set_id == new_dataset.id
+
+    # test if it fails when an invalid data set external ID is provided
+    file = file.replace("dataSetExternalId: cli-transformation-ds", "dataSetExternalId: non-existing")
+    write_config(test_name, file, 0)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
+    assert cli_result.exit_code == 1
+
+    # run the deployed transformation to check the validity
     job = new_conf.run(wait=True)
     assert job.status == TransformationJobStatus.COMPLETED
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
