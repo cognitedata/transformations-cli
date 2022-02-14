@@ -92,15 +92,15 @@ def test_deploy_and_run(
     cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
-    assert new_conf.data_set_id == new_dataset.id
+    assert new_conf.data_set_id is None
     assert new_conf.name == "testCLI"
 
-    file = file.replace("dataSetId: null", "dataSetId: -1")
+    file = file.replace("dataSetId: null", f"dataSetId: {new_dataset.id}")
     write_config(test_name, file, 0)
     cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
-    assert new_conf.data_set_id is None
+    assert new_conf.data_set_id == new_dataset.id
 
     job = new_conf.run(wait=True)
     assert job.status == TransformationJobStatus.COMPLETED

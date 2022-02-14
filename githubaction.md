@@ -77,8 +77,9 @@ notifications:
   - example@cognite.com
   - example2@cognite.com
 
-# -1 means clear
 # Optional, default: null
+# Skipping this field or providing null clears
+# the data set id on updating the transformation
 dataSetId: 1
 
 # The client credentials to be used in the transformation
@@ -129,8 +130,9 @@ authentication:
    - example@cognite.com
    - example2@cognite.com
 
-  # -1 means clear
   # Optional, default: null
+  # Skipping this field or providing null clears
+  # the data set id on updating the transformation
   dataSetId: 1
 
    authentication:
