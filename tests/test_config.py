@@ -114,6 +114,7 @@ notifications:
 shared: true
 ignoreNullFields: False
 action: delete
+dataSetId: 1
 """
     os.environ["IS_PAUSED"] = "false"
     write_config(test_name, file, 0)
@@ -151,6 +152,7 @@ action: delete
     assert conf.shared
     assert not conf.ignore_null_fields
     assert conf.action == ActionType.delete
+    assert conf.data_set_id == 1
 
     rmdir(Path(test_name))
 

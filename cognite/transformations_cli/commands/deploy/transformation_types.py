@@ -77,6 +77,7 @@ class TransformationConfig:
     authentication: Union[AuthConfig, ReadWriteAuthentication]
     schedule: Optional[Union[str, ScheduleConfig]]
     destination: Union[DestinationType, DestinationConfig]
+    data_set_id: Optional[int]
     notifications: List[str] = field(default_factory=list)
     shared: bool = True
     ignore_null_fields: bool = True

@@ -41,6 +41,7 @@ def to_transformation(conf_path: str, config: TransformationConfig, cluster: str
         destination_api_key=to_write_api_key(config.authentication),
         source_oidc_credentials=to_read_oidc(config.authentication, cluster),
         destination_oidc_credentials=to_write_oidc(config.authentication, cluster),
+        data_set_id=config.data_set_id,
     )
 
 
@@ -191,6 +192,7 @@ def upsert_transformations(
         for u in chunk_items(items_to_update):
             client.transformations.update(u)
         for c in chunk_items(items_to_create):
+
             client.transformations.create(c)
         return [], [t.external_id for t in items_to_update], [t.external_id for t in items_to_create]
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:

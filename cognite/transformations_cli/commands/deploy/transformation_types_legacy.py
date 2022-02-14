@@ -130,4 +130,5 @@ class TransformationConfigLegacy:
             action=action,
             schedule=self.schedule,
             legacy=True,
+            data_set_id=None,
         )
