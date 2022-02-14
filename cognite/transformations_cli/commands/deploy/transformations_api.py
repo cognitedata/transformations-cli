@@ -9,6 +9,7 @@ from cognite.client.data_classes import (
     TransformationDestination,
     TransformationNotification,
     TransformationSchedule,
+    TransformationUpdate,
 )
 from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
 
@@ -189,10 +190,20 @@ def upsert_transformations(
     try:
         items_to_update = [tr for tr in transformations if tr.external_id in existing_ext_ids]
         items_to_create = [tr for tr in transformations if tr.external_id in new_ext_ids]
+
         for u in chunk_items(items_to_update):
             client.transformations.update(u)
+            # Partial update for data set id to be able to clear data set id field when requested.
+            dataset_update = [
+                # Clear data set id if it is -1, else set data set id with a new value
+                TransformationUpdate(external_id=du.external_id).data_set_id.set(
+                    None if du.data_set_id == -1 else du.data_set_id
+                )
+                for du in u
+                if du.data_set_id is not None  # If data set field is not provided, do nothing
+            ]
+            client.transformations.update(dataset_update)
         for c in chunk_items(items_to_create):
-
             client.transformations.create(c)
         return [], [t.external_id for t in items_to_update], [t.external_id for t in items_to_create]
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:

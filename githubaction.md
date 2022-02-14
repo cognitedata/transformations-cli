@@ -77,6 +77,10 @@ notifications:
   - example@cognite.com
   - example2@cognite.com
 
+# -1 means clear
+# Optional, default: null
+dataSetId: 1
+
 # The client credentials to be used in the transformation
 authentication:
   clientId: ${CLIENT_ID}
@@ -124,6 +128,11 @@ authentication:
    notifications:
    - example@cognite.com
    - example2@cognite.com
+
+  # -1 means clear
+  # Optional, default: null
+  dataSetId: 1
+
    authentication:
    apiKey: ${API_KEY}
 
