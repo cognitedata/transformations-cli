@@ -77,6 +77,17 @@ notifications:
   - example@cognite.com
   - example2@cognite.com
 
+# Optional, default: null
+# Skipping this field or providing null clears
+# the data set ID on updating the transformation
+dataSetId: 1
+
+# Or you can provide data set external ID instead,
+# Optional, default: null
+# Skipping this field or providing null clears
+# the data set ID on updating the transformation
+dataSetExternalId: test-dataset
+
 # The client credentials to be used in the transformation
 authentication:
   clientId: ${CLIENT_ID}
@@ -122,9 +133,22 @@ authentication:
    schedule: "* * * * *"
    ignoreNullFields: false
    notifications:
-   - example@cognite.com
-   - example2@cognite.com
-   authentication:
+    - example@cognite.com
+    - example2@cognite.com
+
+  # Optional, default: null
+  # Skipping this field or providing null clears
+  # the data set ID on updating the transformation
+  dataSetId: 1
+
+
+  # Or you can provide data set external ID instead,
+  # Optional, default: null
+  # Skipping this field or providing null clears
+  # the data set ID on updating the transformation
+  dataSetExternalId: test-dataset
+
+  authentication:
    apiKey: ${API_KEY}
 
    # # If you need to specity read/write authentication separately

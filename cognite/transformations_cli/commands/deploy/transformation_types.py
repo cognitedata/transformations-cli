@@ -78,6 +78,7 @@ class TransformationConfig:
     schedule: Optional[Union[str, ScheduleConfig]]
     destination: Union[DestinationType, DestinationConfig]
     data_set_id: Optional[int]
+    data_set_external_id: Optional[str]
     notifications: List[str] = field(default_factory=list)
     shared: bool = True
     ignore_null_fields: bool = True

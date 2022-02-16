@@ -19,6 +19,18 @@ ignoreNullFields: false
 notifications:
   - example@cognite.com
   - example2@cognite.com
+
+# Optional, default: null
+# Skipping this field or providing null clears
+# the data set ID on updating the transformation
+dataSetId: 1
+
+# Or you can provide data set external ID instead,
+# Optional, default: null
+# Skipping this field or providing null clears
+# the data set ID on updating the transformation
+dataSetExternalId: test-dataset
+
 authentication:
   apiKey: ${API_KEY}
 

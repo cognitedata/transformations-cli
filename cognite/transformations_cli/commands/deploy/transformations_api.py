@@ -9,6 +9,7 @@ from cognite.client.data_classes import (
     TransformationDestination,
     TransformationNotification,
     TransformationSchedule,
+    TransformationUpdate,
 )
 from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
 
@@ -28,7 +29,9 @@ TupleResult = List[Tuple[str, str]]
 StandardResult = List[str]
 
 
-def to_transformation(conf_path: str, config: TransformationConfig, cluster: str = "europe-west1-1") -> Transformation:
+def to_transformation(
+    client: CogniteClient, conf_path: str, config: TransformationConfig, cluster: str = "europe-west1-1"
+) -> Transformation:
     return Transformation(
         name=config.name,
         external_id=config.external_id,
@@ -41,8 +44,25 @@ def to_transformation(conf_path: str, config: TransformationConfig, cluster: str
         destination_api_key=to_write_api_key(config.authentication),
         source_oidc_credentials=to_read_oidc(config.authentication, cluster),
         destination_oidc_credentials=to_write_oidc(config.authentication, cluster),
-        data_set_id=config.data_set_id,
+        data_set_id=to_data_set_id(client, config.data_set_id, config.data_set_external_id),
     )
+
+
+def to_data_set_id(
+    client: CogniteClient, data_set_id: Optional[int], data_set_external_id: Optional[str]
+) -> Optional[int]:
+    if data_set_external_id:
+        try:
+            data_set = client.data_sets.retrieve(external_id=data_set_external_id)
+        except:
+            data_set = None
+        if data_set:
+            return data_set.id
+        else:
+            sys.exit(
+                f"Invalid data set external id, please verify if it exists or you have the required capability: {data_set_external_id}"
+            )
+    return data_set_id
 
 
 def to_action(action: ActionType) -> str:
@@ -189,10 +209,17 @@ def upsert_transformations(
     try:
         items_to_update = [tr for tr in transformations if tr.external_id in existing_ext_ids]
         items_to_create = [tr for tr in transformations if tr.external_id in new_ext_ids]
+
         for u in chunk_items(items_to_update):
             client.transformations.update(u)
+            # Partial update for data set id to be able to clear data set id field when requested.
+            dataset_update = [
+                # Clear data set id if it is not provided, else set data set id with a new value
+                TransformationUpdate(external_id=du.external_id).data_set_id.set(du.data_set_id)
+                for du in u
+            ]
+            client.transformations.update(dataset_update)
         for c in chunk_items(items_to_create):
-
             client.transformations.create(c)
         return [], [t.external_id for t in items_to_update], [t.external_id for t in items_to_create]
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:

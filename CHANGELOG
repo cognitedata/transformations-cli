@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.4.0] - 2022-02-14
+### Added
+- Support clearing data set ids on transformations.
+
 ## [1.3.2] - 2022-02-14
 ### Added
 - Support setting data set ids on transformations.

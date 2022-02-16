@@ -44,9 +44,15 @@ def _validate_auth(external_id: str, auth_config: Union[AuthConfig, ReadWriteAut
         _validate_exclusive_auth(external_id, auth_config.write)
 
 
+def _validate_data_set_id(data_set_id: Optional[int], data_set_external_id: Optional[str]) -> None:
+    if data_set_id and data_set_external_id:
+        raise Exception("Please provide only one of data_set_id or data_set_external_id")
+
+
 def _validate_config(config: TransformationConfig) -> None:
     _validate_destination_type(config.external_id, config.destination)
     _validate_auth(config.external_id, config.authentication)
+    _validate_data_set_id(config.data_set_id, config.data_set_external_id)
 
 
 def _parse_transformation_config(path: str) -> TransformationConfig:

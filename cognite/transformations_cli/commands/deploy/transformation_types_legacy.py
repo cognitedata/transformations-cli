@@ -131,4 +131,5 @@ class TransformationConfigLegacy:
             schedule=self.schedule,
             legacy=True,
             data_set_id=None,
+            data_set_external_id=None,
         )
