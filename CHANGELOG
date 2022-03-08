@@ -12,7 +12,7 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-## [1.4.1] - 2022-02-14
+## [1.4.1] - 2022-03-08
 ### Added
 - Perform text wrapping when tabulating queried data.
 ### Fixed
