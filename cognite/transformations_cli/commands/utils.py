@@ -1,5 +1,6 @@
 import datetime
 import sys
+import textwrap
 from typing import Callable, Iterator, List, Optional, TypeVar
 
 import click
@@ -84,13 +85,15 @@ def print_query(query: str, result: TransformationPreviewResult) -> str:
     results = result.results
     if schema:
         print_res += "\nSchema:\n"
-        schema_content = [["name", "type", "nullable"]] + [[s.name, s.type.type, s.nullable] for s in schema]
+        schema_content = [["name", "type", "nullable"]] + [
+            [s.name, s.type.get("type", "") if isinstance(s.type, dict) else s.type.type, s.nullable] for s in schema
+        ]
         print_res += tabulate(schema_content, headers="firstrow", tablefmt="rst") + "\n"
     if results:
         print_res += "\nResults:\n"
         res_content = [[key for key in results[0]]]
         for result in results:
-            res_content.append([result[key] for key in res_content[0]])
+            res_content.append(["\n".join(textwrap.wrap(str(result[key]))) for key in res_content[0]])
         print_res += tabulate(res_content, headers="firstrow", tablefmt="rst")
     return print_res
 
