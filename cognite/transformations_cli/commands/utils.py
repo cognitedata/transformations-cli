@@ -93,7 +93,7 @@ def print_query(query: str, result: TransformationPreviewResult) -> str:
         print_res += "\nResults:\n"
         res_content = [[key for key in results[0]]]
         for result in results:
-            res_content.append(["\n".join(textwrap.wrap(str(result[key]))) for key in res_content[0]])
+            res_content.append(["\n".join(textwrap.wrap(str(result.get(key, "")))) for key in res_content[0]])
         print_res += tabulate(res_content, headers="firstrow", tablefmt="rst")
     return print_res
 
