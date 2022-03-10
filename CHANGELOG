@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.4.2] - 2022-03-09
+### Fixed
+- Handle missing values in rows of the query response.
+
 ## [1.4.1] - 2022-03-08
 ### Added
 - Perform text wrapping when tabulating queried data.
