@@ -27,7 +27,8 @@ name: "test-cli-transform-oidc"
 
 # Required
 # Valid values are: "assets", "timeseries", "asset_hierarchy", events", "datapoints", 
-# "string_datapoints", "sequences", "files", "labels", "relationships", "raw", "data_sets", "sequence_rows"
+# "string_datapoints", "sequences", "files", "labels", "relationships",
+# "raw", "data_sets", "sequence_rows"
 destination: 
   type: "assets"
 
