@@ -59,7 +59,7 @@ def get_database(destination: TransformationDestination) -> str:
 
 def print_transformations(transformation: List[Transformation]) -> str:
     # TODO print last_finished_job and running_job, schedule, blocked details when implemented in SDK
-    list_columns = [["Name", "ID", "External ID", "Destination", "Database", "Table", "Action"]]
+    list_columns = [["Name", "ID", "External ID", "Destination", "Database", "Table", "Data Set ID", "Action"]]
     return tabulate(
         list_columns
         + [
@@ -70,6 +70,7 @@ def print_transformations(transformation: List[Transformation]) -> str:
                 t.destination.type,
                 get_database(t.destination),
                 get_table(t.destination),
+                t.data_set_id,
                 t.conflict_mode,
             ]
             for t in transformation

@@ -23,6 +23,11 @@ def _validate_destination_type(external_id: str, destination_type: Union[Destina
         and (destination_type.raw_database is None or destination_type.raw_table is None)
     ):
         raise Exception(f"Raw destination type requires database and table properties to be set: {external_id}")
+    elif isinstance(destination_type, DestinationConfig) and destination_type.external_id is None:
+        if destination_type.type == DestinationType.data_model_instances:
+            raise Exception(f"Data model instances destination requires external_id to be set: {external_id}")
+        if destination_type.type == DestinationType.sequence_rows:
+            raise Exception(f"Sequence rows destination requires external_id to be set: {external_id}")
     return None
 
 

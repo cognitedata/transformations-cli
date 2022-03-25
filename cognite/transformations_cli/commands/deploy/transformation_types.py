@@ -16,6 +16,8 @@ class DestinationType(Enum):
     relationships = "relationships"
     raw = "raw"
     data_sets = "data_sets"
+    sequence_rows = "sequence_rows"
+    data_model_instances = "data_model_instances"  # Experimental feature
 
 
 class ActionType(Enum):
@@ -52,6 +54,7 @@ class DestinationConfig:
     type: DestinationType
     raw_database: Optional[str] = None
     raw_table: Optional[str] = None
+    external_id: Optional[str] = None
 
 
 @dataclass

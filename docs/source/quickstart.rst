@@ -51,7 +51,7 @@ By default, transformations-cli runs against the main CDF cluster (europe-west1-
      - Description
    * - list
      - 
-     - ``--limit``, ``--interactive``
+     - ``--limit``, ``--interactive``, ``--data-set-id``, ``data-set-external-id``, ``destination-type``, ``conflict-mode``
      - List transformations
    * - show
      - 
@@ -104,9 +104,11 @@ It prints transformations details in a tabular format.
      - Default
      - Flag
      - Required
+     - Multi Value
      - Description
    * - ``--limit``
      - 10
+     - No
      - No
      - No
      - Number of transformations to list. Use -1 to list all.
@@ -114,8 +116,32 @@ It prints transformations details in a tabular format.
      - False
      - Yes
      - No
+     - No
      - Show 10 transformations at a time, waiting for keypress to display next batch.
-
+    * - ``--data-set-id``
+     - No
+     - No
+     - No
+     - Yes
+     - Filter transformations by data set ID.
+    * - ``--data-set-external-id``
+     - No
+     - No
+     - No
+     - Yes
+     - Filter transformations by data set ID.
+    * - ``--destination-type``
+     - No
+     - No
+     - No
+     - No
+     - Filter transformations by destination type: assets, events, timeseries...
+    * - ``--conflict-mode``
+     - No
+     - No
+     - No
+     - No
+     - Filter transformations by conflict mode: upsert, abort, update, delete.
 
 ``transformations-cli show``
 ----------------------------

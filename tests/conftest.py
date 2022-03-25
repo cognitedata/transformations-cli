@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 import pytest
 from click.testing import CliRunner
 from cognite.client import CogniteClient
-from cognite.client.data_classes import OidcCredentials, Transformation, TransformationDestination
+from cognite.client.data_classes import DataSet, OidcCredentials, Transformation, TransformationDestination
 
 from cognite.transformations_cli.clients import get_client
 
@@ -63,6 +63,16 @@ def test_transformation_ext_ids() -> List[str]:
         f"{uuid_conf}_cli_test3",
         f"{uuid_conf}_cli_test4",
     ]
+
+
+@pytest.fixture
+def new_dataset(client: CogniteClient) -> DataSet:
+    ds_ext_id1 = "cli-transformation-ds"
+    ds1 = client.data_sets.retrieve(external_id=ds_ext_id1)
+    if not ds1:
+        data_set1 = DataSet(name=ds_ext_id1, external_id=ds_ext_id1)
+        ds1 = client.data_sets.create(data_set1)
+    yield ds1
 
 
 @pytest.fixture
