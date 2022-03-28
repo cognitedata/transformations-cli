@@ -142,7 +142,7 @@ def test_deploy_dmi_transformation(
                 - "https://bluefield.cognitedata.com/.default"
             cdfProjectName: "extractor-bluefield-testing"
         destination:
-            type: data_model_instances
+            type: alpha_data_model_instances
             externalId: test_model
         shared: true
         ignoreNullFields: False

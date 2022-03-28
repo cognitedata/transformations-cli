@@ -32,12 +32,18 @@ def list(
     interactive: bool = False,
 ) -> None:
     client = get_client(obj)
+    destination_type_new = (
+        "data_model_instances" if destination_type == "alpha_data_model_instances" else destination_type
+    )
+    # Backend expects destination types in filter without "_", but destination types have "_" in them in other places
+    # Manipulate it until it is fixed in the backend.
+    destination_type_new = destination_type_new.replace("_", "") if destination_type_new else destination_type_new
     try:
         transformations = client.transformations.list(
             limit=limit,
             data_set_ids=data_set_id,
             data_set_external_ids=data_set_external_id,
-            destination_type=destination_type,
+            destination_type=destination_type_new,
             conflict_mode=conflict_mode,
         )
         if interactive:

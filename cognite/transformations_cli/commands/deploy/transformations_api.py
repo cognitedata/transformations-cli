@@ -75,7 +75,7 @@ def to_destination(destination: Union[DestinationType, DestinationConfig]) -> Tr
     if isinstance(destination, DestinationConfig):
         if destination.type == DestinationType.raw:
             return TransformationDestination.raw(destination.raw_database, destination.raw_table)
-        elif destination.type == DestinationType.data_model_instances:
+        elif destination.type == DestinationType.alpha_data_model_instances:
             return AlphaDataModelInstances(destination.external_id)
         elif destination.type == DestinationType.sequence_rows:
             return SequenceRows(destination.external_id)
