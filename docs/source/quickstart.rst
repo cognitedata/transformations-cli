@@ -172,7 +172,7 @@ It prints the transformation details in a tabular format, such as latest job's m
    * - ``--external-id``
      - No
      - No
-     - The ```external_id``` of the transformation to show. Either this or ``--id`` must be specified if ``job-id`` not specified.
+     - The ``external_id`` of the transformation to show. Either this or ``--id`` must be specified if ``job-id`` not specified.
    * - ``--job-id``
      - No
      - No
@@ -423,7 +423,7 @@ This directory is scanned recursively for ``*.yml`` and ``*.yaml`` files, so you
      - Yes
      - No
      - No
-     - Print `external_id``s for the upserted resources besides the counts.
+     - Print ``external_id``s for the upserted resources besides the counts.
 
 ``Transformation Manifest``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
