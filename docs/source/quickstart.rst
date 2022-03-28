@@ -97,7 +97,7 @@ Help
 It prints transformations details in a tabular format.
 
 .. list-table:: List options
-   :widths: 25 25 25 25 25
+   :widths: 25 25 25 25 25 25
    :header-rows: 1
 
    * - Option
