@@ -12,6 +12,11 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.5.0] - 2022-03-25
+### Added
+- Support `SequenceRows` destination type.
+- Support filter by data set IDs, data set external IDs, conflict mode and destination type on `transformation.list`.
+
 ## [1.4.2] - 2022-03-09
 ### Fixed
 - Handle missing values in rows of the query response.
