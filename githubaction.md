@@ -40,6 +40,11 @@ destination:
 #   rawDatabase: some_database
 #   rawTable: some_table
 
+# When writing to sequence rows, use the following syntax:
+# destination:
+#   type: sequence_rows
+#   externalId: some_sequence
+
 # Optional, default: true
 shared: true
 
