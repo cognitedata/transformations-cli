@@ -47,6 +47,18 @@ jobs:
     # - name: Build package
     #   run: poetry build
 
-    - name: "Set last tag version"
-      id: get_last_tag_version
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+
+    - id: parse_version
+      name: "Parse version"
+      run: |
+        echo "::set-output name=cli_version::$(sed -n -e "/^__version__/p" cognite/transformations_cli/__init__.py | cut -c 16- | sed -e 's/^"//' -e 's/"$//')"
+      
+    - name: "Echo version"
+      run: |
+        echo ${{ steps.parse_version.outputs.cli_version }}
+
+    - name: Tag snapshot
+      uses: tvdias/github-tagger@v0.0.1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ steps.parse_version.outputs.cli_version }}
