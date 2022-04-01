@@ -12,6 +12,11 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.5.1] - 2022-03-28
+### Fixed
+- Accept destination types with or without "_" in list with filter. Example: "sequence_rows" and "sequencerows" will work.
+- Tag experimental destination type with alpha.
+
 ## [1.5.0] - 2022-03-25
 ### Added
 - Support `SequenceRows` destination type.

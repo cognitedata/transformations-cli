@@ -17,7 +17,7 @@ class DestinationType(Enum):
     raw = "raw"
     data_sets = "data_sets"
     sequence_rows = "sequence_rows"
-    data_model_instances = "data_model_instances"  # Experimental feature
+    alpha_data_model_instances = "alpha_data_model_instances"  # Experimental feature
 
 
 class ActionType(Enum):
