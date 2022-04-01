@@ -47,9 +47,6 @@ jobs:
     # - name: Build package
     #   run: poetry build
 
-    - id: get_last_tag_version
-      name: "Set last tag version"
-      run: |
-        echo "::set-output name=last_tag::$(git describe --tags `git rev-list --tags --max-count=1`)"
-      
-
+    - name: "Set last tag version"
+      id: get_last_tag_version
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
