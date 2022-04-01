@@ -67,7 +67,7 @@ def print_transformations(transformation: List[Transformation]) -> str:
                 t.name,
                 t.id,
                 t.external_id,
-                "alpha_data_model_instances" if t.destination.type == "data_model_instances" else t.destination.type,
+                t.destination.type,
                 get_database(t.destination),
                 get_table(t.destination),
                 t.data_set_id,
