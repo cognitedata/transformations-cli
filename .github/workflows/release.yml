@@ -51,6 +51,7 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: twine upload --verbose dist/* || echo 'Version exists'
 
+
   publish_to_dockerhub:
     runs-on: ubuntu-latest
     permissions:
