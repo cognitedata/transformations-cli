@@ -67,4 +67,5 @@ jobs:
       with:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         version: ${{ steps.parse_version.outputs.cli_version }}
+        tag_prefix: "v"
 
