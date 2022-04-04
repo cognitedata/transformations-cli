@@ -51,6 +51,12 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: twine upload --verbose dist/* || echo 'Version exists'
 
+    - name: Push tag for the new version
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        custom_tag: ${{ steps.parse_version.outputs.cli_version }}
 
   publish_to_dockerhub:
     runs-on: ubuntu-latest
