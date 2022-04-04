@@ -63,8 +63,14 @@ jobs:
     #     repo-token: ${{ secrets.GITHUB_TOKEN }}
     #     tag: ${{ steps.parse_version.outputs.cli_version }}
 
-    - uses: Klemensas/action-autotag@stable
+    # - uses: Klemensas/action-autotag@stable
+    #   with:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     version: ${{ steps.parse_version.outputs.cli_version }}
+
+    - uses: butlerlogic/action-autotag@1.0.0
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        version: ${{ steps.parse_version.outputs.cli_version }}
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        version: "${{ steps.parse_version.outputs.cli_version }}"
+        tag_prefix: "v"
 
