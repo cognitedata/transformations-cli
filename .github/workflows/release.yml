@@ -62,7 +62,6 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         custom_tag: ${{ steps.parse_tag_version.outputs.cli_version }}
-        default_bump: false
 
   publish_to_dockerhub:
     runs-on: ubuntu-latest
