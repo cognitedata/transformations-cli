@@ -87,3 +87,10 @@ jobs:
         push: true
         file: ./Dockerfile
         tags: cognite/transformations-cli:${{ steps.parse_version.outputs.cli_version }}
+
+    - name: Push tag for the new version
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        custom_tag: ${{ steps.parse_version.outputs.cli_version }}
