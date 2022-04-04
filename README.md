@@ -22,7 +22,7 @@ To deploy transformations with destination type `data model instances`, please c
 
 ```yaml
 destination:
-    type: data_model_instances
+    type: alpha_data_model_instances
     externalId: some_flexible_data_model # The flexible data model definiton externalId
 ```
 
