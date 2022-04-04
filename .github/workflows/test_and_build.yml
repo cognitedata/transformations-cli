@@ -57,8 +57,14 @@ jobs:
       run: |
         echo ${{ steps.parse_version.outputs.cli_version }}
 
-    - name: Tag snapshot
-      uses: tvdias/github-tagger@v0.0.1
+    # - name: Tag snapshot
+    #   uses: tvdias/github-tagger@v0.0.1
+    #   with:
+    #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+    #     tag: ${{ steps.parse_version.outputs.cli_version }}
+
+    - uses: Klemensas/action-autotag@stable
       with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ steps.parse_version.outputs.cli_version }}
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        version: ${{ steps.parse_version.outputs.cli_version }}
+
