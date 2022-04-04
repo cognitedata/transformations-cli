@@ -28,7 +28,7 @@ name: "test-cli-transform-oidc"
 # Required
 # Valid values are: "assets", "timeseries", "asset_hierarchy", events", "datapoints", 
 # "string_datapoints", "sequences", "files", "labels", "relationships",
-# "raw", "data_sets", "sequence_rows", "data_model_instances"
+# "raw", "data_sets", "sequence_rows", "alpha_data_model_instances"
 destination: 
   type: "assets"
 
@@ -47,7 +47,7 @@ destination:
 
 # When writing to data model instances, use the following syntax:
 # destination:
-#   type: data_model_instances
+#   type: alpha_data_model_instances
 #   externalId: some_flexible_model
 
 # Optional, default: true
