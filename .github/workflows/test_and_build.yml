@@ -63,10 +63,10 @@ jobs:
     #     repo-token: ${{ secrets.GITHUB_TOKEN }}
     #     tag: ${{ steps.parse_version.outputs.cli_version }}
 
-    - uses: Klemensas/action-autotag@stable
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        version: ${{ steps.parse_version.outputs.cli_version }}
+    # - uses: Klemensas/action-autotag@stable
+    #   with:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     version: ${{ steps.parse_version.outputs.cli_version }}
 
     # - uses: Klemensas/action-autotag@stable
     #   with:
