@@ -64,7 +64,7 @@ def _parse_transformation_config(path: str, legacy_mode: bool = False) -> Transf
     r = regex.compile(r"^legacy:\s*true\s*$", flags=regex.MULTILINE | regex.IGNORECASE)
     with open(path) as f:
         data = f.read()
-        if r.search(data) is not None or legacy_mode:
+        if legacy_mode or r.search(data) is not None:
             legacy_config = load_yaml(data, TransformationConfigLegacy, case_style="camel")
             return legacy_config.to_new()
         else:

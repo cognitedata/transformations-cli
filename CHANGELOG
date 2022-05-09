@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.6.1] - 2022-05-09
+### Added
+- Support `TRANSFORMATIONS_LEGACY_MODE` environment variable besides `legacy-mode` flag.
+
 ## [1.6.0] - 2022-05-09
 ### Added
 - Add a global `legacy-mode` flag for transformation deployment to parse all manifests into legacy config structure.
