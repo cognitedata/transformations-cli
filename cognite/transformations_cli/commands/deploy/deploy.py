@@ -76,11 +76,13 @@ def print_results(
 @click.option(
     "--debug",
     is_flag=True,
+    envvar="TRANSFORMATIONS_DEBUG_MODE",
     help="Print updated, created, deleted external IDs",
 )
 @click.option(
     "--legacy-mode",
     is_flag=True,
+    envvar="TRANSFORMATIONS_LEGACY_MODE",
     help="Treat all configs as legacy.",
 )
 @click.pass_obj
