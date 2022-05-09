@@ -85,7 +85,7 @@ class TransformationConfigLegacy:
     authentication: Union[AuthConfigLegacy, ReadWriteAuthConfigLegacy, None]
     api_key: Union[str, ReadWriteApiKeyLegacy, None]
     schedule: Optional[str]
-    destination: DestinationLegacy
+    destination: Union[str, DestinationLegacy]
     notifications: List[str] = field(default_factory=list)
     shared: bool = False
     ignore_null_fields: bool = True
@@ -115,7 +115,11 @@ class TransformationConfigLegacy:
         elif isinstance(self.api_key, str):
             auth.read.api_key = auth.write.api_key = environ[self.api_key]
 
-        destination = self.destination.to_new()
+        destination = (
+            self.destination.to_new()
+            if isinstance(self.destination, DestinationLegacy)
+            else DestinationConfig(legacy_destination_type_to_new(self.destination))
+        )
         action = legacy_action_to_new(self.action)
 
         return TransformationConfig(

@@ -13,7 +13,7 @@ from cognite.client.data_classes import (
     TransformationSchedule,
 )
 from cognite.client.data_classes.transformations._alphatypes import AlphaDataModelInstances
-from cognite.client.data_classes.transformations.common import SequenceRows
+from cognite.client.data_classes.transformations.common import SequenceRows, TransformationDestination
 
 from cognite.transformations_cli.commands.deploy.deploy import deploy
 from cognite.transformations_cli.commands.deploy.transformations_api import (
@@ -189,6 +189,55 @@ def test_deploy_sequence_rows_transformation(
     assert new_conf.destination == SequenceRows("test_sequence")
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
+
+
+def test_deploy_old_config_with_legacy_flag(
+    cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
+) -> None:
+    test_name = "test_deploy_"
+    query_file_name = "sqlFile"
+    external_id = str(uuid.uuid1())
+    write_config(query_file_name, "select 'asd' as name, 'asd' as externalId", 0, "sql")
+    file = f"""
+        externalId: {external_id}
+        name: {external_id}
+        query: ../{query_file_name}/trans_0.sql
+        authentication:
+            read:
+                clientId: CLIENT_ID
+                clientSecret: CLIENT_SECRET
+                tokenUrl: "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token"
+                scopes:
+                    - "https://bluefield.cognitedata.com/.default"
+                cdfProjectName: "extractor-bluefield-testing"
+            write:
+                clientId: CLIENT_ID
+                clientSecret: CLIENT_SECRET
+                tokenUrl: "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token"
+                scopes:
+                    - "https://bluefield.cognitedata.com/.default"
+                cdfProjectName: "extractor-bluefield-testing"
+        schedule: "* * * * *"
+        destination: "assets"
+        notifications:
+            - notif1
+            - notif2
+        shared: true
+        ignoreNullFields: False
+        action: upsert
+        """
+    write_config(test_name, file, 0)
+    cli_result = cli_runner.invoke(deploy, [test_name, "--legacy-mode"], obj=obj)
+    assert cli_result.exit_code == 0
+    new_conf = client.transformations.retrieve(external_id=external_id)
+    assert new_conf.external_id == external_id
+    assert new_conf.destination == TransformationDestination.assets()
+    # run the deployed transformation to check the validity
+    job = new_conf.run(wait=True)
+    assert job.status == TransformationJobStatus.COMPLETED
+    client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
+    rmdir(Path(test_name))
+    rmdir(Path(query_file_name))
 
 
 def test_upsert_transformations(
