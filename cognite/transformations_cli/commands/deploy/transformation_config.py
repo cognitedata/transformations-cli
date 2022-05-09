@@ -60,7 +60,7 @@ def _validate_config(config: TransformationConfig) -> None:
     _validate_data_set_id(config.data_set_id, config.data_set_external_id)
 
 
-def _parse_transformation_config(path: str, legacy_mode: bool) -> TransformationConfig:
+def _parse_transformation_config(path: str, legacy_mode: bool = False) -> TransformationConfig:
     r = regex.compile(r"^legacy:\s*true\s*$", flags=regex.MULTILINE | regex.IGNORECASE)
     with open(path) as f:
         data = f.read()
@@ -71,7 +71,7 @@ def _parse_transformation_config(path: str, legacy_mode: bool) -> Transformation
             return load_yaml(data, TransformationConfig, case_style="camel")
 
 
-def parse_transformation_configs(base_dir: Optional[str], legacy_mode: bool) -> Dict[str, TransformationConfig]:
+def parse_transformation_configs(base_dir: Optional[str], legacy_mode: bool = False) -> Dict[str, TransformationConfig]:
     if base_dir is None:
         base_dir = "."
 
