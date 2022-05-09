@@ -60,18 +60,18 @@ def _validate_config(config: TransformationConfig) -> None:
     _validate_data_set_id(config.data_set_id, config.data_set_external_id)
 
 
-def _parse_transformation_config(path: str) -> TransformationConfig:
+def _parse_transformation_config(path: str, legacy_mode: bool = False) -> TransformationConfig:
     r = regex.compile(r"^legacy:\s*true\s*$", flags=regex.MULTILINE | regex.IGNORECASE)
     with open(path) as f:
         data = f.read()
-        if r.search(data) is not None:
-            legacy = load_yaml(data, TransformationConfigLegacy, case_style="camel")
-            return legacy.to_new()
+        if r.search(data) is not None or legacy_mode:
+            legacy_config = load_yaml(data, TransformationConfigLegacy, case_style="camel")
+            return legacy_config.to_new()
         else:
             return load_yaml(data, TransformationConfig, case_style="camel")
 
 
-def parse_transformation_configs(base_dir: Optional[str]) -> Dict[str, TransformationConfig]:
+def parse_transformation_configs(base_dir: Optional[str], legacy_mode: bool = False) -> Dict[str, TransformationConfig]:
     if base_dir is None:
         base_dir = "."
 
@@ -85,7 +85,7 @@ def parse_transformation_configs(base_dir: Optional[str]) -> Dict[str, Transform
 
     for file_path in yaml_paths:
         try:
-            parsed_conf = _parse_transformation_config(file_path)
+            parsed_conf = _parse_transformation_config(file_path, legacy_mode)
             # This will raise exceptions if invalid
             _validate_config(parsed_conf)
             transformations[file_path] = parsed_conf

@@ -19,12 +19,12 @@ def rmdir(directory: Path) -> None:
     directory.rmdir()
 
 
-def write_config(test_name: str, contents: str, index: int) -> None:
+def write_config(test_name: str, contents: str, index: int, extension: str = "yml") -> None:
     if index == 0 and os.path.isdir(test_name):
         rmdir(Path(test_name))
     if index == 0:
         os.mkdir(test_name)
-    with open(f"{test_name}/trans_{index}.yml", "w") as f:
+    with open(f"{test_name}/trans_{index}.{extension}", "w") as f:
         f.write(contents)
 
 

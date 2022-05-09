@@ -12,6 +12,12 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.6.0] - 2022-05-09
+### Added
+- Add a global `legacy-mode` flag for transformation deployment to parse all manifests into legacy config structure.
+### Fixed
+- Fix legacy style destination config to fit the old config structure.
+
 ## [1.5.1] - 2022-03-28
 ### Fixed
 - Accept destination types with or without "_" in list with filter. Example: "sequence_rows" and "sequencerows" will work.
