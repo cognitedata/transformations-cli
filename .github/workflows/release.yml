@@ -99,3 +99,11 @@ jobs:
         push: true
         file: ./Dockerfile
         tags: cognite/transformations-cli:${{ steps.parse_version.outputs.cli_version }}
+
+    - name: "Build and push Docker image for Azure Pipelines"
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        file: ./Dockerfile-azure-pipelines
+        tags: cognite/transformations-cli:${{ steps.parse_version.outputs.cli_version }}-azure     
