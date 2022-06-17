@@ -48,7 +48,7 @@ class ReadWriteAuthentication:
 @dataclass
 class DestinationConfig:
     """
-    Valid type values are: assets, asset_hierarchy, events, timeseries, datapoints, string_datapoints, raw (needs database and table)
+    Valid type values are: assets, asset_hierarchy, events, timeseries, datapoints, string_datapoints
     """
 
     type: DestinationType
