@@ -52,9 +52,39 @@ class DestinationConfig:
     """
 
     type: DestinationType
-    raw_database: Optional[str] = None
-    raw_table: Optional[str] = None
-    external_id: Optional[str] = None
+
+
+@dataclass
+class RawDestinationConfig:
+    """
+    Valid type values are: raw
+    """
+
+    raw_database: str
+    raw_table: str
+    type: DestinationType = DestinationType.raw
+
+
+@dataclass
+class AlphaDMIDestinationConfig:
+    """
+    Valid type values are: alpha_data_model_instances
+    """
+
+    model_external_id: str
+    space_external_id: str
+    instance_space_external_id: str
+    type: DestinationType = DestinationType.alpha_data_model_instances
+
+
+@dataclass
+class SequenceRowsDestinationConfig:
+    """
+    Valid type values are: sequence_rows
+    """
+
+    external_id: str
+    type: DestinationType = DestinationType.sequence_rows
 
 
 @dataclass
@@ -79,7 +109,13 @@ class TransformationConfig:
     query: Union[str, QueryConfig]
     authentication: Union[AuthConfig, ReadWriteAuthentication]
     schedule: Optional[Union[str, ScheduleConfig]]
-    destination: Union[DestinationType, DestinationConfig]
+    destination: Union[
+        DestinationType,
+        DestinationConfig,
+        RawDestinationConfig,
+        AlphaDMIDestinationConfig,
+        SequenceRowsDestinationConfig,
+    ]
     data_set_id: Optional[int]
     data_set_external_id: Optional[str]
     notifications: List[str] = field(default_factory=list)

@@ -17,15 +17,14 @@ from cognite.transformations_cli.commands.deploy.transformation_types_legacy imp
 
 
 def _validate_destination_type(external_id: str, destination_type: Union[DestinationType, DestinationConfig]) -> None:
-    if (
-        isinstance(destination_type, DestinationConfig)
-        and destination_type.type == DestinationType.raw
-        and (destination_type.raw_database is None or destination_type.raw_table is None)
-    ):
-        raise Exception(f"Raw destination type requires database and table properties to be set: {external_id}")
-    elif isinstance(destination_type, DestinationConfig) and destination_type.external_id is None:
+    if isinstance(destination_type, DestinationConfig):
+        if destination_type.type == DestinationType.raw:
+            raise Exception(f"Raw destination type requires database and table properties to be set: {external_id}")
         if destination_type.type == DestinationType.alpha_data_model_instances:
-            raise Exception(f"Data model instances destination requires external_id to be set: {external_id}")
+            raise Exception(
+                f"Data model instances destination requires model_external_id,  \
+                            space_external_id and instance_space_external_id to be set: {external_id}"
+            )
         if destination_type.type == DestinationType.sequence_rows:
             raise Exception(f"Sequence rows destination requires external_id to be set: {external_id}")
     return None
