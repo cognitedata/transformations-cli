@@ -12,6 +12,11 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.6.2] - 2022-06-17
+### Added
+- Separate special destination config classes for sequences and raw
+- Make updates to experimental destination type to work with transformations backend
+
 ## [1.6.1] - 2022-05-09
 ### Added
 - Support `TRANSFORMATIONS_LEGACY_MODE` environment variable besides `legacy-mode` flag.
