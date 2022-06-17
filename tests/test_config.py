@@ -185,7 +185,7 @@ authentication:
         audience: testAudience
 schedule: testSchedule
 destination:
-    type: stringDatapoints
+    type: raw
     rawDatabase: testDb
     rawTable: testTable
 notifications:
@@ -227,7 +227,7 @@ action: Delete
     assert conf.authentication.write.audience == "testAudience"
 
     assert conf.schedule == "testSchedule"
-    assert conf.destination.type == DestinationType.string_datapoints
+    assert conf.destination.type == DestinationType.raw
     assert conf.destination.raw_database == "testDb"
     assert conf.destination.raw_table == "testTable"
     assert len(conf.notifications) == 2
@@ -253,8 +253,6 @@ schedule: testSchedule
 legacy: true
 destination:
     type: dataSets
-    rawDatabase: testDb
-    rawTable: testTable
 notifications:
     - notif1
     - notif2
@@ -277,8 +275,6 @@ action: DELETE
     assert conf.authentication.write.api_key == "testApiKeyWrite"
     assert conf.schedule == "testSchedule"
     assert conf.destination.type == DestinationType.data_sets
-    assert conf.destination.raw_database == "testDb"
-    assert conf.destination.raw_table == "testTable"
     assert len(conf.notifications) == 2
     assert conf.notifications[0] == "notif1"
     assert conf.notifications[1] == "notif2"
