@@ -26,7 +26,9 @@ destination:
 # When writing to data model instances, use the following syntax:
 # destination:
 #   type: alpha_data_model_instances
-#   externalId: some_flexible_model
+#   modelExternalId: some_flexible_model
+#   spaceExternalId: some_space
+#   instanceSpaceExternalId: some_space
 
 # Optional, default: true
 shared: true

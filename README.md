@@ -23,7 +23,9 @@ To deploy transformations with destination type `data model instances`, please c
 ```yaml
 destination:
     type: alpha_data_model_instances
-    externalId: some_flexible_data_model # The flexible data model definiton externalId
+    model_external_id: some_flexible_data_model # The flexible data model definiton externalId
+    space_external_id: some_space # The flexible data model space externalId
+    instance_space_external_id: some_space2 # The flexible data model instance space externalId
 ```
 
 ### GitHub Action
