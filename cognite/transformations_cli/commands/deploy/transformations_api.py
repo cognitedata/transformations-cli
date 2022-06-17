@@ -17,6 +17,7 @@ from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, C
 
 from cognite.transformations_cli.commands.deploy.transformation_types import (
     ActionType,
+    AlphaDMIDestinationConfig,
     AuthConfig,
     DestinationConfig,
     DestinationConfigType,
@@ -80,8 +81,10 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         return TransformationDestination.raw(destination.raw_database, destination.raw_table)
     elif isinstance(destination, SequenceRowsDestinationConfig):
         return SequenceRows(destination.external_id)
-    elif isinstance(destination, AlphaDataModelInstances):
-        return AlphaDataModelInstances(destination.external_id)
+    elif isinstance(destination, AlphaDMIDestinationConfig):
+        return AlphaDataModelInstances(
+            destination.model_external_id, destination.space_external_id, destination.instance_space_external_id
+        )
     else:
         return TransformationDestination(destination.value)
 
