@@ -87,6 +87,11 @@ class SequenceRowsDestinationConfig:
     type: DestinationType = DestinationType.sequence_rows
 
 
+DestinationConfigType = Union[
+    DestinationType, DestinationConfig, RawDestinationConfig, SequenceRowsDestinationConfig, AlphaDMIDestinationConfig
+]
+
+
 @dataclass
 class QueryConfig:
     file: str
@@ -109,13 +114,7 @@ class TransformationConfig:
     query: Union[str, QueryConfig]
     authentication: Union[AuthConfig, ReadWriteAuthentication]
     schedule: Optional[Union[str, ScheduleConfig]]
-    destination: Union[
-        DestinationType,
-        DestinationConfig,
-        RawDestinationConfig,
-        AlphaDMIDestinationConfig,
-        SequenceRowsDestinationConfig,
-    ]
+    destination: DestinationConfigType
     data_set_id: Optional[int]
     data_set_external_id: Optional[str]
     notifications: List[str] = field(default_factory=list)

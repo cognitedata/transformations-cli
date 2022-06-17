@@ -8,6 +8,7 @@ from regex import regex
 from cognite.transformations_cli.commands.deploy.transformation_types import (
     AuthConfig,
     DestinationConfig,
+    DestinationConfigType,
     DestinationType,
     ReadWriteAuthentication,
     TransformationConfig,
@@ -16,16 +17,18 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
 from cognite.transformations_cli.commands.deploy.transformation_types_legacy import TransformationConfigLegacy
 
 
-def _validate_destination_type(external_id: str, destination_type: Union[DestinationType, DestinationConfig]) -> None:
-    if isinstance(destination_type, DestinationConfig):
-        if destination_type.type == DestinationType.raw:
+def _validate_destination_type(external_id: str, destination_type: DestinationConfigType) -> None:
+    flat_destination_type = destination_type if isinstance(destination_type, DestinationType) else destination_type.type
+    # DestinationConfig and DestinationType cannot be used for the types such as raw and sequence_rows
+    if isinstance(destination_type, DestinationConfig) or isinstance(destination_type, DestinationType):
+        if flat_destination_type == DestinationType.raw:
             raise Exception(f"Raw destination type requires database and table properties to be set: {external_id}")
-        if destination_type.type == DestinationType.alpha_data_model_instances:
+        if flat_destination_type == DestinationType.alpha_data_model_instances:
             raise Exception(
                 f"Data model instances destination requires model_external_id,  \
                             space_external_id and instance_space_external_id to be set: {external_id}"
             )
-        if destination_type.type == DestinationType.sequence_rows:
+        if flat_destination_type == DestinationType.sequence_rows:
             raise Exception(f"Sequence rows destination requires external_id to be set: {external_id}")
     return None
 

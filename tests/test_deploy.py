@@ -145,7 +145,7 @@ def test_deploy_dmi_transformation(
             type: alpha_data_model_instances
             model_external_id: test_model
             space_external_id: test_space
-            instance_external_id: test_space
+            instance_space_external_id: test_space
         shared: true
         ignoreNullFields: False
         action: upsert

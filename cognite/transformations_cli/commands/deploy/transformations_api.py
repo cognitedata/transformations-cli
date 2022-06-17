@@ -19,7 +19,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     ActionType,
     AuthConfig,
     DestinationConfig,
-    DestinationType,
+    DestinationConfigType,
     QueryConfig,
     RawDestinationConfig,
     ReadWriteAuthentication,
@@ -73,11 +73,7 @@ def to_action(action: ActionType) -> str:
     return "abort" if action == ActionType.create else action.value
 
 
-def to_destination(
-    destination: Union[
-        DestinationType, DestinationConfig, RawDestinationConfig, AlphaDataModelInstances, SequenceRowsDestinationConfig
-    ]
-) -> TransformationDestination:
+def to_destination(destination: DestinationConfigType) -> TransformationDestination:
     if isinstance(destination, DestinationConfig):
         return TransformationDestination(destination.type.value)
     elif isinstance(destination, RawDestinationConfig):
