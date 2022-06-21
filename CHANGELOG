@@ -12,6 +12,46 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.6.3] - 2022-06-21
+### Added
+- support for loading `.env` file for local testing (not CI/CD)
+  - `.env_example` provided as template
+  - this can simplify providing your local tests with all required env-variables
+## [1.6.2] - 2022-06-17
+### Added
+- Separate special destination config classes for sequences and raw
+- Make updates to experimental destination type to work with transformations backend
+
+## [1.6.1] - 2022-05-09
+### Added
+- Support `TRANSFORMATIONS_LEGACY_MODE` environment variable besides `legacy-mode` flag.
+
+## [1.6.0] - 2022-05-09
+### Added
+- Add a global `legacy-mode` flag for transformation deployment to parse all manifests into legacy config structure.
+### Fixed
+- Fix legacy style destination config to fit the old config structure.
+
+## [1.5.1] - 2022-03-28
+### Fixed
+- Accept destination types with or without "_" in list with filter. Example: "sequence_rows" and "sequencerows" will work.
+- Tag experimental destination type with alpha.
+
+## [1.5.0] - 2022-03-25
+### Added
+- Support `SequenceRows` destination type.
+- Support filter by data set IDs, data set external IDs, conflict mode and destination type on `transformation.list`.
+
+## [1.4.2] - 2022-03-09
+### Fixed
+- Handle missing values in rows of the query response.
+
+## [1.4.1] - 2022-03-08
+### Added
+- Perform text wrapping when tabulating queried data.
+### Fixed
+- Handle `struct` types in preview dataframe schema.
+
 ## [1.4.0] - 2022-02-14
 ### Added
 - Support clearing data set ids on transformations.

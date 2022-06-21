@@ -76,10 +76,17 @@ def print_results(
 @click.option(
     "--debug",
     is_flag=True,
-    help="Print updated, created, deleted external IDs ",
+    envvar="TRANSFORMATIONS_DEBUG_MODE",
+    help="Print updated, created, deleted external IDs",
+)
+@click.option(
+    "--legacy-mode",
+    is_flag=True,
+    envvar="TRANSFORMATIONS_LEGACY_MODE",
+    help="Treat all configs as legacy.",
 )
 @click.pass_obj
-def deploy(obj: Dict, path: str, debug: bool = False) -> None:
+def deploy(obj: Dict, path: str, debug: bool = False, legacy_mode: bool = False) -> None:
     """
         Deploy a set of transformations from a directory
     Args:
@@ -89,7 +96,7 @@ def deploy(obj: Dict, path: str, debug: bool = False) -> None:
     try:
         client = get_client(obj, 90)
         cluster = obj["cluster"]
-        transformation_configs = parse_transformation_configs(path)
+        transformation_configs = parse_transformation_configs(path, legacy_mode)
         transformations = [
             to_transformation(client, conf_path, transformation_configs[conf_path], cluster)
             for conf_path in transformation_configs

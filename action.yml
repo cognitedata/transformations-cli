@@ -32,6 +32,10 @@ inputs:
       This is relative to $GITHUB_WORKSPACE,
       which will be the root of the repository when using actions/checkout with default settings.
     required: true
+  legacy-mode:
+    description: 'Parse transformation manifests in legacy mode'
+    required: false
+    default: "false"
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -44,5 +48,6 @@ runs:
     TRANSFORMATIONS_SCOPES: ${{ inputs.scopes }}
     TRANSFORMATIONS_AUDIENCE: ${{ inputs.audience }}
     TRANSFORMATIONS_CLUSTER: "${{ inputs.cluster }}"
+    TRANSFORMATIONS_LEGACY_MODE: ${{ inputs.legacy-mode }}
   args: ["deploy", "${{ inputs.path }}" , "--debug"]
   

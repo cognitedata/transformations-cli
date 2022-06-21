@@ -16,6 +16,8 @@ class DestinationType(Enum):
     relationships = "relationships"
     raw = "raw"
     data_sets = "data_sets"
+    sequence_rows = "sequence_rows"
+    alpha_data_model_instances = "alpha_data_model_instances"  # Experimental feature
 
 
 class ActionType(Enum):
@@ -46,12 +48,48 @@ class ReadWriteAuthentication:
 @dataclass
 class DestinationConfig:
     """
-    Valid type values are: assets, asset_hierarchy, events, timeseries, datapoints, string_datapoints, raw (needs database and table)
+    Valid type values are: assets, asset_hierarchy, events, timeseries, datapoints, string_datapoints
     """
 
     type: DestinationType
-    raw_database: Optional[str] = None
-    raw_table: Optional[str] = None
+
+
+@dataclass
+class RawDestinationConfig:
+    """
+    Valid type values are: raw
+    """
+
+    raw_database: str
+    raw_table: str
+    type: DestinationType = DestinationType.raw
+
+
+@dataclass
+class AlphaDMIDestinationConfig:
+    """
+    Valid type values are: alpha_data_model_instances
+    """
+
+    model_external_id: str
+    space_external_id: str
+    instance_space_external_id: str
+    type: DestinationType = DestinationType.alpha_data_model_instances
+
+
+@dataclass
+class SequenceRowsDestinationConfig:
+    """
+    Valid type values are: sequence_rows
+    """
+
+    external_id: str
+    type: DestinationType = DestinationType.sequence_rows
+
+
+DestinationConfigType = Union[
+    DestinationType, DestinationConfig, RawDestinationConfig, SequenceRowsDestinationConfig, AlphaDMIDestinationConfig
+]
 
 
 @dataclass
@@ -76,7 +114,7 @@ class TransformationConfig:
     query: Union[str, QueryConfig]
     authentication: Union[AuthConfig, ReadWriteAuthentication]
     schedule: Optional[Union[str, ScheduleConfig]]
-    destination: Union[DestinationType, DestinationConfig]
+    destination: DestinationConfigType
     data_set_id: Optional[int]
     data_set_external_id: Optional[str]
     notifications: List[str] = field(default_factory=list)

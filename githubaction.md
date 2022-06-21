@@ -27,7 +27,8 @@ name: "test-cli-transform-oidc"
 
 # Required
 # Valid values are: "assets", "timeseries", "asset_hierarchy", events", "datapoints", 
-# "string_datapoints", "sequences", "files", "labels", "relationships", "raw", "data_sets"
+# "string_datapoints", "sequences", "files", "labels", "relationships",
+# "raw", "data_sets", "sequence_rows"
 destination: 
   type: "assets"
 
@@ -38,6 +39,11 @@ destination:
 #   type: raw
 #   rawDatabase: some_database
 #   rawTable: some_table
+
+# When writing to sequence rows, use the following syntax:
+# destination:
+#   type: sequence_rows
+#   externalId: some_sequence
 
 # Optional, default: true
 shared: true

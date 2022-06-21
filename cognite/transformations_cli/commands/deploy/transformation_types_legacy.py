@@ -8,6 +8,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     DestinationConfig,
     DestinationType,
     QueryConfig,
+    RawDestinationConfig,
     ReadWriteAuthentication,
     TransformationConfig,
     TransformationConfigError,
@@ -72,9 +73,11 @@ class DestinationLegacy:
     raw_database: Optional[str] = None
     raw_table: Optional[str] = None
 
-    def to_new(self) -> DestinationConfig:
+    def to_new(self) -> Union[RawDestinationConfig, DestinationConfig]:
         new_type = legacy_destination_type_to_new(self.type)
-        return DestinationConfig(new_type, self.raw_database, self.raw_table)
+        if self.raw_database and self.raw_table:
+            return RawDestinationConfig(raw_database=self.raw_database, raw_table=self.raw_table)
+        return DestinationConfig(new_type)
 
 
 @dataclass
@@ -85,7 +88,7 @@ class TransformationConfigLegacy:
     authentication: Union[AuthConfigLegacy, ReadWriteAuthConfigLegacy, None]
     api_key: Union[str, ReadWriteApiKeyLegacy, None]
     schedule: Optional[str]
-    destination: DestinationLegacy
+    destination: Union[str, DestinationLegacy]
     notifications: List[str] = field(default_factory=list)
     shared: bool = False
     ignore_null_fields: bool = True
@@ -115,7 +118,11 @@ class TransformationConfigLegacy:
         elif isinstance(self.api_key, str):
             auth.read.api_key = auth.write.api_key = environ[self.api_key]
 
-        destination = self.destination.to_new()
+        destination = (
+            self.destination.to_new()
+            if isinstance(self.destination, DestinationLegacy)
+            else DestinationConfig(legacy_destination_type_to_new(self.destination))
+        )
         action = legacy_action_to_new(self.action)
 
         return TransformationConfig(

@@ -1,8 +1,9 @@
+import uuid
 from typing import Dict, List, Optional
 
 from click.testing import CliRunner
 from cognite.client import CogniteClient
-from cognite.client.data_classes import Transformation
+from cognite.client.data_classes import DataSet, Transformation, TransformationDestination
 
 from cognite.transformations_cli.commands.list import list
 from tests.helpers import from_table
@@ -27,3 +28,38 @@ def test_list(
     res_limit4 = from_table(result.output)
     assert len(res_limit4) == 5  # with header, 5 rows
     client.transformations.delete(external_id=test_transformation_ext_ids, ignore_unknown_ids=True)
+
+
+def test_list_data_set_id(
+    client: CogniteClient, obj: Dict[str, Optional[str]], cli_runner: CliRunner, new_dataset: DataSet
+) -> None:
+    uui_str = uuid.uuid1()
+    ext_id1 = f"CLI_FILTER_TEST_{uui_str}"
+    ext_id2 = f"CLI_FILTER_TEST_1_{uui_str}"
+
+    client.transformations.create(
+        [
+            Transformation(
+                external_id=ext_id1,
+                name=ext_id1,
+                destination=TransformationDestination.assets(),
+                conflict_mode="upsert",
+                query="select 'asd' as name, 'asd' as externalId",
+                is_public=True,
+                data_set_id=new_dataset.id,
+            ),
+            Transformation(
+                external_id=ext_id2,
+                name=ext_id2,
+                destination=TransformationDestination.assets(),
+                conflict_mode="upsert",
+                query="select 'asd' as name, 'asd' as externalId",
+                is_public=True,
+            ),
+        ]
+    )
+    result = cli_runner.invoke(list, [f"--data-set-id={new_dataset.id}", "--limit=1000"], obj=obj)
+    client.transformations.delete(external_id=[ext_id1, ext_id2])
+    assert result.exit_code == 0
+    assert ext_id2 not in result.output
+    assert ext_id1 in result.output

@@ -8,6 +8,7 @@ from regex import regex
 from cognite.transformations_cli.commands.deploy.transformation_types import (
     AuthConfig,
     DestinationConfig,
+    DestinationConfigType,
     DestinationType,
     ReadWriteAuthentication,
     TransformationConfig,
@@ -16,13 +17,24 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
 from cognite.transformations_cli.commands.deploy.transformation_types_legacy import TransformationConfigLegacy
 
 
-def _validate_destination_type(external_id: str, destination_type: Union[DestinationType, DestinationConfig]) -> None:
-    if (
-        isinstance(destination_type, DestinationConfig)
-        and destination_type.type == DestinationType.raw
-        and (destination_type.raw_database is None or destination_type.raw_table is None)
-    ):
-        raise Exception(f"Raw destination type requires database and table properties to be set: {external_id}")
+def _validate_destination_type(external_id: str, destination_type: DestinationConfigType) -> None:
+    flat_destination_type = destination_type if isinstance(destination_type, DestinationType) else destination_type.type
+    # DestinationConfig and DestinationType cannot be used for the types such as raw and sequence_rows
+    if isinstance(destination_type, DestinationConfig) or isinstance(destination_type, DestinationType):
+        if flat_destination_type == DestinationType.raw:
+            raise Exception(
+                f"Error on transformation manifest with external ID {external_id}: \
+                            Raw destination type requires database and table properties to be set."
+            )
+        if flat_destination_type == DestinationType.alpha_data_model_instances:
+            raise Exception(
+                f"Error on transformation manifest with external ID {external_id}: Data model instances destination requires model_external_id,  \
+                            space_external_id and instance_space_external_id to be set."
+            )
+        if flat_destination_type == DestinationType.sequence_rows:
+            raise Exception(
+                f"Error on transformation manifest with external ID {external_id}: Sequence rows destination requires external_id to be set."
+            )
     return None
 
 
@@ -55,18 +67,18 @@ def _validate_config(config: TransformationConfig) -> None:
     _validate_data_set_id(config.data_set_id, config.data_set_external_id)
 
 
-def _parse_transformation_config(path: str) -> TransformationConfig:
+def _parse_transformation_config(path: str, legacy_mode: bool = False) -> TransformationConfig:
     r = regex.compile(r"^legacy:\s*true\s*$", flags=regex.MULTILINE | regex.IGNORECASE)
     with open(path) as f:
         data = f.read()
-        if r.search(data) is not None:
-            legacy = load_yaml(data, TransformationConfigLegacy, case_style="camel")
-            return legacy.to_new()
+        if legacy_mode or r.search(data) is not None:
+            legacy_config = load_yaml(data, TransformationConfigLegacy, case_style="camel")
+            return legacy_config.to_new()
         else:
             return load_yaml(data, TransformationConfig, case_style="camel")
 
 
-def parse_transformation_configs(base_dir: Optional[str]) -> Dict[str, TransformationConfig]:
+def parse_transformation_configs(base_dir: Optional[str], legacy_mode: bool = False) -> Dict[str, TransformationConfig]:
     if base_dir is None:
         base_dir = "."
 
@@ -80,7 +92,7 @@ def parse_transformation_configs(base_dir: Optional[str]) -> Dict[str, Transform
 
     for file_path in yaml_paths:
         try:
-            parsed_conf = _parse_transformation_config(file_path)
+            parsed_conf = _parse_transformation_config(file_path, legacy_mode)
             # This will raise exceptions if invalid
             _validate_config(parsed_conf)
             transformations[file_path] = parsed_conf

@@ -11,16 +11,21 @@ from cognite.client.data_classes import (
     TransformationSchedule,
     TransformationUpdate,
 )
+from cognite.client.data_classes.transformations._alphatypes import AlphaDataModelInstances
+from cognite.client.data_classes.transformations.common import SequenceRows
 from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
 
 from cognite.transformations_cli.commands.deploy.transformation_types import (
     ActionType,
+    AlphaDMIDestinationConfig,
     AuthConfig,
     DestinationConfig,
-    DestinationType,
+    DestinationConfigType,
     QueryConfig,
+    RawDestinationConfig,
     ReadWriteAuthentication,
     ScheduleConfig,
+    SequenceRowsDestinationConfig,
     TransformationConfig,
 )
 from cognite.transformations_cli.commands.utils import chunk_items, exit_with_cognite_api_error
@@ -69,11 +74,17 @@ def to_action(action: ActionType) -> str:
     return "abort" if action == ActionType.create else action.value
 
 
-def to_destination(destination: Union[DestinationType, DestinationConfig]) -> TransformationDestination:
+def to_destination(destination: DestinationConfigType) -> TransformationDestination:
     if isinstance(destination, DestinationConfig):
-        if destination.type == DestinationType.raw:
-            return TransformationDestination.raw(destination.raw_database, destination.raw_table)
         return TransformationDestination(destination.type.value)
+    elif isinstance(destination, RawDestinationConfig):
+        return TransformationDestination.raw(destination.raw_database, destination.raw_table)
+    elif isinstance(destination, SequenceRowsDestinationConfig):
+        return SequenceRows(destination.external_id)
+    elif isinstance(destination, AlphaDMIDestinationConfig):
+        return AlphaDataModelInstances(
+            destination.model_external_id, destination.space_external_id, destination.instance_space_external_id
+        )
     else:
         return TransformationDestination(destination.value)
 

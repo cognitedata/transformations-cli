@@ -51,7 +51,7 @@ By default, transformations-cli runs against the main CDF cluster (europe-west1-
      - Description
    * - list
      - 
-     - ``--limit``, ``--interactive``
+     - ``--limit``, ``--interactive``, ``--data-set-id``, ``data-set-external-id``, ``destination-type``, ``conflict-mode``
      - List transformations
    * - show
      - 
@@ -97,16 +97,18 @@ Help
 It prints transformations details in a tabular format.
 
 .. list-table:: List options
-   :widths: 25 25 25 25 25
+   :widths: 25 25 25 25 25 25
    :header-rows: 1
 
    * - Option
      - Default
      - Flag
      - Required
+     - Multi Value
      - Description
    * - ``--limit``
      - 10
+     - No
      - No
      - No
      - Number of transformations to list. Use -1 to list all.
@@ -114,8 +116,32 @@ It prints transformations details in a tabular format.
      - False
      - Yes
      - No
+     - No
      - Show 10 transformations at a time, waiting for keypress to display next batch.
-
+    * - ``--data-set-id``
+     - No
+     - No
+     - No
+     - Yes
+     - Filter transformations by data set ID.
+    * - ``--data-set-external-id``
+     - No
+     - No
+     - No
+     - Yes
+     - Filter transformations by data set ID.
+    * - ``--destination-type``
+     - No
+     - No
+     - No
+     - No
+     - Filter transformations by destination type: assets, events, timeseries...
+    * - ``--conflict-mode``
+     - No
+     - No
+     - No
+     - No
+     - Filter transformations by conflict mode: upsert, abort, update, delete.
 
 ``transformations-cli show``
 ----------------------------
@@ -146,7 +172,7 @@ It prints the transformation details in a tabular format, such as latest job's m
    * - ``--external-id``
      - No
      - No
-     - The ```external_id``` of the transformation to show. Either this or ``--id`` must be specified if ``job-id`` not specified.
+     - The ``external_id`` of the transformation to show. Either this or ``--id`` must be specified if ``job-id`` not specified.
    * - ``--job-id``
      - No
      - No
@@ -397,7 +423,7 @@ This directory is scanned recursively for ``*.yml`` and ``*.yaml`` files, so you
      - Yes
      - No
      - No
-     - Print `external_id``s for the upserted resources besides the counts.
+     - Print ``external_id``s for the upserted resources besides the counts.
 
 ``Transformation Manifest``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
