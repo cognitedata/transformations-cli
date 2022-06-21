@@ -12,6 +12,11 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [1.6.3] - 2022-06-21
+### Added
+- support for loading `.env` file for local testing (not CI/CD)
+  - `.env_example` provided as template
+  - this can simplify providing your local tests with all required env-variables
 ## [1.6.2] - 2022-06-17
 ### Added
 - Separate special destination config classes for sequences and raw
