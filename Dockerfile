@@ -13,7 +13,7 @@ COPY poetry.lock .
 COPY pyproject.toml .
 
 RUN poetry config virtualenvs.create false
-RUN poetry export -f requirements.txt --output requirements.txt
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 RUN pip3 install --target=/app -r requirements.txt --no-deps
 
 # Keep the same folder structure for imports
