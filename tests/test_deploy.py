@@ -74,8 +74,9 @@ def test_deploy_with_ds_and_run(
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
     assert new_conf.query == "select 'test' as key, 'test' as name"
-    assert new_conf.has_source_oidc_credentials
-    assert new_conf.has_destination_oidc_credentials
+    # TODO: check for source and destination sessions when they are added to sdk
+    # assert new_conf.has_source_oidc_credentials
+    # assert new_conf.has_destination_oidc_credentials
     assert new_conf.destination.type == "raw"
     assert new_conf.data_set_id == new_dataset.id
 
