@@ -1,5 +1,5 @@
-# gcr.io/distroless/python3-debian10 (runtime env is using 3.7 and that's imporatant for native dependencies)
-FROM python:3.7-slim AS builder
+# gcr.io/distroless/python3-debian11 (runtime env is using 3.9 and that's imporatant for native dependencies)
+FROM python:3.9-slim AS builder
 
 WORKDIR /
 
@@ -21,7 +21,7 @@ COPY cognite/transformations_cli/ /app/cognite/transformations_cli/
 
 # A distroless container image with Python and some basics like SSL certificates
 # https://github.com/GoogleContainerTools/distroless
-FROM gcr.io/distroless/python3-debian10
+FROM gcr.io/distroless/python3-debian11
 COPY --from=builder /app /app
 ENV PYTHONPATH /app
 ENTRYPOINT [ "python", "/app/cognite/transformations_cli/__main__.py" ]
