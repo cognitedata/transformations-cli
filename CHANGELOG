@@ -12,11 +12,19 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
-## [1.6.3] - 2022-06-21
+## [2.1.0] - 2022-06-21
 ### Added
 - support for loading `.env` file for local testing (not CI/CD)
   - `.env_example` provided as template
   - this can simplify providing your local tests with all required env-variables
+
+## [2.0.0] - 2022-08-02
+### Removed
+- Python 3.7 support
+
+## Added
+- Compatibility with Cognite SDK ^3.0
+
 ## [1.6.2] - 2022-06-17
 ### Added
 - Separate special destination config classes for sequences and raw
