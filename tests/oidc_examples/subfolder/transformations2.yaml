@@ -1,15 +1,23 @@
 externalId: "test-cli-transform-oidc-raw"
 name: "test-cli-transform-oidc-raw"
-destination: 
-  type: "raw"
-  rawDatabase: "asd"
-  rawTable: "asd"
+# destination: 
+#   type: "raw"
+#   rawDatabase: "asd"
+#   rawTable: "asd"
+
+destination:
+ spaceExternalId: mp-2
+ modelExternalId: MaintainActivity_3
+ instanceSpaceExternalId: mp-2
+ type: alpha_data_model_instances
 shared: True
 action: "upsert"
 query:
   file: my_transform.sql
 ignoreNullFields: False
-schedule: "5 4 * * *"
+schedule: 
+  interval: "5 4 * * *"
+  isPaused: True
 notifications:
   - example@cognite.com
 authentication:
