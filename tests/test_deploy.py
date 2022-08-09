@@ -156,7 +156,8 @@ def test_deploy_dmi_transformation(
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
-    assert new_conf.destination == AlphaDataModelInstances("test_model")
+    my_dest: AlphaDataModelInstances = new_conf.destination
+    assert my_dest.model_external_id == "test_model"
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
 
