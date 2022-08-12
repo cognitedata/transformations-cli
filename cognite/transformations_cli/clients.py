@@ -11,7 +11,6 @@ from cognite.transformations_cli.defaults import DEFAULT_CLUSTER, DEFAULT_TIMEOU
 def disable_env_var(env_var_name: str) -> Optional[str]:
     default_val = os.getenv(env_var_name)
     if os.environ.get(env_var_name):
-        print("")
         del os.environ[env_var_name]
     return default_val
 

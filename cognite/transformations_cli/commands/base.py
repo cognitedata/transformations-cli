@@ -11,13 +11,14 @@ from cognite.transformations_cli.commands.list import list
 from cognite.transformations_cli.commands.query import query
 from cognite.transformations_cli.commands.run import run
 from cognite.transformations_cli.commands.show import show
+from cognite.transformations_cli.defaults import DEFAULT_CLUSTER, DEFAULT_TIMEOUT
 
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.version_option(prog_name="transformations_cli", version=__version__)
 @click.option(
     "--cluster",
-    default="europe-west1-1",
+    default=DEFAULT_CLUSTER,
     help="The CDF cluster where Transformations is hosted (e.g. greenfield, europe-west1-1)",
     envvar="TRANSFORMATIONS_CLUSTER",
 )
@@ -58,14 +59,14 @@ from cognite.transformations_cli.commands.show import show
 )
 @click.option(
     "--cdf-timeout",
-    default=60,
-    help="Timeout on requests sent to the api. Defaults to 60 seconds. 'TRANSFORMATIONS_CLIENT_TIMEOUT' environment variable can be used instead.",
+    default=DEFAULT_TIMEOUT,
+    help=f"Timeout on requests sent to the api. Defaults to {DEFAULT_TIMEOUT} seconds. 'TRANSFORMATIONS_CLIENT_TIMEOUT' environment variable can be used instead.",
     envvar="TRANSFORMATIONS_CLIENT_TIMEOUT",
 )
 @click.pass_context
 def transformations_cli(
     context: Context,
-    cluster: str = "europe-west1-1",
+    cluster: str = DEFAULT_CLUSTER,
     api_key: Optional[str] = None,
     client_id: Optional[str] = None,
     client_secret: Optional[str] = None,
@@ -84,7 +85,7 @@ def transformations_cli(
         "scopes": scopes,
         "audience": audience,
         "cdf_project_name": cdf_project_name,
-        "cdf_timeout": cdf_timeout or 60,
+        "cdf_timeout": cdf_timeout or DEFAULT_TIMEOUT,
     }
 
 
