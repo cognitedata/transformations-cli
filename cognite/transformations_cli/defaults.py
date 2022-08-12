@@ -1,0 +1,2 @@
+DEFAULT_TIMEOUT = 60
+DEFAULT_CLUSTER = "europe-west1-1"

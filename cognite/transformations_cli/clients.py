@@ -5,7 +5,7 @@ from typing import Dict, Optional
 from cognite.client import CogniteClient
 from cognite.client.exceptions import CogniteAPIKeyError
 
-from cognite.transformations_cli.commands import DEFAULT_TIMEOUT
+from cognite.transformations_cli.defaults import DEFAULT_CLUSTER, DEFAULT_TIMEOUT
 
 
 def disable_env_var(env_var_name: str) -> Optional[str]:
@@ -29,7 +29,7 @@ def get_client(obj: Dict) -> CogniteClient:
     scopes = obj.get("scopes")
     audience = obj.get("audience")
     cdf_project_name = obj.get("cdf_project_name")
-    cluster = obj.get("cluster", "api")
+    cluster = obj.get("cluster", DEFAULT_CLUSTER)
     base_url = f"https://{cluster}.cognitedata.com"
     timeout = float(obj.get("cdf_timeout", DEFAULT_TIMEOUT))
 
