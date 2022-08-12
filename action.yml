@@ -26,6 +26,10 @@ inputs:
     description: 'CDF Cluster'
     required: false
     default: 'europe-west1-1'
+  client-timeout:
+    description: 'CDF client timeout'
+    required: false
+    default: '60'
   path:
     description: >-
       The path to a directory containing transformation manifests.
@@ -49,5 +53,6 @@ runs:
     TRANSFORMATIONS_AUDIENCE: ${{ inputs.audience }}
     TRANSFORMATIONS_CLUSTER: "${{ inputs.cluster }}"
     TRANSFORMATIONS_LEGACY_MODE: ${{ inputs.legacy-mode }}
+    TRANSFORMATIONS_CLIENT_TIMEOUT: ${{ inputs.client-timeout }}
   args: ["deploy", "${{ inputs.path }}" , "--debug"]
   

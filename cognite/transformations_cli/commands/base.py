@@ -56,6 +56,12 @@ from cognite.transformations_cli.commands.show import show
     help="Project to interact with transformations API, 'TRANSFORMATIONS_PROJECT' environment variable can be used instead. Required for OAuth2 and optional for api-keys.",
     envvar="TRANSFORMATIONS_PROJECT",
 )
+@click.option(
+    "--cdf-timeout",
+    default=60,
+    help="Timeout on requests sent to the api. Defaults to 60 seconds. 'TRANSFORMATIONS_CLIENT_TIMEOUT' environment variable can be used instead.",
+    envvar="TRANSFORMATIONS_CLIENT_TIMEOUT",
+)
 @click.pass_context
 def transformations_cli(
     context: Context,
@@ -67,6 +73,7 @@ def transformations_cli(
     scopes: Optional[str] = None,
     audience: Optional[str] = None,
     cdf_project_name: Optional[str] = None,
+    cdf_timeout: Optional[int] = None,
 ) -> None:
     context.obj = {
         "cluster": cluster,
@@ -77,6 +84,7 @@ def transformations_cli(
         "scopes": scopes,
         "audience": audience,
         "cdf_project_name": cdf_project_name,
+        "cdf_timeout": cdf_timeout or 60,
     }
 
 

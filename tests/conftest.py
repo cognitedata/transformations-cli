@@ -1,6 +1,6 @@
 import os
 import uuid
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import pytest
 from click.testing import CliRunner
@@ -124,9 +124,7 @@ def configs_to_create(
 
 
 @pytest.fixture
-def obj(
-    client_id: str, client_secret: str, token_uri: str, scopes: str, cluster: str, cdf_project_name: str
-) -> Dict[str, Optional[str]]:
+def obj(client_id: str, client_secret: str, token_uri: str, scopes: str, cluster: str, cdf_project_name: str) -> Dict:
     return {
         "api_key": None,
         "client_id": client_id,
@@ -136,11 +134,12 @@ def obj(
         "audience": None,
         "cdf_project_name": cdf_project_name,
         "cluster": cluster,
+        "cdf_timeout": 60,
     }
 
 
 @pytest.fixture
-def client(obj: Dict[str, Optional[str]]) -> CogniteClient:
+def client(obj: Dict) -> CogniteClient:
     return get_client(obj)
 
 
