@@ -42,4 +42,3 @@ steps:
       TRANSFORMATIONS_PROJECT: $(CDF_PROJECT_NAME)
       TRANSFORMATIONS_SCOPES: https://westeurope-1.cognitedata.com/.default
       TRANSFORMATIONS_CLUSTER: $(CDF_CLUSTER) 
-        
