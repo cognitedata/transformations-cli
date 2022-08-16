@@ -20,6 +20,10 @@ The **Transformations CLI** provides a GitHub Action to deploy transformations. 
 
 We've also created a **CI/CD template** that uses GitHub Workflows. You'll find the documentation [here](https://github.com/cognitedata/transformations-action-template).
 
+### Using Transformations CLI in Azure Pipelines
+
+We publish `transformations-cli` docker images in [dockerhub](https://hub.docker.com/r/cognite/transformations-cli/tags) for every version released. The images tagged as `cognite/transformations-cli:<version>-azure` can be used in Azure Pipelines (See an example tag [here](https://hub.docker.com/layers/transformations-cli/cognite/transformations-cli/2.1.1-azure/images/sha256-310aa01bcfc4f379c82076cc0386cc401ed1565d3ce4a2d8c3235d7061428145?context=explore)). We suggest you check [the example Azure Pipeline workflow configuration](azure_pipelines_example/azure-pipelines.yaml) and [the corresponding transformation manifest](azure_pipelines_example/transformations/manifest.yaml).
+
 ### Migrating from Jetfire CLI
 
 **Transformations CLI** replaces the [Jetfire CLI](https://github.com/cognitedata/jetfire-cli). If you've already used the **Jetfire CLI** in a GitHub Action, we recommend migrating to the **Transformations CLI** GitHub Action. You'll find the migration guide [here](migrationguide.md).

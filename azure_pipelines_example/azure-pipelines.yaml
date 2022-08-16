@@ -1,0 +1,45 @@
+trigger: 
+  - test
+
+variables:
+  - group: var_group_common
+  - group: var_group_transformations
+  - group: var_group_secrets_test
+#  - group: var_group_secrets_prod
+  - name: branchName
+    value: $[lower(variables['Build.SourceBranchName'])]
+
+pool:
+  vmImage: ubuntu-latest
+
+container:
+  image: cognite/transformations-cli:1.6.1-azure
+
+steps:
+  - bash: |
+        if [ $BRANCHNAME = "test" ]; then
+          CDF_TR_CLIENT_ID_VAL=$(CDF_TR_CLIENT_ID_TEST)
+          CDF_TR_CLIENT_SECRET_VAL=$(CDF-TEST-transformations-app)
+          CDF_PROJECT_NAME_VAL=$(CDF_PROJECT_NAME_TEST)
+        elif [ $BRANCHNAME = "master" ]; then  
+          CDF_TR_CLIENT_ID_VAL=$(CDF_TR_CLIENT_ID_MASTER)
+          CDF_TR_CLIENT_SECRET_VAL=$(cognite-CDF-PROD-transformations-app)
+          CDF_PROJECT_NAME_VAL=$(CDF_PROJECT_NAME_MASTER)
+        fi
+        echo "##vso[task.setvariable variable=COGNITE_CLIENT_ID;]$CDF_TR_CLIENT_ID_VAL"
+        echo "##vso[task.setvariable variable=CDF_PROJECT_NAME;]$CDF_PROJECT_NAME_VAL"
+        echo "##vso[task.setvariable variable=COGNITE_CLIENT_SECRET;]$CDF_TR_CLIENT_SECRET_VAL"
+    displayName: Set branch-dependent vars
+    name: set_branch_vars
+
+  - script: python /app/cognite/transformations_cli/__main__.py deploy transformations
+    displayName: Deploy Transformations to CDF
+    env:
+      TRANSFORMATIONS_CLIENT_ID: $(COGNITE_CLIENT_ID)
+      TRANSFORMATIONS_CLIENT_SECRET: $(COGNITE_CLIENT_SECRET)
+      TRANSFORMATIONS_TOKEN_URL: https://login.microsoftonline.com/$(CDF_TENANT_ID)/oauth2/v2.0/token
+      TOKEN_URL: https://login.microsoftonline.com/$(CDF_TENANT_ID)/oauth2/v2.0/token
+      TRANSFORMATIONS_PROJECT: $(CDF_PROJECT_NAME)
+      TRANSFORMATIONS_SCOPES: https://westeurope-1.cognitedata.com/.default
+      TRANSFORMATIONS_CLUSTER: $(CDF_CLUSTER) 
+        

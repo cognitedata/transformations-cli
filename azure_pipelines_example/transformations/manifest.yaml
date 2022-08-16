@@ -1,0 +1,23 @@
+---
+externalId: "Asset_Create_MOWI_Hierarchy"
+name: "Asset - Create - MOWI Hierarchy"
+
+shared: true
+
+ignoreNullFields: true
+
+query: "select 'hello' as name, 'hello' as externalId"
+
+schedule: '30 03 * * *'
+
+destination: asset_hierarchy
+
+action: upsert
+
+authentication:
+  clientId: ${COGNITE_CLIENT_ID}
+  clientSecret: ${COGNITE_CLIENT_SECRET}
+  tokenUrl: ${TOKEN_URL}
+  scopes:
+    - https://westeurope-1.cognitedata.com/.default
+  cdfProjectName: ${CDF_PROJECT_NAME}
