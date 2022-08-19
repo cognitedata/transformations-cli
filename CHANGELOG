@@ -14,7 +14,7 @@ Changes are grouped as follows
 
 ## [2.1.2] - 2022-08-18
 ### Fixed
-- Update to cognite-sdk v4.0.1, removes the support for reserved environment variables such as `COGNITE_API_KEY` and `COGNITE_CLIENT_ID`.
+- Update to cognite-sdk v4.1.1, removes the support for reserved environment variables such as `COGNITE_API_KEY` and `COGNITE_CLIENT_ID`.
 
 ## [2.1.1] - 2022-08-09
 ### Fixed
