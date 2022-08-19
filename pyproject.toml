@@ -25,7 +25,7 @@ known_third_party = ["click", "dotenv", "pytest", "regex", "sqlparse", "tabulate
 
 [tool.poetry.dependencies]
 python = "^3.8"
-cognite-extractor-utils = {version = "^3.0.0b2", allow-prereleases = true}
+cognite-extractor-utils = {version = "^3.0.0b3", allow-prereleases = true}
 click = "^8.0.2"
 types-retry = "^0.1.5"
 tabulate = "^0.8.9"

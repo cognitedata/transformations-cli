@@ -154,7 +154,7 @@ colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
 name = "cognite-extractor-utils"
-version = "3.0.0b2"
+version = "3.0.0b3"
 description = "Utilities for easier development of extractors for CDF"
 category = "main"
 optional = false
@@ -172,9 +172,12 @@ python-dotenv = ">=0.19.2,<0.20.0"
 pyyaml = ">=5.3.0,<7"
 typing-extensions = ">=3.7.4,<5"
 
+[package.extras]
+experimental = ["cognite-sdk-experimental (>=0.94.0,<0.95.0)"]
+
 [[package]]
 name = "cognite-sdk"
-version = "4.0.1"
+version = "4.1.1"
 description = "Cognite Python SDK"
 category = "main"
 optional = false
@@ -186,10 +189,11 @@ requests = ">=2,<3"
 requests_oauthlib = ">=1,<2"
 
 [package.extras]
-geo = ["geopandas (>=0.10.0)", "shapely (>=1.7.0)"]
-all = ["geopandas (>=0.10.0)", "pandas", "shapely (>=1.7.0)", "sympy"]
-pandas = ["pandas"]
 sympy = ["sympy"]
+all = ["sympy", "shapely (>=1.7.0)", "pip (>=20.0.0)", "pandas", "geopandas (>=0.10.0)"]
+geo = ["shapely (>=1.7.0)", "geopandas (>=0.10.0)"]
+functions = ["pip (>=20.0.0)"]
+pandas = ["pandas"]
 
 [[package]]
 name = "colorama"
@@ -1103,7 +1107,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "4d3e39f50cd24aef6455629f4e09193a940375046d28552347bfdc2aa677f873"
+content-hash = "c39a3a7264dbc42c0bd21a5f3c03013c211504dadea3c206f20d21c7b16f20b0"
 
 [metadata.files]
 alabaster = []
