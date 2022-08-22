@@ -15,14 +15,14 @@ def get_project_from_api_key(client: CogniteClient) -> str:
 
 
 def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
-    api_key = obj["api_key"]
-    client_id = obj["client_id"]
-    client_secret = obj["client_secret"]
-    token_url = obj["token_url"]
-    scopes = obj["scopes"]
-    audience = obj["audience"]
-    cdf_project_name = obj["cdf_project_name"]
-    cluster = obj["cluster"]
+    api_key = obj.get("api_key")
+    client_id = obj.get("client_id")
+    client_secret = obj.get("client_secret")
+    token_url = obj.get("token_url")
+    scopes = obj.get("scopes")
+    audience = obj.get("audience")
+    cdf_project_name = obj.get("cdf_project_name")
+    cluster = obj.get("cluster", "europe-west1-1")
     base_url = f"https://{cluster}.cognitedata.com"
     if not api_key and not audience:
         scopes = scopes.strip().split(" ") if scopes else [f"https://{cluster}.cognitedata.com/.default"]
