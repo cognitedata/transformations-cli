@@ -2,6 +2,8 @@ from typing import Dict, Union
 
 import click
 from cognite.client import CogniteClient
+from cognite.client.config import ClientConfig
+from cognite.client.credentials import OAuthClientCredentials
 from cognite.client.data_classes import OidcCredentials, Transformation
 
 from cognite.transformations_cli.clients import get_client
@@ -29,16 +31,20 @@ def verify_oidc_credentials(type: str, credentials: OidcCredentials, cluster: st
     token_inspect = None
     base_url = f"https://{cluster}.cognitedata.com"
     try:
-        client = CogniteClient(
+        token_custom_args = {"audience": credentials.audience} if credentials.audience else {}
+        client_config = ClientConfig(
             base_url=base_url,
             client_name="transformations-cli-credentials-test",
             project=credentials.cdf_project_name,
-            token_url=credentials.token_uri,
-            token_client_id=credentials.client_id,
-            token_client_secret=credentials.client_secret,
-            token_scopes=credentials.scopes,
-            token_custom_args={"audience": credentials.audience} if credentials.audience else None,
+            credentials=OAuthClientCredentials(
+                client_id=credentials.client_id,
+                client_secret=credentials.client_secret,
+                token_url=credentials.token_uri,
+                scopes=credentials.scopes,
+                **token_custom_args,
+            ),
         )
+        client = CogniteClient(client_config)
         token_inspect = client.iam.token.inspect()
     except Exception as ex:
         raise TransformationConfigError(f"Credentials for {type} failed to validate: {str(ex)}")
