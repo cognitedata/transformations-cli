@@ -7,6 +7,13 @@ from cognite.client.credentials import APIKey, OAuthClientCredentials
 from cognite.client.exceptions import CogniteAPIKeyError
 
 
+def get_project_from_api_key(client: CogniteClient) -> str:
+    project = client.login.status().project
+    if not project:
+        sys.exit("Invalid authentication, please check the base_url or api_key.")
+    return project
+
+
 def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
     api_key = obj["api_key"]
     client_id = obj["client_id"]
@@ -36,6 +43,10 @@ def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
                 timeout=timeout,
                 credentials=APIKey(api_key),
             )
+            client = CogniteClient(client_config)
+            if not cdf_project_name:
+                client.config.project = get_project_from_api_key(client)
+            return client
         else:
             token_custom_args = {"audience": audience} if audience else {}
             client_config = ClientConfig(
@@ -51,6 +62,6 @@ def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
                     **token_custom_args,
                 ),
             )
-        return CogniteClient(client_config)
+            return CogniteClient(client_config)
     except CogniteAPIKeyError as e:
         sys.exit(f"Cognite client cannot be initialised: {e}.")

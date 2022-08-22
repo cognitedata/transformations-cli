@@ -56,16 +56,18 @@ def to_transformation(
 def to_data_set_id(
     client: CogniteClient, data_set_id: Optional[int], data_set_external_id: Optional[str]
 ) -> Optional[int]:
+    err = ""
     if data_set_external_id:
         try:
             data_set = client.data_sets.retrieve(external_id=data_set_external_id)
-        except:
+        except CogniteAPIError as e:
+            err = f" ({e})"
             data_set = None
         if data_set:
             return data_set.id
         else:
             sys.exit(
-                f"Invalid data set external id, please verify if it exists or you have the required capability: {data_set_external_id}"
+                f"Invalid data set external id, please verify if it exists or you have the required capability: {data_set_external_id}{err}"
             )
     return data_set_id
 
