@@ -33,6 +33,7 @@ jobs:
       env:
           CLIENT_ID: ${{secrets.EXTRACTORS_CLIENT_ID}}
           CLIENT_SECRET: ${{secrets.EXTRACTORS_CLIENT_SECRET}}
+          JETFIRETEST_API_KEY: ${{secrets.JETFIRETEST_API_KEY}}
 
     - uses: codecov/codecov-action@v1
       with:
