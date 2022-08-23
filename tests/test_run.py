@@ -71,7 +71,7 @@ def test_watch_only(
     cli_result_list = from_table(cli_result.output)
     assert "Failed" in cli_result_list[2]
     assert "SELECT 'asd' AS externalId 'asd' AS name" == " ".join(cli_result_list[4])
-    assert "mismatched input ''asd'' expecting {<EOF>, ';'}(line 1, pos 27)" == " ".join(cli_result_list[6])
+    assert "Syntax error at or near ''asd''(line 1, pos 27)" == " ".join(cli_result_list[6])
 
 
 def test_run_by_invalid_id(cli_runner: CliRunner, obj: Dict[str, Optional[str]]) -> None:

@@ -1,21 +1,31 @@
+import logging
 import sys
 from typing import Dict
 
 from cognite.client import CogniteClient
 from cognite.client.config import ClientConfig
 from cognite.client.credentials import APIKey, OAuthClientCredentials
-from cognite.client.exceptions import CogniteAPIKeyError
+from cognite.client.exceptions import CogniteAPIError
+
+logger = logging.getLogger(name=None)
+
+
+def get_project_from_api_key(client: CogniteClient) -> str:
+    project = client.login.status().project
+    if not project:
+        sys.exit("Invalid authentication, please check the base_url or api_key.")
+    return project
 
 
 def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
-    api_key = obj["api_key"]
-    client_id = obj["client_id"]
-    client_secret = obj["client_secret"]
-    token_url = obj["token_url"]
-    scopes = obj["scopes"]
-    audience = obj["audience"]
-    cdf_project_name = obj["cdf_project_name"]
-    cluster = obj["cluster"]
+    api_key = obj.get("api_key")
+    client_id = obj.get("client_id")
+    client_secret = obj.get("client_secret")
+    token_url = obj.get("token_url")
+    scopes = obj.get("scopes")
+    audience = obj.get("audience")
+    cdf_project_name = obj.get("cdf_project_name")
+    cluster = obj.get("cluster", "europe-west1-1")
     base_url = f"https://{cluster}.cognitedata.com"
     if not api_key and not audience:
         scopes = scopes.strip().split(" ") if scopes else [f"https://{cluster}.cognitedata.com/.default"]
@@ -36,6 +46,14 @@ def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
                 timeout=timeout,
                 credentials=APIKey(api_key),
             )
+            client = CogniteClient(client_config)
+            prj = get_project_from_api_key(client)
+            if not cdf_project_name:
+                logger.warn("CDF project name is not provided, it will be detected using the API key.")
+                client.config.project = prj
+            elif prj.lower() != cdf_project_name.lower():
+                sys.exit(f"API key does not grant access to the project {cdf_project_name}.")
+            return client
         else:
             token_custom_args = {"audience": audience} if audience else {}
             client_config = ClientConfig(
@@ -51,6 +69,6 @@ def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
                     **token_custom_args,
                 ),
             )
-        return CogniteClient(client_config)
-    except CogniteAPIKeyError as e:
+            return CogniteClient(client_config)
+    except CogniteAPIError as e:
         sys.exit(f"Cognite client cannot be initialised: {e}.")

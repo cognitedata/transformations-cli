@@ -177,7 +177,7 @@ experimental = ["cognite-sdk-experimental (>=0.94.0,<0.95.0)"]
 
 [[package]]
 name = "cognite-sdk"
-version = "4.1.1"
+version = "4.2.1"
 description = "Cognite Python SDK"
 category = "main"
 optional = false
@@ -189,11 +189,11 @@ requests = ">=2,<3"
 requests_oauthlib = ">=1,<2"
 
 [package.extras]
-sympy = ["sympy"]
-all = ["sympy", "shapely (>=1.7.0)", "pip (>=20.0.0)", "pandas", "geopandas (>=0.10.0)"]
-geo = ["shapely (>=1.7.0)", "geopandas (>=0.10.0)"]
-functions = ["pip (>=20.0.0)"]
+geo = ["geopandas (>=0.10.0)", "shapely (>=1.7.0)"]
+all = ["geopandas (>=0.10.0)", "pandas", "pip (>=20.0.0)", "shapely (>=1.7.0)", "sympy"]
 pandas = ["pandas"]
+functions = ["pip (>=20.0.0)"]
+sympy = ["sympy"]
 
 [[package]]
 name = "colorama"
@@ -1107,7 +1107,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "c39a3a7264dbc42c0bd21a5f3c03013c211504dadea3c206f20d21c7b16f20b0"
+content-hash = "4b0a64dd6a91aebdc1e5eae3ec114fa461c5c1d6655369680ff0d0ff87e303b2"
 
 [metadata.files]
 alabaster = []
