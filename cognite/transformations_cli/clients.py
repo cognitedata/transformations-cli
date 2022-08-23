@@ -51,8 +51,8 @@ def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
             if not cdf_project_name:
                 logger.warn("CDF project name is not provided, it will be detected using the API key.")
                 client.config.project = prj
-            elif prj != cdf_project_name:
-                sys.exit(f"API key does not grand access to the project {cdf_project_name}.")
+            elif prj.lower() != cdf_project_name.lower():
+                sys.exit(f"API key does not grant access to the project {cdf_project_name}.")
             return client
         else:
             token_custom_args = {"audience": audience} if audience else {}
