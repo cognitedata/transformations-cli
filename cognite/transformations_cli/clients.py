@@ -1,10 +1,13 @@
+import logging
 import sys
 from typing import Dict
 
 from cognite.client import CogniteClient
 from cognite.client.config import ClientConfig
 from cognite.client.credentials import APIKey, OAuthClientCredentials
-from cognite.client.exceptions import CogniteAPIKeyError
+from cognite.client.exceptions import CogniteAPIError
+
+logger = logging.getLogger(name=None)
 
 
 def get_project_from_api_key(client: CogniteClient) -> str:
@@ -44,8 +47,12 @@ def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
                 credentials=APIKey(api_key),
             )
             client = CogniteClient(client_config)
+            prj = get_project_from_api_key(client)
             if not cdf_project_name:
-                client.config.project = get_project_from_api_key(client)
+                logger.warn("CDF project name is not provided, it will be detected using the API key.")
+                client.config.project = prj
+            elif prj != cdf_project_name:
+                sys.exit(f"API key does not grand access to the project {cdf_project_name}.")
             return client
         else:
             token_custom_args = {"audience": audience} if audience else {}
@@ -63,5 +70,5 @@ def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
                 ),
             )
             return CogniteClient(client_config)
-    except CogniteAPIKeyError as e:
+    except CogniteAPIError as e:
         sys.exit(f"Cognite client cannot be initialised: {e}.")
