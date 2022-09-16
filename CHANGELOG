@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [2.1.4] - 2022-09-16
+### Fixed
+- Upgrade cognite-sdk to fix the nonce updates for manifest authentication.
+
 ## [2.1.3] - 2022-08-22
 ### Fixed
 - Fix unexpected breaking change when authenticating with API keys. Cognite SDK 4.1.1 also removed project inference from the API keys so `cdf-project-name` became a required option.
