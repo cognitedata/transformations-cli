@@ -17,7 +17,7 @@ class DestinationType(Enum):
     raw = "raw"
     data_sets = "data_sets"
     sequence_rows = "sequence_rows"
-    alpha_data_model_instances = "alpha_data_model_instances"  # Experimental feature
+    data_model_instances = "data_model_instances"
 
 
 class ActionType(Enum):
@@ -66,15 +66,15 @@ class RawDestinationConfig:
 
 
 @dataclass
-class AlphaDMIDestinationConfig:
+class DMIDestinationConfig:
     """
-    Valid type values are: alpha_data_model_instances
+    Valid type values are: data_model_instances
     """
 
     model_external_id: str
     space_external_id: str
     instance_space_external_id: str
-    type: DestinationType = DestinationType.alpha_data_model_instances
+    type: DestinationType = DestinationType.data_model_instances
 
 
 @dataclass
@@ -88,7 +88,7 @@ class SequenceRowsDestinationConfig:
 
 
 DestinationConfigType = Union[
-    DestinationType, DestinationConfig, RawDestinationConfig, SequenceRowsDestinationConfig, AlphaDMIDestinationConfig
+    DestinationType, DestinationConfig, RawDestinationConfig, SequenceRowsDestinationConfig, DMIDestinationConfig
 ]
 
 
