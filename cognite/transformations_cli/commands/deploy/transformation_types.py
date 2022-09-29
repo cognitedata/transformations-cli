@@ -122,6 +122,7 @@ class TransformationConfig:
     ignore_null_fields: bool = True
     action: ActionType = ActionType.upsert
     legacy: bool = False
+    tags: Optional[List[str]] = None
 
 
 class TransformationConfigError(Exception):

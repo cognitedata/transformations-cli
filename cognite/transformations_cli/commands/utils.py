@@ -28,16 +28,16 @@ def get_transformation(client: CogniteClient, id: Optional[int], external_id: Op
     )
 
 
-def is_id_exclusive(id: Optional[int], externalId: Optional[str], should_exit: bool = True) -> bool:
-    if id and externalId:
+def is_id_exclusive(id: Optional[int], external_id: Optional[str], should_exit: bool = True) -> bool:
+    if id and external_id:
         if should_exit:
             sys.exit("Please only provide one of id and external id.")
         return False
     return True
 
 
-def is_id_provided(id: Optional[int], externalId: Optional[str], should_exit: bool = True) -> bool:
-    if not id and not externalId:
+def is_id_provided(id: Optional[int], external_id: Optional[str], should_exit: bool = True) -> bool:
+    if not id and not external_id:
         if should_exit:
             sys.exit("Please provide one of id and external id.")
         return False
