@@ -1,7 +1,7 @@
 from typing import Dict, List
 
 import click
-from cognite.client.data_classes import Transformation
+from cognite.client.data_classes import ContainsAny, Transformation
 from cognite.client.exceptions import CogniteAPIError
 
 from cognite.transformations_cli.clients import get_client
@@ -18,6 +18,7 @@ def log_transformations(transformations: List[Transformation]) -> None:
 @click.option("--data-set-external-id", "-e", multiple=True, help="Filter transformations by data set external ID.")
 @click.option("--destination-type", help="Filter transformations by destination type")
 @click.option("--conflict-mode", help="Filter transformations by conflict mode")
+@click.option("--tag", "-t", multiple=True, help="Filter transformations that has one of the requested tag.")
 @click.option(
     "-i", "--interactive", is_flag=True, help="Display only 10 transformations at a time, then page through them."
 )
@@ -29,6 +30,7 @@ def list(
     data_set_external_id: List[int] = None,
     destination_type: str = None,
     conflict_mode: str = None,
+    tag: List[str] = None,
     interactive: bool = False,
 ) -> None:
     client = get_client(obj)
@@ -42,6 +44,7 @@ def list(
             data_set_external_ids=data_set_external_id,
             destination_type=destination_type_new,
             conflict_mode=conflict_mode,
+            tags=ContainsAny(tags=tag) if tag else None,
         )
         if interactive:
             paginate(transformations, log_transformations)
