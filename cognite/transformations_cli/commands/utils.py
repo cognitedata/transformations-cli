@@ -72,7 +72,7 @@ def print_transformations(transformation: List[Transformation]) -> str:
                 get_table(t.destination),
                 t.data_set_id,
                 t.conflict_mode,
-                t.tags,
+                ", ".join(t.tags) if t.tags else "",
             ]
             for t in transformation
         ],
