@@ -49,6 +49,7 @@ def to_transformation(
         source_oidc_credentials=to_read_oidc(config.authentication, cluster),
         destination_oidc_credentials=to_write_oidc(config.authentication, cluster),
         data_set_id=to_data_set_id(client, config.data_set_id, config.data_set_external_id),
+        tags=config.tags,
     )
 
 
