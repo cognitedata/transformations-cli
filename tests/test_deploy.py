@@ -198,6 +198,71 @@ def test_deploy_sequence_rows_transformation(
     rmdir(Path(test_name))
 
 
+def test_deploy_transformation_with_tags(
+    cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
+) -> None:
+    test_name = "test_deploy_"
+    external_id = str(uuid.uuid1())
+    import time
+
+    tag_postfix = time.time()
+    tag1 = f"emel_{tag_postfix}"
+    tag2 = f"OPs_{tag_postfix}"
+    tag3 = f"bye_{tag_postfix}"
+
+    base_manifest = f"""
+        externalId: {external_id}
+        name: {external_id}
+        query: select 'test' as key, 'test' as name
+        authentication:
+            clientId: ${{CLIENT_ID}}
+            clientSecret: ${{CLIENT_SECRET}}
+            tokenUrl: "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token"
+            scopes:
+                - "https://bluefield.cognitedata.com/.default"
+            cdfProjectName: "extractor-bluefield-testing"
+        destination: assets
+        shared: true
+        ignoreNullFields: False
+        action: upsert
+    """
+    # This manifest should create a new transformation with tags
+    file = f"""
+        {base_manifest}
+        tags:
+            - {tag1}
+            - {tag2}
+        """
+    write_config(test_name, file, 0)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
+    assert cli_result.exit_code == 0
+    new_conf = client.transformations.retrieve(external_id=external_id)
+    assert set(new_conf.tags) == set([tag1, tag2])
+
+    # This manifest should overwrite tags with new values
+    file = f"""
+        {base_manifest}
+        tags:
+            - {tag3}
+        """
+    write_config(test_name, file, 0)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
+    assert cli_result.exit_code == 0
+    new_conf = client.transformations.retrieve(external_id=external_id)
+    assert new_conf.tags == [tag3]
+
+    # This manifest should clear tags as they are not provided.
+    write_config(test_name, base_manifest, 0)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
+    new_conf = client.transformations.retrieve(external_id=external_id)
+    assert cli_result.exit_code == 0
+    assert new_conf.external_id == external_id
+    assert new_conf.tags is None
+
+    client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
+    rmdir(Path(test_name))
+
+
 def test_deploy_old_config_with_legacy_flag(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
 ) -> None:
