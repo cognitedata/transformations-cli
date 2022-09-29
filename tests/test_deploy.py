@@ -199,7 +199,7 @@ def test_deploy_sequence_rows_transformation(
 
 
 def test_deploy_transformation_with_tags(
-    cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
+    cli_runner: CliRunner, obj: Dict[str, Optional[str]], client: CogniteClient
 ) -> None:
     test_name = "test_deploy_"
     external_id = str(uuid.uuid1())
