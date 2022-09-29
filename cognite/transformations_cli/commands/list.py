@@ -1,7 +1,8 @@
 from typing import Dict, List
 
 import click
-from cognite.client.data_classes import ContainsAny, Transformation
+from cognite.client.data_classes import Transformation
+from cognite.client.data_classes.transformations import ContainsAny
 from cognite.client.exceptions import CogniteAPIError
 
 from cognite.transformations_cli.clients import get_client
