@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [2.1.5] - 2022-09-28
+### Fixed
+- Remove prefix alpha from data model.
+
 ## [2.1.4] - 2022-09-16
 ### Fixed
 - Upgrade cognite-sdk to fix the nonce updates for manifest authentication.

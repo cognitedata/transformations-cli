@@ -12,8 +12,11 @@ from cognite.client.data_classes import (
     TransformationNotification,
     TransformationSchedule,
 )
-from cognite.client.data_classes.transformations._alphatypes import AlphaDataModelInstances
-from cognite.client.data_classes.transformations.common import SequenceRows, TransformationDestination
+from cognite.client.data_classes.transformations.common import (
+    DataModelInstances,
+    SequenceRows,
+    TransformationDestination,
+)
 
 from cognite.transformations_cli.commands.deploy.deploy import deploy
 from cognite.transformations_cli.commands.deploy.transformations_api import (
@@ -143,7 +146,7 @@ def test_deploy_dmi_transformation(
                 - "https://bluefield.cognitedata.com/.default"
             cdfProjectName: "extractor-bluefield-testing"
         destination:
-            type: alpha_data_model_instances
+            type: data_model_instances
             model_external_id: test_model
             space_external_id: test_space
             instance_space_external_id: test_space
@@ -156,7 +159,7 @@ def test_deploy_dmi_transformation(
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
-    my_dest: AlphaDataModelInstances = new_conf.destination
+    my_dest: DataModelInstances = new_conf.destination
     assert my_dest.model_external_id == "test_model"
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))

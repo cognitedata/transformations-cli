@@ -11,16 +11,15 @@ from cognite.client.data_classes import (
     TransformationSchedule,
     TransformationUpdate,
 )
-from cognite.client.data_classes.transformations._alphatypes import AlphaDataModelInstances
-from cognite.client.data_classes.transformations.common import SequenceRows
+from cognite.client.data_classes.transformations.common import DataModelInstances, SequenceRows
 from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
 
 from cognite.transformations_cli.commands.deploy.transformation_types import (
     ActionType,
-    AlphaDMIDestinationConfig,
     AuthConfig,
     DestinationConfig,
     DestinationConfigType,
+    DMIDestinationConfig,
     QueryConfig,
     RawDestinationConfig,
     ReadWriteAuthentication,
@@ -83,8 +82,8 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         return TransformationDestination.raw(destination.raw_database, destination.raw_table)
     elif isinstance(destination, SequenceRowsDestinationConfig):
         return SequenceRows(destination.external_id)
-    elif isinstance(destination, AlphaDMIDestinationConfig):
-        return AlphaDataModelInstances(
+    elif isinstance(destination, DMIDestinationConfig):
+        return DataModelInstances(
             destination.model_external_id, destination.space_external_id, destination.instance_space_external_id
         )
     else:
