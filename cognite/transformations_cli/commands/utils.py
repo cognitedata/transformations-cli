@@ -28,16 +28,16 @@ def get_transformation(client: CogniteClient, id: Optional[int], external_id: Op
     )
 
 
-def is_id_exclusive(id: Optional[int], externalId: Optional[str], should_exit: bool = True) -> bool:
-    if id and externalId:
+def is_id_exclusive(id: Optional[int], external_id: Optional[str], should_exit: bool = True) -> bool:
+    if id and external_id:
         if should_exit:
             sys.exit("Please only provide one of id and external id.")
         return False
     return True
 
 
-def is_id_provided(id: Optional[int], externalId: Optional[str], should_exit: bool = True) -> bool:
-    if not id and not externalId:
+def is_id_provided(id: Optional[int], external_id: Optional[str], should_exit: bool = True) -> bool:
+    if not id and not external_id:
         if should_exit:
             sys.exit("Please provide one of id and external id.")
         return False
@@ -59,7 +59,7 @@ def get_database(destination: TransformationDestination) -> str:
 
 def print_transformations(transformation: List[Transformation]) -> str:
     # TODO print last_finished_job and running_job, schedule, blocked details when implemented in SDK
-    list_columns = [["Name", "ID", "External ID", "Destination", "Database", "Table", "Data Set ID", "Action"]]
+    list_columns = [["Name", "ID", "External ID", "Destination", "Database", "Table", "Data Set ID", "Action", "Tags"]]
     return tabulate(
         list_columns
         + [
@@ -72,6 +72,7 @@ def print_transformations(transformation: List[Transformation]) -> str:
                 get_table(t.destination),
                 t.data_set_id,
                 t.conflict_mode,
+                ", ".join(t.tags) if t.tags else "",
             ]
             for t in transformation
         ],

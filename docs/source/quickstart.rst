@@ -51,7 +51,7 @@ By default, transformations-cli runs against the main CDF cluster (europe-west1-
      - Description
    * - list
      - 
-     - ``--limit``, ``--interactive``, ``--data-set-id``, ``data-set-external-id``, ``destination-type``, ``conflict-mode``
+     - ``--limit``, ``--interactive``, ``--data-set-id``, ``data-set-external-id``, ``destination-type``, ``conflict-mode``, ``--tag``
      - List transformations
    * - show
      - 
@@ -96,7 +96,7 @@ Help
 
 It prints transformations details in a tabular format.
 
-.. list-table:: List options
+  .. list-table:: List options
    :widths: 25 25 25 25 25 25
    :header-rows: 1
 
@@ -104,7 +104,7 @@ It prints transformations details in a tabular format.
      - Default
      - Flag
      - Required
-     - Multi Value
+     - Multi value
      - Description
    * - ``--limit``
      - 10
@@ -118,30 +118,37 @@ It prints transformations details in a tabular format.
      - No
      - No
      - Show 10 transformations at a time, waiting for keypress to display next batch.
-    * - ``--data-set-id``
+   * - ``--data-set-id``
      - No
      - No
      - No
      - Yes
      - Filter transformations by data set ID.
-    * - ``--data-set-external-id``
+   * - ``--data-set-external-id``
      - No
      - No
      - No
      - Yes
-     - Filter transformations by data set ID.
-    * - ``--destination-type``
+     - Filter transformations by data set External ID.
+   * - ``--destination-type``
      - No
      - No
      - No
      - No
      - Filter transformations by destination type: assets, events, timeseries...
-    * - ``--conflict-mode``
+   * - ``--conflict-mode``
      - No
      - No
      - No
      - No
      - Filter transformations by conflict mode: upsert, abort, update, delete.
+   * - ``--tag``
+     - No
+     - No
+     - No
+     - Yes
+     - Filter transformations that have the provided tag on it.
+
 
 ``transformations-cli show``
 ----------------------------

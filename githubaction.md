@@ -94,6 +94,11 @@ dataSetId: 1
 # the data set ID on updating the transformation
 dataSetExternalId: test-dataset
 
+# Optional: You can tag your transformations with max 5 tags.
+tags:
+  - mytag1
+  - mytag2
+
 # The client credentials to be used in the transformation
 authentication:
   clientId: ${CLIENT_ID}
@@ -147,12 +152,16 @@ authentication:
   # the data set ID on updating the transformation
   dataSetId: 1
 
-
   # Or you can provide data set external ID instead,
   # Optional, default: null
   # Skipping this field or providing null clears
   # the data set ID on updating the transformation
   dataSetExternalId: test-dataset
+
+  # Optional: You can tag your transformations with max 5 tags.
+  tags:
+    - mytag1
+    - mytag2
 
   authentication:
    apiKey: ${API_KEY}

@@ -14,6 +14,11 @@ destination: asset_hierarchy
 
 action: upsert
 
+# Optional: You can tag your transformations with max 5 tags.
+tags:
+  - mytag1
+  - mytag2
+
 authentication:
   clientId: ${COGNITE_CLIENT_ID}
   clientSecret: ${COGNITE_CLIENT_SECRET}
