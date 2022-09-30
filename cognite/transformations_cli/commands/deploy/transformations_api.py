@@ -225,13 +225,13 @@ def upsert_transformations(
 
         for u in chunk_items(items_to_update):
             client.transformations.update(u)
-            # Partial update for data set id and tags to be able to clear data set id field when requested.
-            partial_update = [
-                # Clear data set id and tags if they are not provided, else set data set id and tags with a new value
-                TransformationUpdate(external_id=du.external_id).data_set_id.set(du.data_set_id).tags.set(du.tags)
+            # Partial update for data set id to be able to clear data set id field when requested.
+            dataset_update = [
+                # Clear data set id if it is not provided, else set data set id with a new value
+                TransformationUpdate(external_id=du.external_id).data_set_id.set(du.data_set_id)
                 for du in u
             ]
-            client.transformations.update(partial_update)
+            client.transformations.update(dataset_update)
         for c in chunk_items(items_to_create):
             client.transformations.create(c)
         return [], [t.external_id for t in items_to_update], [t.external_id for t in items_to_create]
