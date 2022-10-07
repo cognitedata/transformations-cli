@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [2.2.1] - 2022-10-07
+### Fixed
+- Upgrade cognite-sdk after `TransformationSchedule.dump()` fix.
+
 ## [2.2.0] - 2022-09-29
 ### Added
 - Support tags on transformations.
