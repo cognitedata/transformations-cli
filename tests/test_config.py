@@ -154,7 +154,7 @@ dataSetId: 1
     rmdir(Path(test_name))
 
 
-def test_load_config_file_raw_ve_destination() -> None:
+def test_load_config_file_raw_alternative_destination() -> None:
     test_name = "test_load_config_file_oidc"
     file = """
 externalId: testExternalId
@@ -191,8 +191,8 @@ action: upsert
     configs = parse_transformation_configs(test_name)
     conf = list(configs.values())[0]
     assert conf.destination.type == DestinationType.raw
-    assert conf.destination.raw_database == "testDb"
-    assert conf.destination.raw_table == "testTable"
+    assert conf.destination.database == "testDb"
+    assert conf.destination.table == "testTable"
     assert conf.shared
     assert conf.action == ActionType.upsert
     from cognite.client.data_classes import RawTable

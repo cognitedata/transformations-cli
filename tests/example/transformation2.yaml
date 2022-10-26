@@ -2,8 +2,8 @@ externalId: "test-cli-transform-raw"
 name: "test-cli-transform-raw"
 destination: 
   type: "raw"
-  rawDatabase: "asd2"
-  rawTable: "asd2"
+  database: "asd2"
+  table: "asd2"
 shared: True
 action: "upsert"
 query:
