@@ -66,6 +66,17 @@ class RawDestinationConfig:
 
 
 @dataclass
+class RawDestinationAlternativeConfig:
+    """
+    Valid type values are: raw
+    """
+
+    database: str
+    table: str
+    type: DestinationType = DestinationType.raw
+
+
+@dataclass
 class DMIDestinationConfig:
     """
     Valid type values are: data_model_instances
@@ -88,7 +99,12 @@ class SequenceRowsDestinationConfig:
 
 
 DestinationConfigType = Union[
-    DestinationType, DestinationConfig, RawDestinationConfig, SequenceRowsDestinationConfig, DMIDestinationConfig
+    DestinationType,
+    DestinationConfig,
+    RawDestinationConfig,
+    SequenceRowsDestinationConfig,
+    DMIDestinationConfig,
+    RawDestinationAlternativeConfig,
 ]
 
 

@@ -21,6 +21,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     DestinationConfigType,
     DMIDestinationConfig,
     QueryConfig,
+    RawDestinationAlternativeConfig,
     RawDestinationConfig,
     ReadWriteAuthentication,
     ScheduleConfig,
@@ -81,6 +82,8 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         return TransformationDestination(destination.type.value)
     elif isinstance(destination, RawDestinationConfig):
         return TransformationDestination.raw(destination.raw_database, destination.raw_table)
+    elif isinstance(destination, RawDestinationAlternativeConfig):
+        return TransformationDestination.raw(destination.database, destination.table)
     elif isinstance(destination, SequenceRowsDestinationConfig):
         return SequenceRows(destination.external_id)
     elif isinstance(destination, DMIDestinationConfig):
