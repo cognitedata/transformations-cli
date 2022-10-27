@@ -62,8 +62,6 @@ action: delete
     assert conf.authentication.write.api_key == "testApiKeyWrite"
     assert conf.schedule == "testSchedule"
     assert conf.destination.type == DestinationType.data_sets
-    assert conf.destination.raw_database == "testDb"
-    assert conf.destination.raw_table == "testTable"
     assert len(conf.notifications) == 2
     assert conf.notifications[0] == "notif1"
     assert conf.notifications[1] == "notif2"
@@ -141,8 +139,6 @@ dataSetId: 1
 
     assert conf.schedule == ScheduleConfig("testSchedule", False)
     assert conf.destination.type == DestinationType.string_datapoints
-    assert conf.destination.raw_database == "testDb"
-    assert conf.destination.raw_table == "testTable"
     assert len(conf.notifications) == 2
     assert conf.notifications[0] == "notif1"
     assert conf.notifications[1] == "notif2"
