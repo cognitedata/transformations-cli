@@ -150,7 +150,7 @@ dataSetId: 1
     rmdir(Path(test_name))
 
 
-def test_load_config_file_raw_alternative_destination() -> None:
+def test_load_config_file_raw_destination() -> None:
     test_name = "test_load_config_file_oidc"
     file = """
 externalId: testExternalId
