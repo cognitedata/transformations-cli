@@ -199,6 +199,25 @@ action: upsert
     assert dest.table == "testTable"
     rmdir(Path(test_name))
 
+    # also test rawDatabase and rawTable fields
+    new_file = (
+        file.replace("database", "rawDatabase")
+        .replace("table", "rawTable")
+        .replace("testDb", "testDb2")
+        .replace("testTable", "testTable2")
+    )
+    write_config(test_name, new_file, 0)
+    configs2 = parse_transformation_configs(test_name)
+    conf2 = list(configs2.values())[0]
+    assert conf2.destination.type == DestinationType.raw
+    assert conf2.destination.raw_database == "testDb2"
+    assert conf2.destination.raw_table == "testTable2"
+    dest2 = to_destination(conf2.destination)
+    assert isinstance(dest2, RawTable)
+    assert dest2.database == "testDb2"
+    assert dest2.table == "testTable2"
+    rmdir(Path(test_name))
+
 
 def test_load_old_config_file_oidc() -> None:
     test_name = "test_load_old_config_file_oidc"
