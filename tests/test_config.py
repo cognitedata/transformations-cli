@@ -199,14 +199,43 @@ action: upsert
     assert dest.table == "testTable"
     rmdir(Path(test_name))
 
-    # also test rawDatabase and rawTable fields
-    new_file = (
-        file.replace("database", "rawDatabase")
-        .replace("table", "rawTable")
-        .replace("testDb", "testDb2")
-        .replace("testTable", "testTable2")
-    )
-    write_config(test_name, new_file, 0)
+
+def test_load_config_file_rawtable_destination() -> None:
+    test_name = "test_load_config_file_oidc"
+    file = """
+externalId: testExternalId
+name: testName
+query:
+    file: testQuery.sql
+authentication:
+    read:
+        clientId: testClientIdRead
+        clientSecret: testClientSecretRead
+        tokenUrl: testTokenUrl
+        scopes:
+            - testScope1
+            - testScope2
+        cdfProjectName: testProject
+        audience: testAudience
+    write:
+        clientId: testClientIdWrite
+        clientSecret: testClientSecretWrite
+        tokenUrl: testTokenUrl
+        scopes:
+            - testScope1
+            - testScope2
+        cdfProjectName: testProject
+        audience: testAudience
+destination:
+    type: raw
+    rawDatabase: testDb2
+    rawTable: testTable2
+shared: true
+action: upsert
+"""
+    from cognite.client.data_classes import RawTable
+
+    write_config(test_name, file, 0)
     configs2 = parse_transformation_configs(test_name)
     conf2 = list(configs2.values())[0]
     assert conf2.destination.type == DestinationType.raw
