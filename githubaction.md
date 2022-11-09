@@ -37,8 +37,8 @@ destination:
 # When writing to RAW tables, use the following syntax:
 # destination:
 #   type: raw
-#   rawDatabase: some_database
-#   rawTable: some_table
+#   database: some_database
+#   table: some_table
 
 # When writing to sequence rows, use the following syntax:
 # destination:

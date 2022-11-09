@@ -8,6 +8,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     ReadWriteAuthentication,
     ScheduleConfig,
 )
+from cognite.transformations_cli.commands.deploy.transformations_api import to_destination
 
 
 def rmdir(directory: Path) -> None:
@@ -42,8 +43,6 @@ authentication:
 schedule: testSchedule
 destination:
     type: data_sets
-    rawDatabase: testDb
-    rawTable: testTable
 notifications:
     - notif1
     - notif2
@@ -63,8 +62,6 @@ action: delete
     assert conf.authentication.write.api_key == "testApiKeyWrite"
     assert conf.schedule == "testSchedule"
     assert conf.destination.type == DestinationType.data_sets
-    assert conf.destination.raw_database == "testDb"
-    assert conf.destination.raw_table == "testTable"
     assert len(conf.notifications) == 2
     assert conf.notifications[0] == "notif1"
     assert conf.notifications[1] == "notif2"
@@ -106,8 +103,6 @@ schedule:
     isPaused: ${IS_PAUSED}
 destination:
     type: string_datapoints
-    rawDatabase: testDb
-    rawTable: testTable
 notifications:
     - notif1
     - notif2
@@ -144,8 +139,6 @@ dataSetId: 1
 
     assert conf.schedule == ScheduleConfig("testSchedule", False)
     assert conf.destination.type == DestinationType.string_datapoints
-    assert conf.destination.raw_database == "testDb"
-    assert conf.destination.raw_table == "testTable"
     assert len(conf.notifications) == 2
     assert conf.notifications[0] == "notif1"
     assert conf.notifications[1] == "notif2"
@@ -154,6 +147,104 @@ dataSetId: 1
     assert conf.action == ActionType.delete
     assert conf.data_set_id == 1
 
+    rmdir(Path(test_name))
+
+
+def test_load_config_file_raw_destination() -> None:
+    test_name = "test_load_config_file_oidc"
+    file = """
+externalId: testExternalId
+name: testName
+query:
+    file: testQuery.sql
+authentication:
+    read:
+        clientId: testClientIdRead
+        clientSecret: testClientSecretRead
+        tokenUrl: testTokenUrl
+        scopes:
+            - testScope1
+            - testScope2
+        cdfProjectName: testProject
+        audience: testAudience
+    write:
+        clientId: testClientIdWrite
+        clientSecret: testClientSecretWrite
+        tokenUrl: testTokenUrl
+        scopes:
+            - testScope1
+            - testScope2
+        cdfProjectName: testProject
+        audience: testAudience
+destination:
+    type: raw
+    database: testDb
+    table: testTable
+shared: true
+action: upsert
+"""
+    write_config(test_name, file, 0)
+    configs = parse_transformation_configs(test_name)
+    conf = list(configs.values())[0]
+    assert conf.destination.type == DestinationType.raw
+    assert conf.destination.database == "testDb"
+    assert conf.destination.table == "testTable"
+    assert conf.shared
+    assert conf.action == ActionType.upsert
+    from cognite.client.data_classes import RawTable
+
+    dest = to_destination(conf.destination)
+    assert isinstance(dest, RawTable)
+    assert dest.database == "testDb"
+    assert dest.table == "testTable"
+    rmdir(Path(test_name))
+
+
+def test_load_config_file_rawtable_destination() -> None:
+    test_name = "test_load_config_file_oidc"
+    file = """
+externalId: testExternalId
+name: testName
+query:
+    file: testQuery.sql
+authentication:
+    read:
+        clientId: testClientIdRead
+        clientSecret: testClientSecretRead
+        tokenUrl: testTokenUrl
+        scopes:
+            - testScope1
+            - testScope2
+        cdfProjectName: testProject
+        audience: testAudience
+    write:
+        clientId: testClientIdWrite
+        clientSecret: testClientSecretWrite
+        tokenUrl: testTokenUrl
+        scopes:
+            - testScope1
+            - testScope2
+        cdfProjectName: testProject
+        audience: testAudience
+destination:
+    type: raw
+    rawDatabase: testDb2
+    rawTable: testTable2
+shared: true
+action: upsert
+"""
+    from cognite.client.data_classes import RawTable
+
+    write_config(test_name, file, 0)
+    configs2 = parse_transformation_configs(test_name)
+    conf2 = list(configs2.values())[0]
+    assert conf2.destination.type == DestinationType.raw
+    assert conf2.destination.raw_database == "testDb2"
+    assert conf2.destination.raw_table == "testTable2"
+    dest2 = to_destination(conf2.destination)
+    assert isinstance(dest2, RawTable)
+    assert dest2.database == "testDb2"
+    assert dest2.table == "testTable2"
     rmdir(Path(test_name))
 
 

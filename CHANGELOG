@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [2.2.2] - 2022-10-26
+### Added
+- `DestinationConfigType` for `raw` to accept `database` and `table` fields in addition to `rawDatabase` and `rawTable`.
+
 ## [2.2.1] - 2022-10-07
 ### Fixed
 - Upgrade cognite-sdk after `TransformationSchedule.dump()` fix.
