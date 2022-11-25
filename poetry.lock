@@ -600,7 +600,7 @@ tests = ["pytest (>=6.0.0,<7.0.0)", "coverage[toml] (==5.0.4)"]
 name = "pyparsing"
 version = "3.0.9"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6.8"
 
@@ -1052,7 +1052,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "flake8 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "bc440da7fbc2b1dc7227e75ac51e9a408c7986add04605c67579448a3891bbec"
+content-hash = "1f397a3636d9f71d53c22b67a45cbec86e1ef1f86de1c8ad7856fb213a8d61d3"
 
 [metadata.files]
 alabaster = []

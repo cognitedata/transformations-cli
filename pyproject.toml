@@ -34,6 +34,7 @@ cognite-sdk = "^4.7"
 regex = "^2021.11.10"
 dacite = "^1.6.0"
 python-dotenv = "^0.21.0"
+pyparsing = "^3.0.9"
 
 [tool.poetry.dev-dependencies]
 black = "^21.6b0"
