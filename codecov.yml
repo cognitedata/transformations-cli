@@ -20,3 +20,6 @@ codecov:
   notify:
     require_ci_to_pass: false
     after_n_builds: 1  # send notifications and complete cc build after 1 upload
+
+ignore:
+  - "cognite/transformations_cli/commands/deploy/load_yaml.py"
