@@ -23,7 +23,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath("../.."))
-import cognite.transformations_cli  # isort:skip flake8:skip
+import cognite.transformations_cli  # isort:skip
 
 # -- General configuration ------------------------------------------------
 
