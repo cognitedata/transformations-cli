@@ -50,6 +50,7 @@ Sphinx = "^4.2.0"
 sphinx-rtd-theme = "^1.0.0"
 twine = "^3.5.0"
 types-PyYAML = "^6.0.12"
+types-toml = "^0.10.8"
 
 [tool.poetry.scripts]
 transformations-cli = "cognite.transformations_cli.__main__:main"

@@ -1000,6 +1000,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "types-toml"
+version = "0.10.8.1"
+description = "Typing stubs for toml"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "4.4.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -1060,7 +1068,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "flake8 (<5)", "pytest-co
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "b716917b19c3eb81c72e60eacb50dca3d67fa68d1d4da581aa9dbe467dad79af"
+content-hash = "078b75b178bf18152db33c815bc2755e8388a040a2e240a7feeacf22c6c14cba"
 
 [metadata.files]
 alabaster = []
@@ -1147,6 +1155,7 @@ twine = []
 types-pyyaml = []
 types-retry = []
 types-tabulate = []
+types-toml = []
 typing-extensions = []
 urllib3 = []
 virtualenv = []
