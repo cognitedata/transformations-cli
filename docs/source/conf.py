@@ -17,11 +17,13 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+
+# flake8: noqa
 import os
 import sys
 
 sys.path.insert(0, os.path.abspath("../.."))
-import cognite.transformations_cli  # isort:skip
+import cognite.transformations_cli  # isort:skip flake8:skip
 
 # -- General configuration ------------------------------------------------
 

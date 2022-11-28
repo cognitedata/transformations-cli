@@ -976,6 +976,14 @@ tqdm = ">=4.14"
 urllib3 = ">=1.26.0"
 
 [[package]]
+name = "types-pyyaml"
+version = "6.0.12.2"
+description = "Typing stubs for PyYAML"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "types-retry"
 version = "0.1.5"
 description = "Typing stubs for retry"
@@ -1052,7 +1060,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "flake8 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "91efe7873887cbe3755aa5cf1fb026fa462a9c2caf8bf484f7d1dac9829231d6"
+content-hash = "d6582be6c17d97eee3bdcc08754a1f0bbe6b591e03c65dd6a154e7a3326c0bf6"
 
 [metadata.files]
 alabaster = []
@@ -1136,6 +1144,7 @@ toml = []
 tomli = []
 tqdm = []
 twine = []
+types-pyyaml = []
 types-retry = []
 types-tabulate = []
 typing-extensions = []

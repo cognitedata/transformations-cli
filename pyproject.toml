@@ -21,7 +21,7 @@ line_length=120                # corresponds to -w  flag
 multi_line_output=3            # corresponds to -m  flag
 include_trailing_comma=true    # corresponds to -tc flag
 skip_glob = '^((?!py$).)*$'    # this makes sort all Python files
-known_third_party = ["click", "dotenv", "pytest", "regex", "sqlparse", "tabulate"]
+known_third_party = ["click", "dacite", "dotenv", "pytest", "regex", "sqlparse", "tabulate", "yaml"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -36,6 +36,7 @@ dacite = "^1.6.0"
 python-dotenv = "^0.21.0"
 pyparsing = "^3.0.9"
 PyYAML = "^6.0"
+types-PyYAML = "^6.0.12"
 
 [tool.poetry.dev-dependencies]
 black = "^21.6b0"

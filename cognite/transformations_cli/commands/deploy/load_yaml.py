@@ -3,23 +3,20 @@ Taken from cognite-extractor-utils and adapted to the needs of transformations-c
 Module containing a YAML loader to automatically serialize these
 dataclasses from a config file.
 """
-
-from ctypes import Union
-from typing import TypeVar
-from pyparsing import TextIO
-
+# mypy: ignore-errors
 import json
 import os
 import re
 from enum import Enum
 from hashlib import sha256
-from typing import Any, Callable, Dict, Iterable, List, TextIO, Type, TypeVar, Union
+from typing import Any, Callable, Dict, Iterable, TextIO, Type, TypeVar, Union
 
 import dacite
 import yaml
 from yaml.scanner import ScannerError
 
 CustomConfigClass = TypeVar("CustomConfigClass")
+
 
 class InvalidConfigError(Exception):
     """

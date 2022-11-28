@@ -17,7 +17,7 @@ from cognite.transformations_cli.commands.utils import (
 )
 
 
-@click.command(help="Show detalis of a transformation")
+@click.command(help="Show details of a transformation")
 @click.option("--id", help="The id of the transformation to show. Either this or --external-id can be specified.")
 @click.option(
     "--external-id", help="The external_id of the transformation to show. Either this or --id can be specified."
