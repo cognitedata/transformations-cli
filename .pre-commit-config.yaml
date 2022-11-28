@@ -29,3 +29,10 @@ repos:
     hooks:
     -   id: flake8
         exclude: ^docs/
+-   hooks:
+      -   id: version-match-check
+          name: version-match-check
+          entry: poetry run python scripts/check_version_match.py
+          language: system
+          pass_filenames: false
+    repo: local
