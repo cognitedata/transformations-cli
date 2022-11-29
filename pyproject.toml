@@ -21,11 +21,10 @@ line_length=120                # corresponds to -w  flag
 multi_line_output=3            # corresponds to -m  flag
 include_trailing_comma=true    # corresponds to -tc flag
 skip_glob = '^((?!py$).)*$'    # this makes sort all Python files
-known_third_party = ["click", "dotenv", "pytest", "regex", "sqlparse", "tabulate"]
+known_third_party = ["click", "dacite", "dotenv", "pytest", "regex", "sqlparse", "tabulate", "toml", "yaml"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-cognite-extractor-utils = {version = "^3.0.0b3", allow-prereleases = true}
 click = "^8.0.2"
 types-retry = "^0.1.5"
 tabulate = "^0.8.9"
@@ -33,6 +32,10 @@ types-tabulate = "^0.8.3"
 sqlparse = "^0.4.2"
 cognite-sdk = "^4.7"
 regex = "^2021.11.10"
+dacite = "^1.6.0"
+python-dotenv = "^0.21.0"
+pyparsing = "^3.0.9"
+PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
 black = "^21.6b0"
@@ -46,7 +49,8 @@ pytest-cov = "^3.0.0"
 Sphinx = "^4.2.0"
 sphinx-rtd-theme = "^1.0.0"
 twine = "^3.5.0"
-
+types-PyYAML = "^6.0.12"
+types-toml = "^0.10.8"
 
 [tool.poetry.scripts]
 transformations-cli = "cognite.transformations_cli.__main__:main"

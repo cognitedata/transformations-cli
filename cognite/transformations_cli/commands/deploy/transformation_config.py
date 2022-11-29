@@ -2,9 +2,9 @@ import glob
 import os
 from typing import Dict, List, Optional, Union
 
-from cognite.extractorutils.configtools import load_yaml
 from regex import regex
 
+from cognite.transformations_cli.commands.deploy.load_yaml import load_yaml
 from cognite.transformations_cli.commands.deploy.transformation_types import (
     AuthConfig,
     DestinationConfig,

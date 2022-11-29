@@ -58,7 +58,15 @@ We use [poetry](https://python-poetry.org) to manage dependencies and to adminis
 $ poetry run pre-commit install
 ```
 
-6. To publish a new version, change the version in `cognite/transformations_cli/__init__.py` and `pyproject.toml`. Make sure to update the `CHANGELOG`.
+6. To run tests:
+```
+$ poetry run pytest
+$ poetry run pytest <test file path>
+$ poetry run pytest <test file path>::<test function name>
+```
+
+7. To publish a new version, change the version in `cognite/transformations_cli/__init__.py` and `pyproject.toml`. Make sure to update the `CHANGELOG`.
 
 This project adheres to the [Contributor Covenant v2.0](https://www.contributor-covenant.org/version/2/0/code_of_conduct/)
 as a code of conduct.
+

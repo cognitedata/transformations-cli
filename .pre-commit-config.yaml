@@ -24,8 +24,15 @@ repos:
     hooks:
     -   id: mypy
         exclude: ^docs/
--   repo: https://gitlab.com/pycqa/flake8
+-   repo: https://github.com/pycqa/flake8
     rev: 3.9.2
     hooks:
     -   id: flake8
         exclude: ^docs/
+-   hooks:
+      -   id: version-match-check
+          name: version-match-check
+          entry: poetry run python scripts/check_version_match.py
+          language: system
+          pass_filenames: false
+    repo: local
