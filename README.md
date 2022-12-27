@@ -14,6 +14,20 @@ Use the Transformations command-line interface (**Transformations CLI**) to mana
 
 The **Transformations CLI** is based on Python and replaces the [Jetfire CLI](https://github.com/cognitedata/jetfire-cli).
 
+### Transformation Deploy Manifest 
+Transformations, that the user wants to deploy, are represented as `yaml` manifest files. You can find example manifests: [Manifest with OIDC authentication](https://github.com/cognitedata/transformations-cli/blob/alpha-data-model-instances-manifest/docs/source/transformation_oidc.yaml) and [Manifest with API key Authentication](https://github.com/cognitedata/transformations-cli/blob/alpha-data-model-instances-manifest/docs/source/transformation_apikey.yaml)
+
+#### Data Model Instances Destination Type in Manifest
+To deploy transformations with destination type `data model instances`, please check the example manifests.
+
+```yaml
+destination:
+    type: data_model_instances
+    modelExternalId: some_flexible_data_model # The flexible data model definiton externalId
+    spaceExternalId: some_space # The flexible data model space externalId
+    instanceSpaceExternalId: some_space2 # The flexible data model instance space externalId
+```
+
 ### GitHub Action
 
 The **Transformations CLI** provides a GitHub Action to deploy transformations. You'll find the documentation [here](githubaction.md).
