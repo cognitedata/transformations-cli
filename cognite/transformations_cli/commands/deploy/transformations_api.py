@@ -11,7 +11,7 @@ from cognite.client.data_classes import (
     TransformationSchedule,
     TransformationUpdate,
 )
-from cognite.client.data_classes.transformations.common import DataModelInstances, SequenceRows
+from cognite.client.data_classes.transformations.common import DataModelInstances, Instances, SequenceRows
 from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
 
 from cognite.transformations_cli.commands.deploy.transformation_types import (
@@ -20,6 +20,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     DestinationConfig,
     DestinationConfigType,
     DMIDestinationConfig,
+    InstancesDestinationConfig,
     QueryConfig,
     RawDestinationAlternativeConfig,
     RawDestinationConfig,
@@ -89,6 +90,13 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
     elif isinstance(destination, DMIDestinationConfig):
         return DataModelInstances(
             destination.model_external_id, destination.space_external_id, destination.instance_space_external_id
+        )
+    elif isinstance(destination, InstancesDestinationConfig):
+        return Instances(
+            destination.view_external_id,
+            destination.view_version,
+            destination.space_external_id,
+            destination.instance_space_external_id,
         )
     else:
         return TransformationDestination(destination.value)

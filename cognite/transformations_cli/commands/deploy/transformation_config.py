@@ -31,6 +31,11 @@ def _validate_destination_type(external_id: str, destination_type: DestinationCo
                 f"Error on transformation manifest with external ID {external_id}: Data model instances destination requires model_external_id,  \
                             space_external_id and instance_space_external_id to be set."
             )
+        if flat_destination_type == DestinationType.instances:
+            raise Exception(
+                f"Error on transformation manifest with external ID {external_id}: Instances destination requires view_external_id,  \
+                            view_version, view_space_external_id and instance_space_external_id to be set."
+            )
         if flat_destination_type == DestinationType.sequence_rows:
             raise Exception(
                 f"Error on transformation manifest with external ID {external_id}: Sequence rows destination requires external_id to be set."

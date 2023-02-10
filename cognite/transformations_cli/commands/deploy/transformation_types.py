@@ -18,6 +18,7 @@ class DestinationType(Enum):
     data_sets = "data_sets"
     sequence_rows = "sequence_rows"
     data_model_instances = "data_model_instances"
+    instances = "instances"
 
 
 class ActionType(Enum):
@@ -86,6 +87,19 @@ class DMIDestinationConfig:
     space_external_id: str
     instance_space_external_id: str
     type: DestinationType = DestinationType.data_model_instances
+
+
+@dataclass
+class InstancesDestinationConfig:
+    """
+    Valid type values are: instances
+    """
+
+    view_external_id: str
+    view_version: str
+    view_space_external_id: str
+    instance_space_external_id: str
+    type: DestinationType = DestinationType.instances
 
 
 @dataclass
