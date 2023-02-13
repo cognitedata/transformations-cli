@@ -95,7 +95,7 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         return Instances(
             destination.view_external_id,
             destination.view_version,
-            destination.space_external_id,
+            destination.view_space_external_id,
             destination.instance_space_external_id,
         )
     else:

@@ -118,6 +118,7 @@ DestinationConfigType = Union[
     RawDestinationConfig,
     SequenceRowsDestinationConfig,
     DMIDestinationConfig,
+    InstancesDestinationConfig,
     RawDestinationAlternativeConfig,
 ]
 

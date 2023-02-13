@@ -198,7 +198,7 @@ def test_deploy_instances_transformation(
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
     my_dest: Instances = new_conf.destination
-    assert my_dest.view_external_id == "test_model"
+    assert my_dest.view_external_id == "test_view"
     assert my_dest.view_version == "test_view_version"
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
