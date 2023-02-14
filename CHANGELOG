@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+# [2.3.0] - 2023-02-10
+### Added
+- Support `Instances` destination type.
+
 ## [2.2.2] - 2022-10-26
 ### Added
 - `DestinationConfigType` for `raw` to accept `database` and `table` fields in addition to `rawDatabase` and `rawTable`.
