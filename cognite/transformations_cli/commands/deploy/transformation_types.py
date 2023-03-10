@@ -18,7 +18,8 @@ class DestinationType(Enum):
     data_sets = "data_sets"
     sequence_rows = "sequence_rows"
     data_model_instances = "data_model_instances"
-    instances = "instances"
+    nodes = "nodes"
+    edges = "edges"
 
 
 class ActionType(Enum):
@@ -90,16 +91,39 @@ class DMIDestinationConfig:
 
 
 @dataclass
-class InstancesDestinationConfig:
+class ViewInfo:
+    space: str
+    external_id: str
+    version: str
+
+
+@dataclass
+class EdgeType:
+    space: str
+    external_id: str
+
+
+@dataclass
+class InstanceNodesDestinationConfig:
     """
-    Valid type values are: instances
+    Valid type values are: nodes
     """
 
-    view_external_id: str
-    view_version: str
-    view_space_external_id: str
-    instance_space_external_id: str
-    type: DestinationType = DestinationType.instances
+    view: Optional[ViewInfo]
+    instance_space: Optional[str]
+    type: DestinationType = DestinationType.nodes
+
+
+@dataclass
+class InstanceEdgesDestinationConfig:
+    """
+    Valid type values are: edges
+    """
+
+    view: Optional[ViewInfo]
+    instance_space: Optional[str]
+    edge_type: Optional[EdgeType]
+    type: DestinationType = DestinationType.edges
 
 
 @dataclass
@@ -118,7 +142,8 @@ DestinationConfigType = Union[
     RawDestinationConfig,
     SequenceRowsDestinationConfig,
     DMIDestinationConfig,
-    InstancesDestinationConfig,
+    InstanceEdgesDestinationConfig,
+    InstanceNodesDestinationConfig,
     RawDestinationAlternativeConfig,
 ]
 
