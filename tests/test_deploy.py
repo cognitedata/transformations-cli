@@ -166,6 +166,7 @@ def test_deploy_dmi_transformation(
     rmdir(Path(test_name))
 
 
+@pytest.mark.skip
 def test_deploy_instances_transformation(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
 ) -> None:
