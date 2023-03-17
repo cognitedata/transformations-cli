@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+# [2.3.3] - 2023-03-17
+### Fixed
+- Match on type instead of isinstance for `Nodes` and `Edges`.
+
 # [2.3.2] - 2023-03-16
 ### Changed
 - Split `Instances` destination type to `Nodes` and `Edges`.

@@ -321,8 +321,7 @@ def test_deploy_instance_edges_with_view_transformation(
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
     my_dest: InstanceEdges = new_conf.destination
-    # TODO Fix this assert below
-    # assert my_dest.type == "edges"
+    assert my_dest.type == "edges"
     assert my_dest.view.space == "test_space"
     assert my_dest.view.external_id == "test_view"
     assert my_dest.view.version == "test_view_version"
