@@ -200,6 +200,7 @@ def test_deploy_instance_nodes_with_space_transformation(
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
     my_dest: InstanceNodes = new_conf.destination
+    assert my_dest.type == "nodes"
     assert my_dest.view.space == "test_space"
     assert my_dest.view.external_id == "test_view"
     assert my_dest.view.version == "test_view_version"
@@ -239,6 +240,7 @@ def test_deploy_instance_nodes_without_space_transformation(
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
     my_dest: InstanceNodes = new_conf.destination
+    assert my_dest.type == "nodes"
     assert my_dest.view.space == "test_space"
     assert my_dest.view.external_id == "test_view"
     assert my_dest.view.version == "test_view_version"
@@ -279,6 +281,7 @@ def test_deploy_instance_edges_with_edge_type_transformation(
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
     my_dest: InstanceEdges = new_conf.destination
+    assert my_dest.type == "edges"
     assert my_dest.edge_type.space == "test_space"
     assert my_dest.edge_type.external_id == "my_edge_type"
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
@@ -318,6 +321,7 @@ def test_deploy_instance_edges_with_view_transformation(
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
     my_dest: InstanceEdges = new_conf.destination
+    assert my_dest.type == "edges"
     assert my_dest.view.space == "test_space"
     assert my_dest.view.external_id == "test_view"
     assert my_dest.view.version == "test_view_version"
