@@ -3,7 +3,7 @@ from enum import Enum
 from typing import List, Optional, Union, Literal
 
 
-class DestinationType(Enum):
+class DestinationType(str,Enum):
     assets = "assets"
     timeseries = "timeseries"
     asset_hierarchy = "asset_hierarchy"
@@ -119,7 +119,7 @@ class InstanceNodesDestinationConfig:
 
     view: Optional[ViewInfo]
     instance_space: Optional[str]
-    type: Literal["nodes"] = DestinationType.nodes
+    type:  Literal[DestinationType.nodes] = DestinationType.nodes
 
 @dataclass
 class InstanceEdgesDestinationConfig:
@@ -130,7 +130,7 @@ class InstanceEdgesDestinationConfig:
     view: Optional[ViewInfo]
     instance_space: Optional[str]
     edge_type: Optional[EdgeType]
-    type: Literal["edges"] = DestinationType.edges
+    type:  Literal[DestinationType.edges] = DestinationType.edges
 
 
 
