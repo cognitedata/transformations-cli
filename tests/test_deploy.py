@@ -313,7 +313,10 @@ def test_deploy_instance_edges_with_view_transformation(
             instance_space: test_space
         shared: true
         ignoreNullFields: False
+<<<<<<< HEAD
         ignoreNullFields: False
+=======
+>>>>>>> 643f8484ed70ab9a9d0a1310f2730a73290b55c7
         action: upsert
         """
     write_config(test_name, file, 0)
