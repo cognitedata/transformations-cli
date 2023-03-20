@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Literal
 
 
 class DestinationType(Enum):
@@ -18,7 +18,9 @@ class DestinationType(Enum):
     data_sets = "data_sets"
     sequence_rows = "sequence_rows"
     data_model_instances = "data_model_instances"
-    instances = "instances"
+    nodes = "nodes"
+    edges = "edges"
+
 
 
 class ActionType(Enum):
@@ -90,16 +92,46 @@ class DMIDestinationConfig:
 
 
 @dataclass
-class InstancesDestinationConfig:
+class ViewInfo:
+    space: str
+    external_id: str
+    version: Union[int, str]
+
+    def __init__(self, space: str, external_id: str, version: Union[int, str]):
+        self.space = space
+        self.external_id = external_id
+        self.version = str(version)
+
+
+@dataclass
+class EdgeType:
+    space: str
+    external_id: str
+
+
+
+
+@dataclass
+class InstanceNodesDestinationConfig:
     """
-    Valid type values are: instances
+    Valid type values are: nodes
     """
 
-    view_external_id: str
-    view_version: str
-    view_space_external_id: str
-    instance_space_external_id: str
-    type: DestinationType = DestinationType.instances
+    view: Optional[ViewInfo]
+    instance_space: Optional[str]
+    type: Literal["nodes"] = DestinationType.nodes
+
+@dataclass
+class InstanceEdgesDestinationConfig:
+    """
+    Valid type values are: edges
+    """
+
+    view: Optional[ViewInfo]
+    instance_space: Optional[str]
+    edge_type: Optional[EdgeType]
+    type: Literal["edges"] = DestinationType.edges
+
 
 
 @dataclass
@@ -118,6 +150,8 @@ DestinationConfigType = Union[
     RawDestinationConfig,
     SequenceRowsDestinationConfig,
     DMIDestinationConfig,
+    InstanceNodesDestinationConfig,
+    InstanceEdgesDestinationConfig,
     RawDestinationAlternativeConfig,
 ]
 
@@ -165,3 +199,4 @@ class TransformationConfigError(Exception):
     def __init__(self, message: str):
         self.message = message
         super().__init__(self.message)
+
