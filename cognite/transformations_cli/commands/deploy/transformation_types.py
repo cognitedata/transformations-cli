@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Literal
 
 
 class DestinationType(Enum):
@@ -20,6 +20,7 @@ class DestinationType(Enum):
     data_model_instances = "data_model_instances"
     nodes = "nodes"
     edges = "edges"
+
 
 
 class ActionType(Enum):
@@ -94,13 +95,20 @@ class DMIDestinationConfig:
 class ViewInfo:
     space: str
     external_id: str
-    version: str
+    version: Union[int, str]
+
+    def __init__(self, space: str, external_id: str, version: Union[int, str]):
+        self.space = space
+        self.external_id = external_id
+        self.version = str(version)
 
 
 @dataclass
 class EdgeType:
     space: str
     external_id: str
+
+
 
 
 @dataclass
@@ -111,8 +119,7 @@ class InstanceNodesDestinationConfig:
 
     view: Optional[ViewInfo]
     instance_space: Optional[str]
-    type: DestinationType = DestinationType.nodes
-
+    type: Literal["nodes"] = DestinationType.nodes
 
 @dataclass
 class InstanceEdgesDestinationConfig:
@@ -123,7 +130,8 @@ class InstanceEdgesDestinationConfig:
     view: Optional[ViewInfo]
     instance_space: Optional[str]
     edge_type: Optional[EdgeType]
-    type: DestinationType = DestinationType.edges
+    type: Literal["edges"] = DestinationType.edges
+
 
 
 @dataclass
@@ -191,3 +199,4 @@ class TransformationConfigError(Exception):
     def __init__(self, message: str):
         self.message = message
         super().__init__(self.message)
+

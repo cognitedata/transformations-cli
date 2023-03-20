@@ -27,8 +27,8 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     DestinationConfig,
     DestinationConfigType,
     DMIDestinationConfig,
-    InstanceEdgesDestinationConfig,
     InstanceNodesDestinationConfig,
+    InstanceEdgesDestinationConfig,
     QueryConfig,
     RawDestinationAlternativeConfig,
     RawDestinationConfig,
@@ -99,25 +99,22 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         return DataModelInstances(
             destination.model_external_id, destination.space_external_id, destination.instance_space_external_id
         )
-    elif isinstance(destination, InstanceNodesDestinationConfig) or isinstance(
-        destination, InstanceEdgesDestinationConfig
-    ):
-        if destination.type == InstanceNodesDestinationConfig.type:
-            view = None
-            if destination.view:
-                view = ViewInfo(destination.view.space, destination.view.external_id, destination.view.version)
-            return InstanceNodes(view, destination.instance_space)
-        elif destination.type == InstanceEdgesDestinationConfig.type:
-            view = None
-            if destination.view:
-                view = ViewInfo(destination.view.space, destination.view.external_id, destination.view.version)
-            edge_type = None
-            # This is a hack, we should have better fix since destination is still InstanceNodesDestinationConfig here...
-            if isinstance(destination, InstanceEdgesDestinationConfig) and destination.edge_type:
-                edge_type = EdgeType(destination.edge_type.space, destination.edge_type.external_id)
-            return InstanceEdges(view, destination.instance_space, edge_type)
+    elif isinstance(destination, InstanceNodesDestinationConfig):
+        view = None
+        if destination.view:
+            view = ViewInfo(destination.view.space, destination.view.external_id, destination.view.version)
+        return InstanceNodes(view, destination.instance_space)
+    elif isinstance(destination, InstanceEdgesDestinationConfig):
+        view = None
+        if destination.view:
+            view = ViewInfo(destination.view.space, destination.view.external_id, destination.view.version)
+        edge_type = None
+        if destination.edge_type:
+            edge_type = EdgeType(destination.edge_type.space, destination.edge_type.external_id)
+        return InstanceEdges(view, destination.instance_space, edge_type)
     else:
         return TransformationDestination(destination.value)
+
 
 
 def to_query(conf_path: str, query: Union[str, QueryConfig]) -> str:
