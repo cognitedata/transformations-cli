@@ -229,7 +229,7 @@ def test_deploy_instance_nodes_without_space_transformation(
             view:
                 space: test_space
                 external_id: test_view
-                version: test_view_version
+                version: 1
         shared: true
         ignoreNullFields: False
         action: upsert
@@ -243,7 +243,7 @@ def test_deploy_instance_nodes_without_space_transformation(
     assert my_dest.type == "nodes"
     assert my_dest.view.space == "test_space"
     assert my_dest.view.external_id == "test_view"
-    assert my_dest.view.version == "test_view_version"
+    assert my_dest.view.version == "1"
     assert my_dest.instance_space is None
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
