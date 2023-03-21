@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional, Union
+from typing import List, Literal, Optional, Union
 
 
-class DestinationType(Enum):
+class DestinationType(str, Enum):
     assets = "assets"
     timeseries = "timeseries"
     asset_hierarchy = "asset_hierarchy"
@@ -94,7 +94,16 @@ class DMIDestinationConfig:
 class ViewInfo:
     space: str
     external_id: str
-    version: str
+    version: Union[int, str]
+
+    """
+    CAST view version int to string
+    """
+
+    def __init__(self, space: str, external_id: str, version: Union[int, str]):
+        self.space = space
+        self.external_id = external_id
+        self.version = str(version)
 
 
 @dataclass
@@ -111,7 +120,7 @@ class InstanceNodesDestinationConfig:
 
     view: Optional[ViewInfo]
     instance_space: Optional[str]
-    type: DestinationType = DestinationType.nodes
+    type: Literal[DestinationType.nodes] = DestinationType.nodes
 
 
 @dataclass
@@ -123,7 +132,9 @@ class InstanceEdgesDestinationConfig:
     view: Optional[ViewInfo]
     instance_space: Optional[str]
     edge_type: Optional[EdgeType]
-    type: DestinationType = DestinationType.edges
+    type: Literal[
+        DestinationType.edges
+    ] = DestinationType.edges  # DestinationType updated with  Literal[DestinationType.edges]
 
 
 @dataclass

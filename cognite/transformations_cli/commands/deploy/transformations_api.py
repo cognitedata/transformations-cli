@@ -44,7 +44,10 @@ StandardResult = List[str]
 
 
 def to_transformation(
-    client: CogniteClient, conf_path: str, config: TransformationConfig, cluster: str = "europe-west1-1"
+    client: CogniteClient,
+    conf_path: str,
+    config: TransformationConfig,
+    cluster: str = "europe-west1-1",
 ) -> Transformation:
     return Transformation(
         name=config.name,
@@ -64,7 +67,9 @@ def to_transformation(
 
 
 def to_data_set_id(
-    client: CogniteClient, data_set_id: Optional[int], data_set_external_id: Optional[str]
+    client: CogniteClient,
+    data_set_id: Optional[int],
+    data_set_external_id: Optional[str],
 ) -> Optional[int]:
     err = ""
     if data_set_external_id:
@@ -97,25 +102,34 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         return SequenceRows(destination.external_id)
     elif isinstance(destination, DMIDestinationConfig):
         return DataModelInstances(
-            destination.model_external_id, destination.space_external_id, destination.instance_space_external_id
+            destination.model_external_id,
+            destination.space_external_id,
+            destination.instance_space_external_id,
         )
-    elif isinstance(destination, InstanceNodesDestinationConfig) or isinstance(
-        destination, InstanceEdgesDestinationConfig
-    ):
-        if destination.type == InstanceNodesDestinationConfig.type:
-            view = None
-            if destination.view:
-                view = ViewInfo(destination.view.space, destination.view.external_id, destination.view.version)
-            return InstanceNodes(view, destination.instance_space)
-        elif destination.type == InstanceEdgesDestinationConfig.type:
-            view = None
-            if destination.view:
-                view = ViewInfo(destination.view.space, destination.view.external_id, destination.view.version)
-            edge_type = None
-            # This is a hack, we should have better fix since destination is still InstanceNodesDestinationConfig here...
-            if isinstance(destination, InstanceEdgesDestinationConfig) and destination.edge_type:
-                edge_type = EdgeType(destination.edge_type.space, destination.edge_type.external_id)
-            return InstanceEdges(view, destination.instance_space, edge_type)
+
+    elif isinstance(destination, InstanceNodesDestinationConfig):
+        view = None
+        if destination.view:
+            view = ViewInfo(
+                destination.view.space,
+                destination.view.external_id,
+                destination.view.version,
+            )
+        return InstanceNodes(view, destination.instance_space)
+
+    elif isinstance(destination, InstanceEdgesDestinationConfig):
+        view = None
+        if destination.view:
+            view = ViewInfo(
+                destination.view.space,
+                destination.view.external_id,
+                destination.view.version,
+            )
+        edge_type = None
+        if destination.edge_type:
+            edge_type = EdgeType(destination.edge_type.space, destination.edge_type.external_id)
+        return InstanceEdges(view, destination.instance_space, edge_type)
+
     else:
         return TransformationDestination(destination.value)
 
@@ -265,7 +279,11 @@ def upsert_transformations(
         for c in chunk_items(items_to_create):
             client.transformations.create(c)
 
-        return [], [t.external_id for t in items_to_update], [t.external_id for t in items_to_create]
+        return (
+            [],
+            [t.external_id for t in items_to_update],
+            [t.external_id for t in items_to_create],
+        )
     except (CogniteDuplicatedError, CogniteNotFoundError, CogniteAPIError) as e:
         exit_with_cognite_api_error(e)
     return [], [], []
