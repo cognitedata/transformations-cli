@@ -89,6 +89,7 @@ class DMIDestinationConfig:
     instance_space_external_id: str
     type: DestinationType = DestinationType.data_model_instances
 
+        
 
 @dataclass
 class ViewInfo:
