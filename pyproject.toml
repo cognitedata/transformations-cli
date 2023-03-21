@@ -10,7 +10,6 @@ repository = "https://github.com/cognitedata/transformations-cli"
 packages = [
     { include="cognite", from="." },
 ]
-
 [tool.black]
 line-length = 120
 target_version = ['py37']

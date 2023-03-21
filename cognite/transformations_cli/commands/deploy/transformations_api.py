@@ -27,8 +27,8 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     DestinationConfig,
     DestinationConfigType,
     DMIDestinationConfig,
-    InstanceNodesDestinationConfig,
     InstanceEdgesDestinationConfig,
+    InstanceNodesDestinationConfig,
     QueryConfig,
     RawDestinationAlternativeConfig,
     RawDestinationConfig,
@@ -114,7 +114,6 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         return InstanceEdges(view, destination.instance_space, edge_type)
     else:
         return TransformationDestination(destination.value)
-
 
 
 def to_query(conf_path: str, query: Union[str, QueryConfig]) -> str:

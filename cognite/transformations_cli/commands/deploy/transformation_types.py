@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional, Union, Literal
+from typing import List, Literal, Optional, Union
 
 
-class DestinationType(Enum):
+class DestinationType(str, Enum):
     assets = "assets"
     timeseries = "timeseries"
     asset_hierarchy = "asset_hierarchy"
@@ -20,7 +20,6 @@ class DestinationType(Enum):
     data_model_instances = "data_model_instances"
     nodes = "nodes"
     edges = "edges"
-
 
 
 class ActionType(Enum):
@@ -109,8 +108,6 @@ class EdgeType:
     external_id: str
 
 
-
-
 @dataclass
 class InstanceNodesDestinationConfig:
     """
@@ -119,7 +116,8 @@ class InstanceNodesDestinationConfig:
 
     view: Optional[ViewInfo]
     instance_space: Optional[str]
-    type: Literal["nodes"] = DestinationType.nodes
+    type: Literal[DestinationType.nodes] = DestinationType.nodes
+
 
 @dataclass
 class InstanceEdgesDestinationConfig:
@@ -130,8 +128,7 @@ class InstanceEdgesDestinationConfig:
     view: Optional[ViewInfo]
     instance_space: Optional[str]
     edge_type: Optional[EdgeType]
-    type: Literal["edges"] = DestinationType.edges
-
+    type: Literal[DestinationType.edges] = DestinationType.edges
 
 
 @dataclass
@@ -199,4 +196,3 @@ class TransformationConfigError(Exception):
     def __init__(self, message: str):
         self.message = message
         super().__init__(self.message)
-
