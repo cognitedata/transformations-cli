@@ -45,6 +45,33 @@ destination:
 #   type: sequence_rows
 #   externalId: some_sequence
 
+# when writing to nodes in your data model, use the following syntax:
+# NOTE: view is optional, not needed for writing nodes without a view
+# destination:
+#   type: nodes
+#   instanceSpace: InstanceSpace
+#   view:  
+#     space: TypeSpace
+#     externalId: TypeExtId
+#     version: version
+
+# when writing to edges ( aka connection definition) in your data model, use the following syntax:
+# destination:
+#   type: edges
+#   instanceSpace: InstanceSpace
+#   edgeType:
+#     space: TypeSpace
+#     externalId: TypeExtId
+
+# when writing to edges with view in your data model, use the following syntax:
+# destination:
+#   type: edges
+#   instanceSpace: InstanceSpace
+#   view:
+#     space: TypeSpace
+#     externalId: TypeExtId
+#     version: version
+    
 # Optional, default: true
 shared: true
 
