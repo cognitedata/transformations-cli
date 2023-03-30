@@ -28,7 +28,7 @@ name: "test-cli-transform-oidc"
 # Required
 # Valid values are: "assets", "timeseries", "asset_hierarchy", events", "datapoints", 
 # "string_datapoints", "sequences", "files", "labels", "relationships",
-# "raw", "data_sets", "sequence_rows"
+# "raw", "data_sets", "sequence_rows", "nodes", "edges"
 destination: 
   type: "assets"
 
@@ -53,7 +53,7 @@ destination:
 #   instanceSpace: InstanceSpace
 #   view:  
 #     space: TypeSpace
-#     externalId: TypeExtId
+#     externalId: TypeExternalId
 #     version: version
 
 # when writing to edges ( aka connection definition) in your data model, use the following syntax:
@@ -63,7 +63,7 @@ destination:
 #   instanceSpace: InstanceSpace
 #   edgeType:
 #     space: TypeSpace
-#     externalId: TypeExtId
+#     externalId: TypeExternalId
 
 # when writing to edges with view in your data model, use the following syntax:
 # NOTE: instanceSpace is optional. If not set, it is a mandatory property(column) in the data
@@ -72,7 +72,7 @@ destination:
 #   instanceSpace: InstanceSpace
 #   view:
 #     space: TypeSpace
-#     externalId: TypeExtId
+#     externalId: TypeExternalId
 #     version: version
     
 # Optional, default: true
