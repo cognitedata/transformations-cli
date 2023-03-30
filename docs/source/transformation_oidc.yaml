@@ -6,7 +6,7 @@ name: "test-cli-transform-oidc"
 # Required
 # Valid values are: "assets", "timeseries", "asset_hierarchy", events", "datapoints", 
 # "string_datapoints", "sequences", "files", "labels", "relationships",
-# "raw", "data_sets", "sequence_rows"
+# "raw", "data_sets", "sequence_rows", "nodes", "edges"
 destination: 
   type: "assets"
 
@@ -23,6 +23,36 @@ destination:
 #   type: sequence_rows
 #   externalId: some_sequence
 
+# when writing to nodes in your data model, use the following syntax:
+# NOTE: view is optional, not needed for writing nodes without a view
+# NOTE: instanceSpace is optional. If not set, it is a mandatory property(column) in the data
+# destination:
+#   type: nodes
+#   instanceSpace: InstanceSpace
+#   view:  
+#     space: TypeSpace
+#     externalId: TypeExternalId
+#     version: version
+
+# when writing to edges ( aka connection definition) in your data model, use the following syntax:
+# NOTE: instanceSpace is optional. If not set, it is a mandatory property(column) in the data
+# destination:
+#   type: edges
+#   instanceSpace: InstanceSpace
+#   edgeType:
+#     space: TypeSpace
+#     externalId: TypeExternalId
+
+# when writing to edges with view in your data model, use the following syntax:
+# NOTE: instanceSpace is optional. If not set, it is a mandatory property(column) in the data
+# destination:
+#   type: edges
+#   instanceSpace: InstanceSpace
+#   view:
+#     space: TypeSpace
+#     externalId: TypeExternalId
+#     version: version
+    
 # Optional, default: true
 shared: true
 
@@ -47,9 +77,10 @@ query: "select 'My Assets Transformation' as name, 'asset1' as externalId"
 # Optional, default: null
 # If null, the transformation will not be scheduled.
 schedule: "* * * * *"
+# Or you can pause the schedules.
 # schedule:
 #   interval: "* * * * *"
-#   is_paused: true
+#   isPaused: true
 
 # Optional, default: true
 ignoreNullFields: false
