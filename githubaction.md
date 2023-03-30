@@ -47,7 +47,7 @@ destination:
 
 # when writing to nodes in your data model, use the following syntax:
 # NOTE: view is optional, not needed for writing nodes without a view
-# NOTE: instanceSpace is optional and if not set it is a mandatory property(column) in the data
+# NOTE: instanceSpace is optional. If not set, it is a mandatory property(column)
 # destination:
 #   type: nodes
 #   instanceSpace: InstanceSpace
@@ -57,7 +57,7 @@ destination:
 #     version: version
 
 # when writing to edges ( aka connection definition) in your data model, use the following syntax:
-# NOTE: instanceSpace is optional and if not set it is a mandatory property(column) in the data
+# NOTE: instanceSpace is optional. If not set, it is a mandatory property(column)
 # destination:
 #   type: edges
 #   instanceSpace: InstanceSpace
@@ -66,7 +66,7 @@ destination:
 #     externalId: TypeExtId
 
 # when writing to edges with view in your data model, use the following syntax:
-# NOTE: instanceSpace is optional and if not set it is a mandatory property(column) in the data
+# NOTE: instanceSpace is optional. If not set, it is a mandatory property(column)
 # destination:
 #   type: edges
 #   instanceSpace: InstanceSpace
