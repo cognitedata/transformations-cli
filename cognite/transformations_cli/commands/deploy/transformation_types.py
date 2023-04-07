@@ -20,6 +20,7 @@ class DestinationType(str, Enum):
     data_model_instances = "data_model_instances"
     nodes = "nodes"
     edges = "edges"
+    instances = "instances"
 
 
 class ActionType(Enum):
@@ -105,12 +106,43 @@ class ViewInfo:
         self.external_id = external_id
         self.version = str(version)
 
-
 @dataclass
 class EdgeType:
     space: str
     external_id: str
 
+@dataclass
+class DataModelInfo:
+    space: str
+    external_id: str
+    version: Union[int, str]
+    destination_type: str
+    destination_relationship_from_type: Optional[str] = None
+
+    """
+    CAST DataModel version int to string
+    """
+
+    def __init__(self, space: str, external_id: str, version: Union[int, str], destination_type: str, destination_relationship_from_type: Optional[str] = None):
+        self.space = space
+        self.external_id = external_id
+        self.version = str(version)
+        self.destination_type = destination_type
+        self.destination_relationship_from_type = destination_relationship_from_type
+
+    def __hash__(self) -> int:
+        if self.destination_relationship_from_type is not None:
+            return hash(
+                (
+                    self.space,
+                    self.external_id,
+                    self.version,
+                    self.destination_type,
+                    self.destination_relationship_from_type,
+                )
+            )
+        else:
+            return hash((self.space, self.external_id, self.version, self.destination_type))
 
 @dataclass
 class InstanceNodesDestinationConfig:
@@ -121,6 +153,7 @@ class InstanceNodesDestinationConfig:
     view: Optional[ViewInfo]
     instance_space: Optional[str]
     type: Literal[DestinationType.nodes] = DestinationType.nodes
+
 
 
 @dataclass
@@ -136,6 +169,15 @@ class InstanceEdgesDestinationConfig:
         DestinationType.edges
     ] = DestinationType.edges  # DestinationType updated with  Literal[DestinationType.edges]
 
+@dataclass
+class InstanceDataModelDestinationConfig:
+    """
+    Valid type values are: instances
+    """
+
+    data_model: Optional[DataModelInfo]
+    instance_space: Optional[str]
+    type: Literal[DestinationType.instances] = DestinationType.instances
 
 @dataclass
 class SequenceRowsDestinationConfig:
@@ -156,6 +198,7 @@ DestinationConfigType = Union[
     InstanceNodesDestinationConfig,
     InstanceEdgesDestinationConfig,
     RawDestinationAlternativeConfig,
+    InstanceDataModelDestinationConfig,
 ]
 
 
