@@ -14,9 +14,9 @@ from cognite.client.data_classes import (
 )
 from cognite.client.data_classes.transformations.common import (
     DataModelInstances,
+    InstanceDataModel,
     InstanceEdges,
     InstanceNodes,
-    InstanceDataModel,
     SequenceRows,
     TransformationDestination,
 )
@@ -329,6 +329,7 @@ def test_deploy_instance_edges_with_view_transformation(
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
 
+
 def test_deploy_instance_data_model_with_space_transformation(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
 ) -> None:
@@ -369,6 +370,8 @@ def test_deploy_instance_data_model_with_space_transformation(
     assert my_dest.data_model.version == "v2"
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
+
+
 def test_deploy_sequence_rows_transformation(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
 ) -> None:
