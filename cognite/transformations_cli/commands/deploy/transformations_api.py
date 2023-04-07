@@ -12,14 +12,14 @@ from cognite.client.data_classes import (
     TransformationUpdate,
 )
 from cognite.client.data_classes.transformations.common import (
+    DataModelInfo,
     DataModelInstances,
     EdgeType,
+    InstanceDataModel,
     InstanceEdges,
     InstanceNodes,
-    InstanceDataModel,
     SequenceRows,
     ViewInfo,
-    DataModelInfo,
 )
 from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
 
@@ -29,9 +29,9 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     DestinationConfig,
     DestinationConfigType,
     DMIDestinationConfig,
+    InstanceDataModelDestinationConfig,
     InstanceEdgesDestinationConfig,
     InstanceNodesDestinationConfig,
-    InstanceDataModelDestinationConfig,
     QueryConfig,
     RawDestinationAlternativeConfig,
     RawDestinationConfig,
