@@ -16,6 +16,7 @@ from cognite.client.data_classes.transformations.common import (
     DataModelInstances,
     InstanceEdges,
     InstanceNodes,
+    InstanceDataModel,
     SequenceRows,
     TransformationDestination,
 )
@@ -328,7 +329,46 @@ def test_deploy_instance_edges_with_view_transformation(
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
 
-
+def test_deploy_instance_data_model_with_space_transformation(
+    cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
+) -> None:
+    test_name = "test_deploy_"
+    external_id = str(uuid.uuid1())
+    file = f"""
+        externalId: {external_id}
+        name: {external_id}
+        query: select 'test' as key, 'test' as name
+        authentication:
+            clientId: ${{CLIENT_ID}}
+            clientSecret: ${{CLIENT_SECRET}}
+            tokenUrl: "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token"
+            scopes:
+                - "https://bluefield.cognitedata.com/.default"
+            cdfProjectName: "extractor-bluefield-testing"
+        destination:
+            type: instances
+            data_model:
+                space: authorBook
+                external_id: author_book
+                version: v2
+                destinationType: AuthorBook_relation
+            instance_space: test_space
+        shared: true
+        ignoreNullFields: False
+        action: upsert
+        """
+    write_config(test_name, file, 0)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
+    assert cli_result.exit_code == 0
+    new_conf = client.transformations.retrieve(external_id=external_id)
+    assert new_conf.external_id == external_id
+    my_dest: InstanceDataModel = new_conf.destination
+    assert my_dest.type == "instances"
+    assert my_dest.data_model.space == "authorBook"
+    assert my_dest.data_model.external_id == "author_book"
+    assert my_dest.data_model.version == "v2"
+    client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
+    rmdir(Path(test_name))
 def test_deploy_sequence_rows_transformation(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
 ) -> None:
