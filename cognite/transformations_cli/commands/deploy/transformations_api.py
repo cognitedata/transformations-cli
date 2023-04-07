@@ -16,8 +16,10 @@ from cognite.client.data_classes.transformations.common import (
     EdgeType,
     InstanceEdges,
     InstanceNodes,
+    InstanceDataModel,
     SequenceRows,
     ViewInfo,
+    DataModelInfo,
 )
 from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
 
@@ -29,6 +31,7 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     DMIDestinationConfig,
     InstanceEdgesDestinationConfig,
     InstanceNodesDestinationConfig,
+    InstanceDataModelDestinationConfig,
     QueryConfig,
     RawDestinationAlternativeConfig,
     RawDestinationConfig,
@@ -129,6 +132,18 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         if destination.edge_type:
             edge_type = EdgeType(destination.edge_type.space, destination.edge_type.external_id)
         return InstanceEdges(view, destination.instance_space, edge_type)
+
+    elif isinstance(destination, InstanceDataModelDestinationConfig):
+        data_model = None
+        if destination.data_model:
+            data_model = DataModelInfo(
+                destination.data_model.space,
+                destination.data_model.external_id,
+                destination.data_model.version,
+                destination.data_model.destination_type,
+                destination.data_model.destination_relationship_from_type,
+            )
+        return InstanceDataModel(data_model, destination.instance_space)
 
     else:
         return TransformationDestination(destination.value)
