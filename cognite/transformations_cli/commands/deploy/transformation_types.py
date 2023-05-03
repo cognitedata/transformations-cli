@@ -43,9 +43,29 @@ class AuthConfig:
 
 
 @dataclass
+class ReadOidcAuthConfig:
+    client_id: Optional[str]
+    client_secret: Optional[str]
+    token_url: Optional[str]
+    scopes: Optional[List[str]]
+    cdf_project_name: Optional[str]
+    audience: Optional[str]
+
+
+@dataclass
+class WriteOidcAuthConfig:
+    client_id: Optional[str]
+    client_secret: Optional[str]
+    token_url: Optional[str]
+    scopes: Optional[List[str]]
+    cdf_project_name: Optional[str]
+    audience: Optional[str]
+
+
+@dataclass
 class ReadWriteAuthentication:
-    read: AuthConfig
-    write: AuthConfig
+    read: ReadOidcAuthConfig
+    write: WriteOidcAuthConfig
 
 
 @dataclass
