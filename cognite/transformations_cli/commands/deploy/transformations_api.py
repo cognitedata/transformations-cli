@@ -4,7 +4,9 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from cognite.client import CogniteClient
 from cognite.client.data_classes import (
+    DestinationOidcCredentials,
     OidcCredentials,
+    SourceOidcCredentials,
     Transformation,
     TransformationDestination,
     TransformationNotification,
@@ -12,12 +14,12 @@ from cognite.client.data_classes import (
     TransformationUpdate,
 )
 from cognite.client.data_classes.transformations.common import (
+    DataModel,
     DataModelInfo,
-    DataModelInstances,
+    Edges,
     EdgeType,
-    InstanceDataModel,
-    InstanceEdges,
-    InstanceNodes,
+    Instances,
+    Nodes,
     SequenceRows,
     ViewInfo,
 )
@@ -104,7 +106,7 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
     elif isinstance(destination, SequenceRowsDestinationConfig):
         return SequenceRows(destination.external_id)
     elif isinstance(destination, DMIDestinationConfig):
-        return DataModelInstances(
+        return DataModel(
             destination.model_external_id,
             destination.space_external_id,
             destination.instance_space_external_id,
@@ -118,7 +120,7 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
                 destination.view.external_id,
                 destination.view.version,
             )
-        return InstanceNodes(view, destination.instance_space)
+        return Nodes(view, destination.instance_space)
 
     elif isinstance(destination, InstanceEdgesDestinationConfig):
         view = None
@@ -131,7 +133,7 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         edge_type = None
         if destination.edge_type:
             edge_type = EdgeType(destination.edge_type.space, destination.edge_type.external_id)
-        return InstanceEdges(view, destination.instance_space, edge_type)
+        return Edges(view, destination.instance_space, edge_type)
 
     elif isinstance(destination, InstanceDataModelDestinationConfig):
         data_model = None
@@ -143,7 +145,7 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
                 destination.data_model.destination_type,
                 destination.data_model.destination_relationship_from_type,
             )
-        return InstanceDataModel(data_model, destination.instance_space)
+        return Instances(data_model, destination.instance_space)
 
     else:
         return TransformationDestination(destination.value)
@@ -210,7 +212,9 @@ def get_oidc(auth_config: AuthConfig, cluster: str) -> Optional[OidcCredentials]
     )
 
 
-def to_read_oidc(authentication: Union[AuthConfig, ReadWriteAuthentication], cluster: str) -> Optional[OidcCredentials]:
+def to_read_oidc(
+    authentication: Union[AuthConfig, ReadWriteAuthentication], cluster: str
+) -> Optional[SourceOidcCredentials]:
     return (
         get_oidc(authentication, cluster)
         if isinstance(authentication, AuthConfig)
@@ -220,7 +224,7 @@ def to_read_oidc(authentication: Union[AuthConfig, ReadWriteAuthentication], clu
 
 def to_write_oidc(
     authentication: Union[AuthConfig, ReadWriteAuthentication], cluster: str
-) -> Optional[OidcCredentials]:
+) -> Optional[DestinationOidcCredentials]:
     return (
         get_oidc(authentication, cluster)
         if isinstance(authentication, AuthConfig)
