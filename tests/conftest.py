@@ -5,7 +5,14 @@ from typing import Dict, List, Optional
 import pytest
 from click.testing import CliRunner
 from cognite.client import CogniteClient
-from cognite.client.data_classes import DataSet, OidcCredentials, Transformation, TransformationDestination
+from cognite.client.data_classes import (
+    DataSet,
+    DestinationOidcCredentials,
+    OidcCredentials,
+    SourceOidcCredentials,
+    Transformation,
+    TransformationDestination,
+)
 
 from cognite.transformations_cli.clients import get_client
 
@@ -55,6 +62,34 @@ def valid_credentials(
 
 
 @pytest.fixture
+def valid_credentials_source_oidc(
+    client_id: str, client_secret: str, token_uri: str, scopes: str, cdf_project_name: str
+) -> SourceOidcCredentials:
+    return SourceOidcCredentials(
+        client_id=client_id,
+        client_secret=client_secret,
+        token_uri=token_uri,
+        scopes=scopes,
+        cdf_project_name=cdf_project_name,
+        audience=None,
+    )
+
+
+@pytest.fixture
+def valid_credentials_destination_oidc(
+    client_id: str, client_secret: str, token_uri: str, scopes: str, cdf_project_name: str
+) -> DestinationOidcCredentials:
+    return DestinationOidcCredentials(
+        client_id=client_id,
+        client_secret=client_secret,
+        token_uri=token_uri,
+        scopes=scopes,
+        cdf_project_name=cdf_project_name,
+        audience=None,
+    )
+
+
+@pytest.fixture
 def test_transformation_ext_ids() -> List[str]:
     uuid_conf = uuid.uuid1()
     return [
@@ -77,14 +112,16 @@ def new_dataset(client: CogniteClient) -> DataSet:
 
 @pytest.fixture
 def configs_to_create(
-    test_transformation_ext_ids: List[str], valid_credentials: OidcCredentials
+    test_transformation_ext_ids: List[str],
+    valid_credentials_source_oidc: SourceOidcCredentials,
+    valid_credentials_destination_oidc: DestinationOidcCredentials,
 ) -> List[Transformation]:
     return [
         Transformation(
             external_id=test_transformation_ext_ids[0],
             name=test_transformation_ext_ids[0],
-            source_oidc_credentials=valid_credentials,
-            destination_oidc_credentials=valid_credentials,
+            source_oidc_credentials=valid_credentials_source_oidc,
+            destination_oidc_credentials=valid_credentials_destination_oidc,
             destination=TransformationDestination.assets(),
             conflict_mode="upsert",
             query="select 'asd' as name, 'asd' as externalId",
@@ -93,8 +130,8 @@ def configs_to_create(
         Transformation(
             external_id=test_transformation_ext_ids[1],
             name=test_transformation_ext_ids[1],
-            source_oidc_credentials=valid_credentials,
-            destination_oidc_credentials=valid_credentials,
+            source_oidc_credentials=valid_credentials_source_oidc,
+            destination_oidc_credentials=valid_credentials_destination_oidc,
             destination=TransformationDestination.raw(database="cli-test-db", table="cli-test"),
             conflict_mode="upsert",
             query="select 'asd' as key, 'asd' as externalId",
@@ -103,8 +140,8 @@ def configs_to_create(
         Transformation(
             external_id=test_transformation_ext_ids[2],
             name=test_transformation_ext_ids[2],
-            source_oidc_credentials=valid_credentials,
-            destination_oidc_credentials=valid_credentials,
+            source_oidc_credentials=valid_credentials_source_oidc,
+            destination_oidc_credentials=valid_credentials_destination_oidc,
             destination=TransformationDestination.events(),
             conflict_mode="update",
             query="select 'asd' as externalId",
@@ -113,8 +150,8 @@ def configs_to_create(
         Transformation(
             external_id=test_transformation_ext_ids[3],
             name=test_transformation_ext_ids[3],
-            source_oidc_credentials=valid_credentials,
-            destination_oidc_credentials=valid_credentials,
+            source_oidc_credentials=valid_credentials_source_oidc,
+            destination_oidc_credentials=valid_credentials_destination_oidc,
             destination=TransformationDestination.timeseries(),
             conflict_mode="upsert",
             query="select 'asd' as externalId 'asd' as name",
