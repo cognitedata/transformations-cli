@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+# [2.3.4] - 2023-05-09
+### Fixed
+- source-destination prject override by client config project. The issue is fixed in python SDK -> class Transformation
+
 # [2.3.3] - 2023-03-17
 ### Fixed
 - Match on type instead of isinstance for `Nodes` and `Edges`.
