@@ -12,9 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+
 # [2.3.4] - 2023-05-09
 ### Fixed
-- source-destination prject override by client config project. The issue is fixed in python SDK -> class Transformation
+- When creating a transformation with a different source- and destination CDF project, the project setting is no longer overridden by the setting in the CogniteClient configuration allowing the user to read from the specified source project and write to the specified and potentially different destination project.
 
 # [2.3.3] - 2023-03-17
 ### Fixed
