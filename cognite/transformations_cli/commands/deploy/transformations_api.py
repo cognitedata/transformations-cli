@@ -57,8 +57,6 @@ def to_transformation(
         is_public=config.shared,
         ignore_null_fields=config.ignore_null_fields,
         query=to_query(conf_path, config.query),
-        source_api_key=to_read_api_key(config.authentication),
-        destination_api_key=to_write_api_key(config.authentication),
         source_oidc_credentials=to_read_oidc(config.authentication, cluster),
         destination_oidc_credentials=to_write_oidc(config.authentication, cluster),
         data_set_id=to_data_set_id(client, config.data_set_id, config.data_set_external_id),
@@ -144,22 +142,6 @@ def to_query(conf_path: str, query: Union[str, QueryConfig]) -> str:
         return query
     except:
         sys.exit("Please provide a valid path for sql file.")
-
-
-def to_read_api_key(authentication: Union[AuthConfig, ReadWriteAuthentication]) -> Optional[str]:
-    if isinstance(authentication, AuthConfig):
-        return authentication.api_key
-    if isinstance(authentication, ReadWriteAuthentication):
-        return authentication.read.api_key
-    return None
-
-
-def to_write_api_key(authentication: Union[AuthConfig, ReadWriteAuthentication]) -> Optional[str]:
-    if isinstance(authentication, AuthConfig):
-        return authentication.api_key
-    if isinstance(authentication, ReadWriteAuthentication):
-        return authentication.write.api_key
-    return None
 
 
 def stringify_scopes(scopes: Optional[List[str]]) -> Optional[str]:
