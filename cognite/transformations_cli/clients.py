@@ -4,18 +4,9 @@ from typing import Dict
 
 from cognite.client import CogniteClient
 from cognite.client.config import ClientConfig
-from cognite.client.credentials import APIKey, OAuthClientCredentials
-from cognite.client.exceptions import CogniteAPIError
+from cognite.client.credentials import OAuthClientCredentials
 
 logger = logging.getLogger(name=None)
-
-
-def get_project_from_api_key(client: CogniteClient) -> str:
-    project = client.login.status().project
-    if not project:
-        sys.exit("Invalid authentication, please check the base_url or api_key.")
-    return project
-
 
 def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
     api_key = obj.get("api_key")
