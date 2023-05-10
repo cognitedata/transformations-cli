@@ -9,6 +9,7 @@ from cognite.client.exceptions import CogniteAPIError
 
 logger = logging.getLogger(name=None)
 
+
 def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
     client_id = obj.get("client_id")
     client_secret = obj.get("client_secret")
@@ -18,7 +19,6 @@ def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
     cdf_project_name = obj.get("cdf_project_name")
     cluster = obj.get("cluster", "europe-west1-1")
     base_url = f"https://{cluster}.cognitedata.com"
-    # Removing API Key
     if not audience:
         scopes = scopes.strip().split(" ") if scopes else [f"https://{cluster}.cognitedata.com/.default"]
     try:
