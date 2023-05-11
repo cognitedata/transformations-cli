@@ -13,7 +13,7 @@ Changes are grouped as follows
 - `Security` in case of vulnerabilities.
 
 
-# [2.3.4] - 2023-05-09
+# [2.3.5] - 2023-05-10
 ### Fixed
 - When creating a transformation with a different source- and destination CDF project, the project setting is no longer overridden by the setting in the CogniteClient configuration allowing the user to read from the specified source project and write to the specified and potentially different destination project.
 
