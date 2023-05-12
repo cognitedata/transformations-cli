@@ -17,7 +17,6 @@ class DestinationType(str, Enum):
     raw = "raw"
     data_sets = "data_sets"
     sequence_rows = "sequence_rows"
-    data_model_instances = "data_model_instances"
     nodes = "nodes"
     edges = "edges"
 
@@ -78,16 +77,6 @@ class RawDestinationAlternativeConfig:
     type: DestinationType = DestinationType.raw
 
 
-@dataclass
-class DMIDestinationConfig:
-    """
-    Valid type values are: data_model_instances
-    """
-
-    model_external_id: str
-    space_external_id: str
-    instance_space_external_id: str
-    type: DestinationType = DestinationType.data_model_instances
 
 
 @dataclass
