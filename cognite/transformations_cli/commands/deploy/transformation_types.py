@@ -77,8 +77,6 @@ class RawDestinationAlternativeConfig:
     type: DestinationType = DestinationType.raw
 
 
-
-
 @dataclass
 class ViewInfo:
     space: str
@@ -141,7 +139,6 @@ DestinationConfigType = Union[
     DestinationConfig,
     RawDestinationConfig,
     SequenceRowsDestinationConfig,
-    DMIDestinationConfig,
     InstanceNodesDestinationConfig,
     InstanceEdgesDestinationConfig,
     RawDestinationAlternativeConfig,
