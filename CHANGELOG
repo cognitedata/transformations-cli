@@ -12,6 +12,8 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+# [2.3.6] - 2023-05-12
+- Removed DMS v2 destination in transformations
 
 # [2.3.5] - 2023-05-10
 ### Fixed

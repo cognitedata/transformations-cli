@@ -13,7 +13,6 @@ from cognite.client.data_classes import (
     TransformationSchedule,
 )
 from cognite.client.data_classes.transformations.common import (
-    DataModelInstances,
     InstanceEdges,
     InstanceNodes,
     SequenceRows,
@@ -127,42 +126,6 @@ def test_deploy_with_ds_and_run(
     # run the deployed transformation to check the validity
     job = new_conf.run(wait=True)
     assert job.status == TransformationJobStatus.COMPLETED
-    client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
-    rmdir(Path(test_name))
-
-
-def test_deploy_dmi_transformation(
-    cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
-) -> None:
-    test_name = "test_deploy_"
-    external_id = str(uuid.uuid1())
-    file = f"""
-        externalId: {external_id}
-        name: {external_id}
-        query: select 'test' as key, 'test' as name
-        authentication:
-            clientId: ${{CLIENT_ID}}
-            clientSecret: ${{CLIENT_SECRET}}
-            tokenUrl: "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token"
-            scopes:
-                - "https://bluefield.cognitedata.com/.default"
-            cdfProjectName: "extractor-bluefield-testing"
-        destination:
-            type: data_model_instances
-            model_external_id: test_model
-            space_external_id: test_space
-            instance_space_external_id: test_space
-        shared: true
-        ignoreNullFields: False
-        action: upsert
-        """
-    write_config(test_name, file, 0)
-    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
-    assert cli_result.exit_code == 0
-    new_conf = client.transformations.retrieve(external_id=external_id)
-    assert new_conf.external_id == external_id
-    my_dest: DataModelInstances = new_conf.destination
-    assert my_dest.model_external_id == "test_model"
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
 
