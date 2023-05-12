@@ -13,8 +13,8 @@ from cognite.client.data_classes import (
     TransformationSchedule,
 )
 from cognite.client.data_classes.transformations.common import (
-    InstanceEdges,
-    InstanceNodes,
+    Edges,
+    Nodes,
     SequenceRows,
     TransformationDestination,
 )
@@ -162,7 +162,7 @@ def test_deploy_instance_nodes_with_space_transformation(
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
-    my_dest: InstanceNodes = new_conf.destination
+    my_dest: Nodes = new_conf.destination
     assert my_dest.type == "nodes"
     assert my_dest.view.space == "test_space"
     assert my_dest.view.external_id == "test_view"
@@ -202,7 +202,7 @@ def test_deploy_instance_nodes_without_space_transformation(
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
-    my_dest: InstanceNodes = new_conf.destination
+    my_dest: Nodes = new_conf.destination
     assert my_dest.type == "nodes"
     assert my_dest.view.space == "test_space"
     assert my_dest.view.external_id == "test_view"
@@ -243,7 +243,7 @@ def test_deploy_instance_edges_with_edge_type_transformation(
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
-    my_dest: InstanceEdges = new_conf.destination
+    my_dest: Edges = new_conf.destination
     assert my_dest.type == "edges"
     assert my_dest.edge_type.space == "test_space"
     assert my_dest.edge_type.external_id == "my_edge_type"
@@ -283,7 +283,7 @@ def test_deploy_instance_edges_with_view_transformation(
     assert cli_result.exit_code == 0
     new_conf = client.transformations.retrieve(external_id=external_id)
     assert new_conf.external_id == external_id
-    my_dest: InstanceEdges = new_conf.destination
+    my_dest: Edges = new_conf.destination
     assert my_dest.type == "edges"
     assert my_dest.view.space == "test_space"
     assert my_dest.view.external_id == "test_view"
