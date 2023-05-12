@@ -130,7 +130,6 @@ def test_deploy_with_ds_and_run(
     rmdir(Path(test_name))
 
 
-
 def test_deploy_instance_nodes_with_space_transformation(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
 ) -> None:
