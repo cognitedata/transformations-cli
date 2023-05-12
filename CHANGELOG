@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+# [2.3.7] - 2023-05-12
+### Fixed
+- Renaming instance_nodes -> nodes and instance_edges -> edges. Because the SDK is not consistent with the destination in the Transformation API and CLI
+
 # [2.3.6] - 2023-05-12
 - Removed DMS v2 destination in transformations
 
