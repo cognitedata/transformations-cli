@@ -25,7 +25,6 @@ from cognite.transformations_cli.commands.deploy.transformation_types import (
     AuthConfig,
     DestinationConfig,
     DestinationConfigType,
-    DMIDestinationConfig,
     InstanceEdgesDestinationConfig,
     InstanceNodesDestinationConfig,
     QueryConfig,
@@ -97,7 +96,7 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         return TransformationDestination.raw(destination.database, destination.table)
     elif isinstance(destination, SequenceRowsDestinationConfig):
         return SequenceRows(destination.external_id)
-    
+
     elif isinstance(destination, InstanceNodesDestinationConfig):
         view = None
         if destination.view:
