@@ -12,7 +12,6 @@ from cognite.client.data_classes import (
     TransformationUpdate,
 )
 from cognite.client.data_classes.transformations.common import (
-    DataModelInstances,
     EdgeType,
     InstanceEdges,
     InstanceNodes,
@@ -98,13 +97,7 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         return TransformationDestination.raw(destination.database, destination.table)
     elif isinstance(destination, SequenceRowsDestinationConfig):
         return SequenceRows(destination.external_id)
-    elif isinstance(destination, DMIDestinationConfig):
-        return DataModelInstances(
-            destination.model_external_id,
-            destination.space_external_id,
-            destination.instance_space_external_id,
-        )
-
+    
     elif isinstance(destination, InstanceNodesDestinationConfig):
         view = None
         if destination.view:
