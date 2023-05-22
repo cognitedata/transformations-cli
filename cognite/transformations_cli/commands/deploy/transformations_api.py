@@ -11,13 +11,7 @@ from cognite.client.data_classes import (
     TransformationSchedule,
     TransformationUpdate,
 )
-from cognite.client.data_classes.transformations.common import (
-    EdgeType,
-    Edges,
-    Nodes,
-    SequenceRows,
-    ViewInfo,
-)
+from cognite.client.data_classes.transformations.common import Edges, EdgeType, Nodes, SequenceRows, ViewInfo
 from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
 
 from cognite.transformations_cli.commands.deploy.transformation_types import (
