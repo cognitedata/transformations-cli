@@ -12,12 +12,7 @@ from cognite.client.data_classes import (
     TransformationNotification,
     TransformationSchedule,
 )
-from cognite.client.data_classes.transformations.common import (
-    Edges,
-    Nodes,
-    SequenceRows,
-    TransformationDestination,
-)
+from cognite.client.data_classes.transformations.common import Edges, Nodes, SequenceRows, TransformationDestination
 
 from cognite.transformations_cli.commands.deploy.deploy import deploy
 from cognite.transformations_cli.commands.deploy.transformations_api import (
