@@ -11,13 +11,7 @@ from cognite.client.data_classes import (
     TransformationSchedule,
     TransformationUpdate,
 )
-from cognite.client.data_classes.transformations.common import (
-    EdgeType,
-    InstanceEdges,
-    InstanceNodes,
-    SequenceRows,
-    ViewInfo,
-)
+from cognite.client.data_classes.transformations.common import Edges, EdgeType, Nodes, SequenceRows, ViewInfo
 from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
 
 from cognite.transformations_cli.commands.deploy.transformation_types import (
@@ -105,7 +99,7 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
                 destination.view.external_id,
                 destination.view.version,
             )
-        return InstanceNodes(view, destination.instance_space)
+        return Nodes(view, destination.instance_space)
 
     elif isinstance(destination, InstanceEdgesDestinationConfig):
         view = None
@@ -118,7 +112,7 @@ def to_destination(destination: DestinationConfigType) -> TransformationDestinat
         edge_type = None
         if destination.edge_type:
             edge_type = EdgeType(destination.edge_type.space, destination.edge_type.external_id)
-        return InstanceEdges(view, destination.instance_space, edge_type)
+        return Edges(view, destination.instance_space, edge_type)
 
     else:
         return TransformationDestination(destination.value)
