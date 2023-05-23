@@ -12,6 +12,9 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+# [2.3.8] - 2023-05-23
+- Data model centric support in transformation
+
 # [2.3.7] - 2023-05-12
 ### Fixed
 - Renaming instance_nodes -> nodes and instance_edges -> edges. Because the SDK is not consistent with the destination in the Transformation API and CLI
