@@ -12,6 +12,10 @@ Changes are grouped as follows
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+# [2.3.9] - 2023-05-26
+### Fixed
+- Data model centric support in transformation. Deployed InstancesDestinationConfig class and unit test cases. 
+
 # [2.3.8] - 2023-05-23
 - Data model centric support in transformation
 
