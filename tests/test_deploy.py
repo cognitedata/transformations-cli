@@ -12,7 +12,13 @@ from cognite.client.data_classes import (
     TransformationNotification,
     TransformationSchedule,
 )
-from cognite.client.data_classes.transformations.common import Edges, Nodes, SequenceRows, TransformationDestination, Instances
+from cognite.client.data_classes.transformations.common import (
+    Edges,
+    Instances,
+    Nodes,
+    SequenceRows,
+    TransformationDestination,
+)
 
 from cognite.transformations_cli.commands.deploy.deploy import deploy
 from cognite.transformations_cli.commands.deploy.transformations_api import (
@@ -286,6 +292,7 @@ def test_deploy_instance_edges_with_view_transformation(
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
 
+
 def test_create_instance_type_data_model_transformation(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
 ) -> None:
@@ -326,9 +333,10 @@ def test_create_instance_type_data_model_transformation(
     assert my_dest.data_model.external_id == "author_book"
     assert my_dest.data_model.version == "2"
     assert my_dest.data_model.destination_type == "AuthorBook_relation"
-    assert my_dest.instance_space=="test_instanceSpace"
+    assert my_dest.instance_space == "test_instanceSpace"
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
+
 
 def test_create_instance_relationship_data_model_transformation(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
@@ -371,9 +379,10 @@ def test_create_instance_relationship_data_model_transformation(
     assert my_dest.data_model.version == "2"
     assert my_dest.data_model.destination_type == "AuthorBook_relation"
     assert my_dest.data_model.destination_relationship_from_type == "author_book"
-    assert my_dest.instance_space=="test_instanceSpace"
+    assert my_dest.instance_space == "test_instanceSpace"
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
+
 
 def test_deploy_sequence_rows_transformation(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
