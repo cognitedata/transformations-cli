@@ -19,7 +19,7 @@ class DestinationType(str, Enum):
     sequence_rows = "sequence_rows"
     nodes = "nodes"
     edges = "edges"
-    instances ="instances"
+    instances = "instances"
 
 
 class ActionType(Enum):
@@ -93,6 +93,7 @@ class ViewInfo:
         self.external_id = external_id
         self.version = str(version)
 
+
 @dataclass
 class DataModelInfo:
     space: str
@@ -150,6 +151,7 @@ class InstanceEdgesDestinationConfig:
         DestinationType.edges
     ] = DestinationType.edges  # DestinationType updated with  Literal[DestinationType.edges]
 
+
 @dataclass
 class InstancesDestinationConfig:
     """
@@ -159,6 +161,7 @@ class InstancesDestinationConfig:
     data_model: Optional[DataModelInfo]
     instance_space: Optional[str]
     type: Literal[DestinationType.instances] = DestinationType.instances
+
 
 @dataclass
 class SequenceRowsDestinationConfig:
