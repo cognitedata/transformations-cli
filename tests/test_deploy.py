@@ -12,7 +12,7 @@ from cognite.client.data_classes import (
     TransformationNotification,
     TransformationSchedule,
 )
-from cognite.client.data_classes.transformations.common import Edges, Nodes, SequenceRows, TransformationDestination
+from cognite.client.data_classes.transformations.common import Edges, Nodes, SequenceRows, TransformationDestination, Instances
 
 from cognite.transformations_cli.commands.deploy.deploy import deploy
 from cognite.transformations_cli.commands.deploy.transformations_api import (
@@ -286,6 +286,94 @@ def test_deploy_instance_edges_with_view_transformation(
     client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
     rmdir(Path(test_name))
 
+def test_create_instance_type_data_model_transformation(
+    cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
+) -> None:
+    test_name = "test_deploy_"
+    external_id = str(uuid.uuid1())
+    file = f"""
+        externalId: {external_id}
+        name: {external_id}
+        query: select 'test' as key, 'test' as name
+        authentication:
+            clientId: ${{CLIENT_ID}}
+            clientSecret: ${{CLIENT_SECRET}}
+            tokenUrl: "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token"
+            scopes:
+                - "https://bluefield.cognitedata.com/.default"
+            cdfProjectName: "extractor-bluefield-testing2"
+        destination:
+            type: instances
+            instance_space: test_instanceSpace
+            dataModel:
+                space: authorBook
+                external_id: author_book
+                version: 2
+                destination_type: AuthorBook_relation
+                destination_relationship_from_type: None
+        shared: true
+        ignoreNullFields: False
+        action: upsert
+        """
+    write_config(test_name, file, 0)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
+    assert cli_result.exit_code == 0
+    new_conf = client.transformations.retrieve(external_id=external_id)
+    assert new_conf.external_id == external_id
+    my_dest: Instances = new_conf.destination
+    assert my_dest.type == "instances"
+    assert my_dest.data_model.space == "authorBook"
+    assert my_dest.data_model.external_id == "author_book"
+    assert my_dest.data_model.version == "2"
+    assert my_dest.data_model.destination_type == "AuthorBook_relation"
+    assert my_dest.instance_space=="test_instanceSpace"
+    client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
+    rmdir(Path(test_name))
+
+def test_create_instance_relationship_data_model_transformation(
+    cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
+) -> None:
+    test_name = "test_deploy_"
+    external_id = str(uuid.uuid1())
+    file = f"""
+        externalId: {external_id}
+        name: {external_id}
+        query: select 'test' as key, 'test' as name
+        authentication:
+            clientId: ${{CLIENT_ID}}
+            clientSecret: ${{CLIENT_SECRET}}
+            tokenUrl: "https://login.microsoftonline.com/b86328db-09aa-4f0e-9a03-0136f604d20a/oauth2/v2.0/token"
+            scopes:
+                - "https://bluefield.cognitedata.com/.default"
+            cdfProjectName: "extractor-bluefield-testing2"
+        destination:
+            type: instances
+            instance_space: test_instanceSpace
+            dataModel:
+                space: authorBook
+                external_id: author_book
+                version: 2
+                destination_type: AuthorBook_relation
+                destination_relationship_from_type: author_book
+        shared: true
+        ignoreNullFields: False
+        action: upsert
+        """
+    write_config(test_name, file, 0)
+    cli_result = cli_runner.invoke(deploy, [test_name], obj=obj)
+    assert cli_result.exit_code == 0
+    new_conf = client.transformations.retrieve(external_id=external_id)
+    assert new_conf.external_id == external_id
+    my_dest: Instances = new_conf.destination
+    assert my_dest.type == "instances"
+    assert my_dest.data_model.space == "authorBook"
+    assert my_dest.data_model.external_id == "author_book"
+    assert my_dest.data_model.version == "2"
+    assert my_dest.data_model.destination_type == "AuthorBook_relation"
+    assert my_dest.data_model.destination_relationship_from_type == "author_book"
+    assert my_dest.instance_space=="test_instanceSpace"
+    client.transformations.delete(external_id=external_id, ignore_unknown_ids=True)
+    rmdir(Path(test_name))
 
 def test_deploy_sequence_rows_transformation(
     cli_runner: CliRunner, obj: Dict[str, Optional[str]], new_dataset: DataSet, client: CogniteClient
