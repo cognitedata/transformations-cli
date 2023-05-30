@@ -19,6 +19,7 @@ class DestinationType(str, Enum):
     sequence_rows = "sequence_rows"
     nodes = "nodes"
     edges = "edges"
+    instances = "instances"
 
 
 class ActionType(Enum):
@@ -94,6 +95,33 @@ class ViewInfo:
 
 
 @dataclass
+class DataModelInfo:
+    space: str
+    external_id: str
+    version: Union[int, str]
+    destination_type: str
+    destination_relationship_from_type: Optional[str] = None
+
+    """
+    CAST DataModel version int to string
+    """
+
+    def __init__(
+        self,
+        space: str,
+        external_id: str,
+        version: Union[int, str],
+        destination_type: str,
+        destination_relationship_from_type: Optional[str] = None,
+    ):
+        self.space = space
+        self.external_id = external_id
+        self.version = str(version)
+        self.destination_type = destination_type
+        self.destination_relationship_from_type = destination_relationship_from_type
+
+
+@dataclass
 class EdgeType:
     space: str
     external_id: str
@@ -125,6 +153,17 @@ class InstanceEdgesDestinationConfig:
 
 
 @dataclass
+class InstancesDestinationConfig:
+    """
+    Valid type values are: instances
+    """
+
+    data_model: Optional[DataModelInfo]
+    instance_space: Optional[str]
+    type: Literal[DestinationType.instances] = DestinationType.instances
+
+
+@dataclass
 class SequenceRowsDestinationConfig:
     """
     Valid type values are: sequence_rows
@@ -141,6 +180,7 @@ DestinationConfigType = Union[
     SequenceRowsDestinationConfig,
     InstanceNodesDestinationConfig,
     InstanceEdgesDestinationConfig,
+    InstancesDestinationConfig,
     RawDestinationAlternativeConfig,
 ]
 
