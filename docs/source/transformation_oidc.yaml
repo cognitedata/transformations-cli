@@ -52,7 +52,30 @@ destination:
 #     space: TypeSpace
 #     externalId: TypeExternalId
 #     version: version
-    
+
+# when writing instances to a type, use the following syntax:
+# NOTE: instanceSpace is optional. If not set, it is a mandatory property(column) in the data
+# destination:
+#   type: instances
+#   instanceSpace: InstanceSpace
+#   dataModel:
+#     space: modelSpace
+#     externalId: modelExternalId
+#     version: modelVersion
+#     destination_type: viewExternalId
+
+# when writing instances to a relationship, use the following syntax:
+# NOTE: instanceSpace is optional. If not set, it is a mandatory property(column) in the data
+# destination:
+#   type: instances
+#   instanceSpace: InstanceSpace
+#   dataModel:
+#     space: modelSpace
+#     externalId: modelExternalId
+#     version: modelVersion
+#     destination_type: viewExternalId
+#     destination_relationship_from_type: connectionPropertyName
+
 # Optional, default: true
 shared: true
 
