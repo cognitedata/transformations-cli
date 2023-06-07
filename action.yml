@@ -26,6 +26,9 @@ inputs:
     description: 'CDF Cluster'
     required: false
     default: 'europe-west1-1'
+  resource:
+    description: 'Resource parameter passed along with request'
+    required: false
   path:
     description: >-
       The path to a directory containing transformation manifests.
@@ -49,5 +52,6 @@ runs:
     TRANSFORMATIONS_AUDIENCE: ${{ inputs.audience }}
     TRANSFORMATIONS_CLUSTER: "${{ inputs.cluster }}"
     TRANSFORMATIONS_LEGACY_MODE: ${{ inputs.legacy-mode }}
+    TRANSFORMATIONS_RESOURCE: ${{ inputs.resource }}
   args: ["deploy", "${{ inputs.path }}" , "--debug"]
-  
+
