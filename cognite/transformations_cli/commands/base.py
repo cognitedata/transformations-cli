@@ -56,6 +56,11 @@ from cognite.transformations_cli.commands.show import show
     help="Project to interact with transformations API, 'TRANSFORMATIONS_PROJECT' environment variable can be used instead. Required for OAuth2 and optional for api-keys.",
     envvar="TRANSFORMATIONS_PROJECT",
 )
+@click.option(
+    "--resource",
+    help="Resource parameter passed along with request. 'TRANSFORMATIONS_RESOURCE' environment variable can be used instead.",
+    envvar="TRANSFORMATIONS_RESOURCE",
+)
 @click.pass_context
 def transformations_cli(
     context: Context,
@@ -67,6 +72,7 @@ def transformations_cli(
     scopes: Optional[str] = None,
     audience: Optional[str] = None,
     cdf_project_name: Optional[str] = None,
+    resource: Optional[str] = None,
 ) -> None:
     context.obj = {
         "cluster": cluster,
@@ -77,6 +83,7 @@ def transformations_cli(
         "scopes": scopes,
         "audience": audience,
         "cdf_project_name": cdf_project_name,
+        "resource": resource,
     }
 
 

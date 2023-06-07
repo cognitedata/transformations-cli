@@ -17,6 +17,7 @@ def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
     scopes = obj.get("scopes")
     audience = obj.get("audience")
     cdf_project_name = obj.get("cdf_project_name")
+    resource = obj.get("resource")
     cluster = obj.get("cluster", "europe-west1-1")
     base_url = f"https://{cluster}.cognitedata.com"
     if not audience:
@@ -33,6 +34,7 @@ def get_client(obj: Dict, timeout: int = 60) -> CogniteClient:
                 client_secret=client_secret,
                 token_url=token_url,
                 scopes=scopes,
+                resource=resource,
                 **token_custom_args,
             ),
         )
