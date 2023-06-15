@@ -38,7 +38,7 @@ inputs:
     default: "false"
 runs:
   using: 'docker'
-  image: docker://cognite/transformations-cli:v2.3.9
+  image: docker://cognite/transformations-cli:2.3.9
   env:
     TRANSFORMATIONS_API_KEY: ${{ inputs.api-key }}
     TRANSFORMATIONS_TOKEN_URL: ${{ inputs.token-url }}
