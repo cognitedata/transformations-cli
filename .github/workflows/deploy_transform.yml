@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Transformations
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       
       - name: Transformations Deploy step with OIDC
         uses: ./
