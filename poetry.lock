@@ -1725,13 +1725,13 @@ files = [
 
 [[package]]
 name = "types-retry"
-version = "0.1.5"
+version = "0.9.9.4"
 description = "Typing stubs for retry"
 optional = false
 python-versions = "*"
 files = [
-    {file = "types-retry-0.1.5.tar.gz", hash = "sha256:d4634dfb072f2208bd0cd919c9c46c9f4fe517d57f683aad3897098478d1dcb0"},
-    {file = "types_retry-0.1.5-py3-none-any.whl", hash = "sha256:d40287362de2bac4b18e7d6764f4bee7b0d8667c4f806a7efb542398156394a2"},
+    {file = "types-retry-0.9.9.4.tar.gz", hash = "sha256:e4731dc684b56b875d9746459ad665d3bc281a56b530acdf1c97730167799941"},
+    {file = "types_retry-0.9.9.4-py3-none-any.whl", hash = "sha256:f29760a9fe8b1fefe253e5fe6be7e4c0eba243932c600e0eccffb42a21d17765"},
 ]
 
 [[package]]
@@ -1843,4 +1843,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "1af5c32bf6b3cefcac24b9f2e35123bf5b7de35c6a7fb19250d9eb4c242bc341"
+content-hash = "713e90a60b65e1bbbac64171ed03f6940c6942afd70615403853431fa814dbdb"
