@@ -320,13 +320,13 @@ colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
 name = "cognite-sdk"
-version = "6.2.1"
+version = "6.15.0"
 description = "Cognite Python SDK"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "cognite_sdk-6.2.1-py3-none-any.whl", hash = "sha256:40763ad7d4f93ad3c76f9461bd119e650e3ff7df02601bd6d7b0f400b3efe7c5"},
-    {file = "cognite_sdk-6.2.1.tar.gz", hash = "sha256:215fbf3caa750eb26ddebd49df3deeebe6370e515542b3021b0a7393304f47b3"},
+    {file = "cognite_sdk-6.15.0-py3-none-any.whl", hash = "sha256:0ba090ec33df880b31a894f1f9f6889f6eefa1c18d947dae37ceedab74d823c3"},
+    {file = "cognite_sdk-6.15.0.tar.gz", hash = "sha256:cc8a8efa72da2eaa3ab92a6b67260b8e59ad6727e80fcb4ce203a8e3c27562f6"},
 ]
 
 [package.dependencies]
@@ -336,6 +336,7 @@ protobuf = ">=3.16.0"
 requests = ">=2,<3"
 requests_oauthlib = ">=1,<2"
 sortedcontainers = ">=2.2,<3.0"
+typing_extensions = ">=4"
 tzdata = {version = ">=2023.3", markers = "sys_platform == \"win32\""}
 
 [package.extras]
@@ -346,6 +347,7 @@ numpy = ["numpy (>=1.20,<2.0)"]
 pandas = ["backports-zoneinfo[tzdata] (>=0.2.1)", "pandas (>=1.4)"]
 pyodide = ["pyodide-http (>=0.2.0,<0.3.0)"]
 sympy = ["sympy"]
+yaml = ["PyYAML (>=6.0,<7.0)"]
 
 [[package]]
 name = "colorama"
@@ -1859,4 +1861,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "c401c63099b180f9f4ee75790fb9ad239ebd5b922bf150eebe4879c28aa79e59"
+content-hash = "8b5f092b35f9779be3828427b06582ee3ee9d41710482021576cc96a920cff49"
