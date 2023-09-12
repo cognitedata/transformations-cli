@@ -34,7 +34,7 @@ sqlparse = "^0.4.2"
 cognite-sdk = "6.23.0"
 regex = "^2021.11.10"
 dacite = "^1.6.0"
-python-dotenv = "^0.21.0"
+python-dotenv = "^1.0.0"
 pyparsing = "^3.0.9"
 PyYAML = "^6.0"
 
