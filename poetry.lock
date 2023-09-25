@@ -400,7 +400,7 @@ toml = ["tomli"]
 
 [[package]]
 name = "cryptography"
-version = "41.0.4"
+version = "41.0.4" 
 description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
 optional = false
 python-versions = ">=3.7"
