@@ -277,13 +277,13 @@ colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
 name = "cognite-sdk"
-version = "6.26.0"
+version = "6.28.0"
 description = "Cognite Python SDK"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "cognite_sdk-6.26.0-py3-none-any.whl", hash = "sha256:4b88bae020e40ab04acd32ca5c006eadba1205cecd05a6a889ea17e7d60deb19"},
-    {file = "cognite_sdk-6.26.0.tar.gz", hash = "sha256:985f7f93b71aa69c2adf7e7c6a5114f5aaddabe21039f63ac30f488b38eeaf1c"},
+    {file = "cognite_sdk-6.28.0-py3-none-any.whl", hash = "sha256:b2ef30e8e093c479f6d38261785a3ea1254830b35d340a86b490c95430c2943a"},
+    {file = "cognite_sdk-6.28.0.tar.gz", hash = "sha256:3e221f6075b1176a6f1bd9fd8eae375229872aa5dcff57845ae57450ece190bc"},
 ]
 
 [package.dependencies]
@@ -1868,4 +1868,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "55acbaaea10d5da539d1b9f4fb6d382b68f86a4b8e7de33a55d6271f2faa3bfa"
+content-hash = "ce84f88f3339339b8d7895f22b0e2694bd681616e0bcdc8c5ed2186131b66282"
