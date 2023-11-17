@@ -5,6 +5,7 @@ from typing import Dict, List, Optional, Tuple, Union
 from cognite.client import CogniteClient
 from cognite.client.data_classes import (
     OidcCredentials,
+    SequenceRows,
     Transformation,
     TransformationDestination,
     TransformationNotification,
@@ -17,7 +18,6 @@ from cognite.client.data_classes.transformations.common import (
     EdgeType,
     Instances,
     Nodes,
-    SequenceRows,
     ViewInfo,
 )
 from cognite.client.exceptions import CogniteAPIError, CogniteDuplicatedError, CogniteNotFoundError
