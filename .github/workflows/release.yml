@@ -51,7 +51,8 @@ jobs:
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-      run: twine upload --verbose dist/* || echo 'Version exists'
+      # fails if version is already published, we don't ignore that and keep it visible
+      run: twine upload --verbose dist/*
 
     - id: parse_tag_version
       name: "Parse version for auto tag"
@@ -63,6 +64,7 @@ jobs:
       uses: mathieudutour/github-tag-action@v6.1
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        # TODO: maybe fail the pipeline if tag already exists for better visibility
         custom_tag: ${{ steps.parse_tag_version.outputs.cli_version }}
 
   publish_to_dockerhub:
@@ -101,6 +103,7 @@ jobs:
         context: .
         push: true
         file: ./Dockerfile
+        # TODO: maybe fail the step if tag exists
         tags: cognite/transformations-cli:${{ steps.parse_version.outputs.cli_version }}
 
     - name: "Build and push Docker image for Azure Pipelines"
