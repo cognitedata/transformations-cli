@@ -39,7 +39,7 @@ pyparsing = "^3.0.9"
 PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
-black = "^24.3" 
+black = "^24.3"
 isort = "^5.9.2"
 flake8 = "^3.9.2"
 mypy = "^1.0.0"
