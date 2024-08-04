@@ -21,8 +21,8 @@ Usage
 Authenticate with API keys
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To use transformations-cli:
-    - The ``TRANSFORMATIONS_API_KEY`` environment variable must be set to a valid API key for a service account which has access to Transformations. 
-    - ``TRANSFORMATIONS_PROJECT`` environment variable is optional for API key authentication, CDF project can be inferred from API key if skipped. 
+    - The ``TRANSFORMATIONS_API_KEY`` environment variable must be set to a valid API key for a service account which has access to Transformations.
+    - ``TRANSFORMATIONS_PROJECT`` environment variable is optional for API key authentication, CDF project can be inferred from API key if skipped.
 
 Authenticate with OIDC credentials
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -33,8 +33,9 @@ When using OIDC, you need to set the environment variables:
     - ``TRANSFORMATIONS_PROJECT``: Required
     - ``TRANSFORMATIONS_SCOPES``: Transformations CLI assumes that this is optional, generally required to authenticate except for Aize project. Space separated for multiple scopes.
     - ``TRANSFORMATIONS_AUDIENCE``: Optional
+    - ``TRANSFORMATIONS_TOKEN_CUSTOM_ARGS``: Optional custom arguments passed along with the request (e.g. arg1=value1,arg2=value2)
 
-By default, transformations-cli runs against the main CDF cluster (europe-west1-1). To use a different cluster, specify the ``--cluster`` parameter or set the environment variable ``TRANSFORMATIONS_CLUSTER``. Note that this is a global parameter, which must be specified before the subcommand. For example:
+By default, transformations-cli runs against the main CDF cluster (europe-west1-1). To use a different cluster, specify the ``--cluster`` parameter or set the environment variable ``TRANSFORMATIONS_CLUSTER``. If CDF is hosted on a different URL, specify the ``--base-url`` parameter or set the environment variable ``TRANSFORMATIONS_BASE_URL``. Specifying base URL will take precedence over cluster. Note that this is a global parameter, which must be specified before the subcommand. For example:
 
 .. code-block:: bash
 
@@ -50,19 +51,19 @@ By default, transformations-cli runs against the main CDF cluster (europe-west1-
      - Options
      - Description
    * - list
-     - 
+     -
      - ``--limit``, ``--interactive``, ``--data-set-id``, ``data-set-external-id``, ``destination-type``, ``conflict-mode``, ``--tag``
      - List transformations
    * - show
-     - 
+     -
      - ``--external-id``, ``--id``, ``--job-id``
      - Show a transformation/job
    * - jobs
-     - 
+     -
      - ``--external-id``, ``--id``, ``--limit``, ``--interactive``
      - List jobs
    * - delete
-     - 
+     -
      - ``--external-id``, ``--id``, ``--delete-schedule``
      - Delete a transformation
    * - query
@@ -70,12 +71,12 @@ By default, transformations-cli runs against the main CDF cluster (europe-west1-
      - ``--source-limit``, ``--infer-schema-limit``, ``--limit``
      - Run a query
    * - run
-     - 
+     -
      - ``--external-id``, ``--id``, ``--watch``, ``--watch-only``, ``--time-out``
      - Run a transformation
    * - deploy
      - ``path``, ``--debug``
-     - 
+     -
      - Deploy transformations
 
 Help
@@ -188,8 +189,8 @@ It prints the transformation details in a tabular format, such as latest job's m
 
 ``transformations-cli jobs``
 ----------------------------
-``transformations-cli jobs`` can list the latest jobs. 
-You can optionally provide the ``external_id`` or ``id`` of the transformations of which jobs you want to list. 
+``transformations-cli jobs`` can list the latest jobs.
+You can optionally provide the ``external_id`` or ``id`` of the transformations of which jobs you want to list.
 You can also provide ``--limit``, which defaults to 10. Use ``--limit=-1`` if you want to list all.
 
 .. code-block:: bash
@@ -215,12 +216,12 @@ You can also provide ``--limit``, which defaults to 10. Use ``--limit=-1`` if yo
      - No
      - Limit for the job history. Use -1 to retrieve all results.
    * - ``--id``
-     - 
+     -
      - No
      - No
      - List jobs by transformation ``id``. Either this or ``--external-id`` must be specified.
    * - ``--external-id``
-     - 
+     -
      - No
      - No
      - List jobs by transformation ``external_id``. Either this or ``--id`` must be specified.
@@ -232,7 +233,7 @@ You can also provide ``--limit``, which defaults to 10. Use ``--limit=-1`` if yo
 
 ``transformations-cli delete``
 ------------------------------
-``transformations-cli`` provides a delete subcommand, which can delete a transformation. 
+``transformations-cli`` provides a delete subcommand, which can delete a transformation.
 
 At minimum, this command requires either an ``--id`` or ``--external-id`` to be specified:
 
@@ -258,12 +259,12 @@ You can also specify ``--delete-schedule`` flag to delete a scheduled transforma
      - Required
      - Description
    * - ``--id``
-     - 
+     -
      - No
      - No
      - ``id`` of the transformation to be deleted. Either this or ``--external-id`` must be specified.
    * - ``--external-id``
-     - 
+     -
      - No
      - No
      - ``external_id`` of the transformation to be deleted. Either this or ``--id`` must be specified.
@@ -281,7 +282,7 @@ transformations-cli also allows you to run queries.
 
     transformations-cli query "select * from _cdf.assets limit 100"
 
-This will print the schema and the results. 
+This will print the schema and the results.
 The query command is intended for previewing your SQL queries, and is not designed for large data exports. For this reason, there are a few limits in place. Query command takes ``--infer-schema-limit``, ``--source-limit`` and ``--limit`` options. Default values are 100, 100 and 1000 in the corresponding order.
 
 
@@ -362,12 +363,12 @@ If you want to watch a job for completion without actually starting a transforma
      - Required
      - Description
    * - ``--id``
-     - 
+     -
      - No
      - No
      - The ``id`` of the transformation to run. Either this or ``--external-id`` must be specified.
    * - ``--external-id``
-     - 
+     -
      - No
      - No
      - The ``external_id`` of the transformation to run. Either thisor ``--id`` must be specified.
@@ -401,7 +402,7 @@ To deploy a set of transformations, use the deploy subcommand:
 
     transformations-cli deploy <path>
 
-The ``<path>`` argument should point to a directory containing YAML manifests. 
+The ``<path>`` argument should point to a directory containing YAML manifests.
 This directory is scanned recursively for ``*.yml`` and ``*.yaml`` files, so you can organize your transformations into separate subdirectories.
 
 .. list-table:: Deploy args
@@ -415,7 +416,7 @@ This directory is scanned recursively for ``*.yml`` and ``*.yaml`` files, so you
    * - ``path``
      - .
      - Yes
-     - Root folder of transformation manifests. 
+     - Root folder of transformation manifests.
 
 .. list-table:: Debug options
    :widths: 25 25 25 25 25

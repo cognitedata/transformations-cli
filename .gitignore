@@ -136,3 +136,6 @@ dmypy.json
 .vscode/
 
 Pipfile
+
+# mac dir settings
+.DS_Store
