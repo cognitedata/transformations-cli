@@ -3,6 +3,7 @@ Cognite transformations-cli package
 
 Command-line interface for Cognite Transformations.
 
+``We are deprecating the **_Transformations CLI_** in favor of the [**CDF Toolkit**](https://docs.cognite.com/cdf/deploy/cdf_toolkit/). We strongly encourage you to adopt the **_CDF Toolkit_** as soon as possible. For more information, see [Deprecated and retired features](https://docs.cognite.com/cdf/deprecated).``
 
 Installation
 ^^^^^^^^^^^^
