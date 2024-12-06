@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cognite-transformations-cli"
-version = "2.3.10"
+version = "2.3.11"
 
 description = "A CLI for the Transformations service in CDF"
 authors = ["Mathias Lohne <mathias.lohne@cognite.com>", "Emel Varol <emel.varol@cognite.com>", "Einar Marstrander Omang <einar.omang@cognite.com>"]
@@ -30,7 +30,7 @@ click = "^8.0.2"
 types-retry = "^0.9.0"
 tabulate = "^0.9.0"
 types-tabulate = "^0.8.3"
-sqlparse = "^0.4.2"
+sqlparse = ">=0.4.2,<0.6.0"
 cognite-sdk = "6.39.6"
 regex = "^2023.0.0"
 dacite = "^1.6.0"
