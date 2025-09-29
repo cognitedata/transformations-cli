@@ -1,4 +1,3 @@
-
 # Cognite Transformations CLI
 
 [![Build Status](https://github.com/cognitedata/transformations-cli/workflows/release/badge.svg)](https://github.com/cognitedata/transformations-cli/actions)
