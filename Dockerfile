@@ -7,7 +7,6 @@ ENV PYTHONUNBUFFERED=1
 
 # Poetry setup
 RUN pip3 install poetry==1.8.3
-RUN poetry config virtualenvs.create false
 
 COPY poetry.lock .
 COPY pyproject.toml .
