@@ -1,11 +1,11 @@
 repos:
--   repo: https://github.com/humitos/mirrors-autoflake
+-   repo: https://github.com/PyCQA/autoflake
     hooks:
     -   id: autoflake
         args:
         - --remove-all-unused-imports
         - --in-place
-    rev: v1.3
+    rev: v2.0.0
 -   repo: https://github.com/asottile/seed-isort-config
     rev: v2.2.0
     hooks:
