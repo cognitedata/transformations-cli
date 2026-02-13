@@ -16,9 +16,14 @@ from cognite.transformations_cli.commands.show import show
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})
 @click.version_option(prog_name="transformations_cli", version=__version__)
 @click.option(
+    "--base-url",
+    help="URL to CDF host (e.g. https://api.cognitedata.com). Provide this or make sure to set 'TRANSFORMATIONS_BASE_URL' environment variable",
+    envvar="TRANSFORMATIONS_BASE_URL",
+)
+@click.option(
     "--cluster",
     default="europe-west1-1",
-    help="The CDF cluster where Transformations is hosted (e.g. greenfield, europe-west1-1)",
+    help="The CDF cluster where Transformations is hosted (e.g. greenfield, europe-west1-1). Cluster setting is ignored if the base url is provided",
     envvar="TRANSFORMATIONS_CLUSTER",
 )
 @click.option(
@@ -43,7 +48,7 @@ from cognite.transformations_cli.commands.show import show
 )
 @click.option(
     "--scopes",
-    help="Scopes to interact with transformations API, relevant for OAuth2 authentication method. 'TRANSFORMATIONS_SCOPES' environment variable can be used instead.",
+    help="Scopes to interact with transformations API, relevant for OAuth2 authentication method (Space Separated List). 'TRANSFORMATIONS_SCOPES' environment variable can be used instead.",
     envvar="TRANSFORMATIONS_SCOPES",
 )
 @click.option(
@@ -56,9 +61,15 @@ from cognite.transformations_cli.commands.show import show
     help="Project to interact with transformations API, 'TRANSFORMATIONS_PROJECT' environment variable can be used instead. Required for OAuth2 and optional for api-keys.",
     envvar="TRANSFORMATIONS_PROJECT",
 )
+@click.option(
+    "--token-custom-args",
+    help="Custom arguments passed along with the request (e.g. arg1=value1,arg2=value2), 'TRANSFORMATIONS_TOKEN_CUSTOM_ARGS' environment variable can be used instead.",
+    envvar="TRANSFORMATIONS_TOKEN_CUSTOM_ARGS",
+)
 @click.pass_context
 def transformations_cli(
     context: Context,
+    base_url: Optional[str] = None,
     cluster: str = "europe-west1-1",
     api_key: Optional[str] = None,
     client_id: Optional[str] = None,
@@ -67,8 +78,10 @@ def transformations_cli(
     scopes: Optional[str] = None,
     audience: Optional[str] = None,
     cdf_project_name: Optional[str] = None,
+    token_custom_args: Optional[str] = None,
 ) -> None:
     context.obj = {
+        "base_url": base_url,
         "cluster": cluster,
         "api_key": api_key,
         "client_id": client_id,
@@ -77,6 +90,7 @@ def transformations_cli(
         "scopes": scopes,
         "audience": audience,
         "cdf_project_name": cdf_project_name,
+        "token_custom_args": token_custom_args,
     }
 
 
