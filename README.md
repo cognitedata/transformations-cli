@@ -1,3 +1,8 @@
+# --- Deprecation and replacement ---
+
+The transformations CLI has been replaced by [CDF Toolkit](https://docs.cognite.com/cdf/deploy/cdf_toolkit).
+This repository has been archived and will no longer be maintained or updated.
+
 # Cognite Transformations CLI
 
 [![Build Status](https://github.com/cognitedata/transformations-cli/workflows/release/badge.svg)](https://github.com/cognitedata/transformations-cli/actions)
