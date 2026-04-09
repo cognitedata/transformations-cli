@@ -20,7 +20,7 @@ RUN pip3 install --target=/app -r requirements.txt --no-deps
 COPY cognite/transformations_cli/ /app/cognite/transformations_cli/
 
 # Distroless does not work with Azure pipelines
-FROM python:3.9-bullseye
+FROM python:3.13-bullseye
 COPY --from=builder /app /app
 ENV PYTHONPATH /app
 
